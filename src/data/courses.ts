@@ -22,21 +22,59 @@ export const courses: Course[] = [
             title: 'Limits and continuity',
             summary:
               'Build the idea of a limit from nearby values, then evaluate by substitution, algebra, and standard trig forms — and know when a limit fails.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) explain limₓ→ₐ f(x) = L in plain language and with one-sided limits; (2) evaluate polynomial and rational limits by substitution or factoring; (3) use limₓ→₀ sin(x)/x = 1 after a scaling rewrite; (4) spot common failure modes (jump, vertical asymptote, mismatched sides).',
+                id: 'lim-meaning',
+                title: 'Explain a limit',
+                summary:
+                  'Say what limₓ→ₐ f(x) = L means in plain language, including when the function itself is undefined at a.',
+                sectionHint: 'What a limit means',
+                demo: 'limit-approach',
               },
+              {
+                id: 'lim-onesided',
+                title: 'Use one-sided limits',
+                summary:
+                  'Compare left- and right-hand limits and decide when the two-sided limit exists.',
+                sectionHint: 'One-sided limits',
+                demo: 'one-sided',
+              },
+              {
+                id: 'lim-eval',
+                title: 'Evaluate by algebra',
+                summary:
+                  'Substitute for polynomials and factor or cancel when you hit a 0/0 indeterminate form.',
+                sectionHint: 'Indeterminate forms',
+              },
+              {
+                id: 'lim-sinx',
+                title: 'Use sin(x)/x',
+                summary:
+                  'Apply limₓ→₀ sin(x)/x = 1 (radians) and scale the argument correctly.',
+                sectionHint: 'A standard trig limit',
+                demo: 'sinx-x',
+              },
+              {
+                id: 'lim-fail',
+                title: 'Spot failure modes',
+                summary:
+                  'Recognize jumps, vertical asymptotes, and mismatched one-sided limits.',
+                sectionHint: 'Common mistakes',
+                demo: 'limit-fail',
+              },
+            ],
+            sections: [
               {
                 heading: 'What a limit means',
                 body:
                   'We write limₓ→ₐ f(x) = L when the values of f get arbitrarily close to L as x approaches a. The function need not equal L at a — or even be defined there. Think of zooming in on the graph near x = a: if the y-values settle on a single height L, the limit is L.',
+                visual: 'limit-zoom',
               },
               {
                 heading: 'One-sided limits',
                 body:
                   'limₓ→ₐ⁻ f(x) uses only x < a; limₓ→ₐ⁺ uses only x > a. The two-sided limit exists only when both one-sided limits exist and agree. A classic failure is a jump discontinuity: left and right settle on different heights.',
+                visual: 'one-sided-graph',
               },
               {
                 heading: 'Direct evaluation',
@@ -47,16 +85,19 @@ export const courses: Course[] = [
                 heading: 'Indeterminate forms',
                 body:
                   'A 0/0 form after substitution is not “undefined forever.” It means the same algebraic cause is canceling in numerator and denominator. Factor, expand, rationalize, or use a known identity, then take the limit of the simplified expression (valid for x ≠ a).',
+                visual: 'indeterminate',
               },
               {
                 heading: 'Continuity in one line',
                 body:
                   'f is continuous at a when limₓ→ₐ f(x) = f(a). That packs three requirements: f(a) exists, the limit exists, and they match. Removable discontinuities are exactly the 0/0 cases where algebra fills the hole; jumps and infinite blow-ups do not.',
+                visual: 'continuity',
               },
               {
                 heading: 'A standard trig limit',
                 body:
                   'limₓ→₀ sin(x)/x = 1 (x in radians). Scaling: limₓ→₀ sin(kx)/x = k, because sin(kx)/x = k · sin(kx)/(kx) and kx → 0 with x. Never leave the argument of sine mismatched with the denominator.',
+                visual: 'trig-limit',
               },
               {
                 heading: 'Common mistakes',
@@ -230,21 +271,50 @@ export const courses: Course[] = [
             title: 'The derivative as a limit',
             summary:
               'Define f′(a) via the difference quotient, interpret it as slope and instantaneous rate, and compute a first example from scratch.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'State the limit definition of f′(a), connect it to average rate of change and tangent slope, and evaluate a simple derivative from the definition without shortcut rules.',
+                id: 'deriv-def',
+                title: 'State the definition',
+                summary:
+                  'Write f′(a) as the limit of the difference quotient and connect it to instantaneous rate of change.',
+                sectionHint: 'Difference quotient → derivative',
+                demo: 'secant-tangent',
               },
+              {
+                id: 'deriv-avg',
+                title: 'Average → instantaneous',
+                summary:
+                  'Start from average rate of change on [a, a+h] and shrink h to recover the tangent slope.',
+                sectionHint: 'Average rate first',
+                demo: 'secant-tangent',
+              },
+              {
+                id: 'deriv-eval',
+                title: 'Compute from the definition',
+                summary:
+                  'Evaluate a simple derivative using only the limit definition — no shortcut rules yet.',
+                sectionHint: 'Difference quotient → derivative',
+              },
+              {
+                id: 'deriv-fail',
+                title: 'Know when it fails',
+                summary:
+                  'Identify corners, cusps, and jumps where the derivative does not exist.',
+                sectionHint: 'When the derivative fails',
+              },
+            ],
+            sections: [
               {
                 heading: 'Average rate first',
                 body:
                   'On an interval [a, a+h], the average rate of change of f is [f(a+h) − f(a)] / h — rise over run for the secant line. That quotient is exact for the interval; it is not yet “instantaneous.”',
+                visual: 'avg-rate',
               },
               {
                 heading: 'Difference quotient → derivative',
                 body:
                   'The derivative is the limit of that average rate as the window shrinks: f′(a) = limₕ→₀ [f(a+h) − f(a)] / h, when the limit exists. Geometrically, secants approach the tangent; physically, average rates approach an instantaneous rate.',
+                visual: 'difference-quotient',
               },
               {
                 heading: 'When the derivative fails',
@@ -351,12 +421,32 @@ export const courses: Course[] = [
             title: 'Power and product rules',
             summary:
               'Differentiate powers and products efficiently — and know when expanding first is smarter than the product rule.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'Apply the power rule to monomials (including negative and fractional exponents when they appear), use the product rule with clear u/v bookkeeping, and sanity-check by expanding simple polynomials.',
+                id: 'power-rule',
+                title: 'Apply the power rule',
+                summary:
+                  'Differentiate xⁿ for integer, negative, and fractional exponents that appear in problems.',
+                sectionHint: 'Power rule',
+                demo: 'power-rule',
               },
+              {
+                id: 'product-rule',
+                title: 'Use the product rule',
+                summary:
+                  'Differentiate a product with clear u/v bookkeeping: (uv)′ = u′v + uv′.',
+                sectionHint: 'Product rule',
+                demo: 'product-rule',
+              },
+              {
+                id: 'sanity-expand',
+                title: 'Sanity-check by expanding',
+                summary:
+                  'Expand a simple polynomial product and confirm the product rule matches term-by-term differentiation.',
+                sectionHint: 'Product rule',
+              },
+            ],
+            sections: [
               {
                 heading: 'Why shortcut rules exist',
                 body:
@@ -366,11 +456,13 @@ export const courses: Course[] = [
                 heading: 'Power rule',
                 body:
                   'For any real n where xⁿ is differentiable, d/dx [xⁿ] = n xⁿ⁻¹. Constants factor out: (c f)′ = c f′. Sums differentiate termwise: (f + g)′ = f′ + g′.',
+                visual: 'power-slope',
               },
               {
                 heading: 'Product rule',
                 body:
                   '(uv)′ = u′v + uv′. Say it as “derivative of the first times second, plus first times derivative of the second.” Each factor is differentiated once while the other is held fixed — never differentiate both in the same term.',
+                visual: 'product-uv',
               },
               {
                 heading: 'Common mistakes',
@@ -457,16 +549,37 @@ export const courses: Course[] = [
             title: 'Antiderivatives and FTC',
             summary:
               'Connect derivatives and definite integrals: undo a derivative, then evaluate net change with the fundamental theorem.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'Find simple antiderivatives of power functions, state the indefinite integral with +C, and evaluate a definite integral via F(b) − F(a).',
+                id: 'antideriv',
+                title: 'Find antiderivatives',
+                summary:
+                  'Reverse the power rule for simple power functions and include +C for indefinite integrals.',
+                sectionHint: 'Antiderivative idea',
+                demo: 'ftc-area',
               },
+              {
+                id: 'indefinite',
+                title: 'Write indefinite integrals',
+                summary:
+                  'State ∫ f(x) dx = F(x) + C and check by differentiating F.',
+                sectionHint: 'Indefinite integral',
+              },
+              {
+                id: 'ftc-eval',
+                title: 'Evaluate definite integrals',
+                summary:
+                  'Use the Fundamental Theorem: ∫ₐᵇ f = F(b) − F(a) for an antiderivative F.',
+                sectionHint: 'Fundamental theorem (evaluation form)',
+                demo: 'ftc-area',
+              },
+            ],
+            sections: [
               {
                 heading: 'Antiderivative idea',
                 body:
                   'F is an antiderivative of f when F′ = f. Differentiation asks “how fast does F change?”; antidifferentiation asks “which F has this rate?” Many answers differ by a constant: if F′ = f then (F+C)′ = f too.',
+                visual: 'antiderivative',
               },
               {
                 heading: 'Indefinite integral',
@@ -477,6 +590,7 @@ export const courses: Course[] = [
                 heading: 'Fundamental theorem (evaluation form)',
                 body:
                   'If F′ = f on [a,b] (with mild hypotheses), then ∫ₐᵇ f(x) dx = F(b) − F(a). The definite integral equals net change of any antiderivative. Signed area under y = f is the usual geometric reading when f ≥ 0.',
+                visual: 'ftc-eval',
               },
               {
                 heading: 'Common mistakes',
@@ -574,12 +688,40 @@ export const courses: Course[] = [
             title: 'Constant acceleration',
             summary:
               'Use the three kinematic equations for 1D motion with constant a — choosing the equation that drops the unknown you do not have.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) state when the constant-acceleration equations apply; (2) pick a consistent sign convention for v₀, v, a, and Δx; (3) choose among v = v₀ + a t, Δx = v₀ t + ½ a t², and v² = v₀² + 2 a Δx by which unknown is missing; (4) solve a single-axis problem and sanity-check the sign and magnitude of the answer.',
+                id: 'when-const-a',
+                title: 'Know when they apply',
+                summary:
+                  'Use the constant-acceleration equations only when a is truly constant on the interval.',
+                sectionHint: 'When these equations apply',
+                demo: 'const-accel',
               },
+              {
+                id: 'sign-convention',
+                title: 'Pick a sign convention',
+                summary:
+                  'Choose a positive direction once, then assign consistent signs to v₀, v, a, and Δx.',
+                sectionHint: 'Signs and “slowing down”',
+                demo: 'const-accel',
+              },
+              {
+                id: 'pick-equation',
+                title: 'Choose the right equation',
+                summary:
+                  'Pick among v = v₀ + at, Δx = v₀t + ½at², and v² = v₀² + 2aΔx by which quantity is missing.',
+                sectionHint: 'The three workhorses',
+              },
+              {
+                id: 'solve-1d',
+                title: 'Solve a 1-D problem',
+                summary:
+                  'Solve a single-axis kinematics problem and sanity-check sign and magnitude.',
+                sectionHint: 'The three workhorses',
+                demo: 'const-accel',
+              },
+            ],
+            sections: [
               {
                 heading: 'Why kinematics before forces',
                 body:
@@ -594,11 +736,13 @@ export const courses: Course[] = [
                 heading: 'The three workhorses',
                 body:
                   'v = v₀ + a t drops displacement — use it when you care about speed after a known time. Δx = v₀ t + ½ a t² (with x = x₀ + Δx) drops final velocity — use it for “how far in time t?” v² = v₀² + 2 a Δx drops time — use it for stopping distance and any problem where the clock is unknown. Each equation is a rearrangement of the same a = constant story; they are not independent physics laws.',
+                visual: 'kinematic-axes',
               },
               {
                 heading: 'Signs and “slowing down”',
                 body:
                   'Pick a positive direction once and stick to it for every signed quantity. Acceleration opposite velocity means the speed is decreasing; same sign means speeding up. A negative Δx is not “impossible” — it means net displacement toward the negative axis. The v² equation uses signed a and Δx even though v² and v₀² are squares.',
+                visual: 'signs-motion',
               },
               {
                 heading: 'Common mistakes',
@@ -754,16 +898,45 @@ export const courses: Course[] = [
             title: "Newton's second law",
             summary:
               'Relate net force to acceleration with free-body diagrams and component equations ΣF = ma.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) state ΣF = m a as a vector statement about the net force; (2) draw a clean free-body diagram (FBD) with only forces on the chosen body; (3) write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ with a consistent axis choice; (4) solve a single-body horizontal or vertical problem, including a simple elevator/cable tension case.',
+                id: 'net-force',
+                title: 'State ΣF = ma',
+                summary:
+                  'Treat Newton’s second law as a vector statement about the net force, not a single “the force.”',
+                sectionHint: 'Net force, not “the” force',
+                demo: 'free-body',
               },
+              {
+                id: 'draw-fbd',
+                title: 'Draw a clean FBD',
+                summary:
+                  'Sketch only forces acting on the chosen body — no velocity arrows disguised as forces.',
+                sectionHint: 'FBD discipline',
+                demo: 'free-body',
+              },
+              {
+                id: 'component-eqs',
+                title: 'Write component equations',
+                summary:
+                  'Write ΣFₓ = maₓ and ΣFᵧ = maᵧ with a consistent axis choice.',
+                sectionHint: 'Why FBDs before algebra',
+              },
+              {
+                id: 'solve-body',
+                title: 'Solve a single-body case',
+                summary:
+                  'Solve a horizontal or vertical problem, including a simple elevator/cable tension case.',
+                sectionHint: 'Weight vs mass',
+                demo: 'free-body',
+              },
+            ],
+            sections: [
               {
                 heading: 'Net force, not “the” force',
                 body:
                   'Newton’s second law is about the vector sum of forces: ΣF = m a. Individual agents (push, weight, normal, tension, friction) each contribute an arrow on the FBD; acceleration responds only to the total. Mass m measures inertia — how stubborn the velocity is against change — and is not itself a force.',
+                visual: 'net-force',
               },
               {
                 heading: 'Why FBDs before algebra',
@@ -774,11 +947,13 @@ export const courses: Course[] = [
                 heading: 'FBD discipline',
                 body:
                   'Isolate one body. Draw every force as an arrow on that body (not on neighbors). Resolve into components along axes you choose. Then write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ. If the body does not accelerate vertically, ΣFᵧ = 0 is still an equation — it often finds a normal force. Never draw “ma” as an extra force on the FBD; ma is what ΣF equals.',
+                visual: 'fbd-block',
               },
               {
                 heading: 'Weight vs mass',
                 body:
                   'Weight is the gravitational force mg (near Earth), directed toward the ground. Mass is the scalar in ΣF = m a. In an elevator, your weight mg still points down; the scale reading is the normal force, which equals mg only when a = 0.',
+                visual: 'weight-mass',
               },
               {
                 heading: 'Common mistakes',
@@ -929,12 +1104,39 @@ export const courses: Course[] = [
             title: '2D force resultants',
             summary:
               'Resolve planar forces into Cartesian components, sum them, and recover magnitude and direction of the resultant.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) convert a force given by magnitude and angle into Fₓ, Fᵧ with a clear angle reference; (2) sum concurrent planar forces by components; (3) rebuild the resultant as |R| and θ (with correct quadrant); (4) avoid the “add magnitudes” trap when forces are not collinear.',
+                id: 'resolve-force',
+                title: 'Resolve into components',
+                summary:
+                  'Convert magnitude and angle into Fₓ, Fᵧ with a clear angle reference.',
+                sectionHint: 'Angle reference first',
+                demo: 'force-components',
               },
+              {
+                id: 'sum-components',
+                title: 'Sum concurrent forces',
+                summary:
+                  'Add planar forces by components: Rₓ = ΣFₓ, Rᵧ = ΣFᵧ.',
+                sectionHint: 'Components and resultant',
+                demo: 'force-components',
+              },
+              {
+                id: 'rebuild-resultant',
+                title: 'Rebuild |R| and θ',
+                summary:
+                  'Recover magnitude and direction with the correct quadrant for θ.',
+                sectionHint: 'Components and resultant',
+              },
+              {
+                id: 'no-add-mags',
+                title: 'Avoid adding magnitudes',
+                summary:
+                  'Never add force magnitudes unless the forces are collinear and same-sense.',
+                sectionHint: 'Common mistakes',
+              },
+            ],
+            sections: [
               {
                 heading: 'Why components',
                 body:
@@ -944,11 +1146,13 @@ export const courses: Course[] = [
                 heading: 'Angle reference first',
                 body:
                   'Formulas Fₓ = F cos θ and Fᵧ = F sin θ assume θ measured from +x, counterclockwise positive. If a problem says “30° above the −x axis,” sketch before plugging in — the reference is not the default. Wrong reference is the #1 source of sign errors.',
+                visual: 'vector-resolve',
               },
               {
                 heading: 'Components and resultant',
                 body:
                   'With a consistent θ: Fₓ = F cos θ, Fᵧ = F sin θ. Then Rₓ = Σ Fₓ, Rᵧ = Σ Fᵧ; |R| = √(Rₓ² + Rᵧ²); θ_R = atan2(Rᵧ, Rₓ) so the quadrant is correct. Concurrent forces (lines of action through one point) need no moment bookkeeping for the resultant force alone.',
+                visual: 'resultant',
               },
               {
                 heading: 'Special cases worth memorizing',
@@ -1088,12 +1292,40 @@ export const courses: Course[] = [
             title: 'Particle equilibrium',
             summary:
               'For a particle in a plane, ΣFₓ = 0 and ΣFᵧ = 0 — two equations for the unknown support forces.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) explain why a particle needs only ΣFₓ = 0 and ΣFᵧ = 0; (2) draw an FBD at a knot or pin treated as a particle; (3) write component equilibrium equations with correct tension directions; (4) solve a two-cable hanging-mass problem for the two tensions.',
+                id: 'why-particle',
+                title: 'Why only ΣF = 0',
+                summary:
+                  'Explain why a particle needs only ΣFₓ = 0 and ΣFᵧ = 0 (no moments).',
+                sectionHint: 'Particle vs rigid body',
+                demo: 'particle-eq',
               },
+              {
+                id: 'fbd-knot',
+                title: 'Draw the particle FBD',
+                summary:
+                  'Draw an FBD at a knot or pin treated as a particle with correct tension directions.',
+                sectionHint: 'Setup strategy',
+                demo: 'particle-eq',
+              },
+              {
+                id: 'eq-eqs',
+                title: 'Write equilibrium equations',
+                summary:
+                  'Write component equilibrium equations from the FBD.',
+                sectionHint: 'Why equilibrium means zero net force',
+              },
+              {
+                id: 'two-cable',
+                title: 'Solve two-cable support',
+                summary:
+                  'Solve a hanging-mass two-cable problem for both tensions.',
+                sectionHint: 'Setup strategy',
+                demo: 'particle-eq',
+              },
+            ],
+            sections: [
               {
                 heading: 'Particle vs rigid body',
                 body:
@@ -1103,11 +1335,13 @@ export const courses: Course[] = [
                 heading: 'Why equilibrium means zero net force',
                 body:
                   'If a particle’s acceleration is zero, Newton’s second law says ΣF = 0. Statics problems are the a = 0 special case of dynamics. Two independent planar components give two scalar equations — enough for two unknown force magnitudes when directions are known (cables, links along known lines).',
+                visual: 'particle-knot',
               },
               {
                 heading: 'Setup strategy',
                 body:
                   '(1) Cut free the particle/knot. (2) Draw every force: known loads plus unknown support magnitudes along known directions. (3) Pick axes. (4) Write ΣFₓ = 0 and ΣFᵧ = 0. (5) Solve the linear system. Count unknowns: two independent equations support two unknowns in a well-posed planar particle problem.',
+                visual: 'particle-knot',
               },
               {
                 heading: 'Common mistakes',
@@ -1256,21 +1490,51 @@ export const courses: Course[] = [
             title: 'Voltage dividers',
             summary:
               'Predict Vout across one resistor in a series chain, and see how absolute values set current and loading.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) derive the unloaded divider formula from Ohm’s law and KVL; (2) compute Vout for given Vin, R₁, R₂; (3) explain why the ratio sets the fraction while absolute values set current and loading stiffness; (4) spot when a load on Vout invalidates the unloaded formula.',
+                id: 'derive-divider',
+                title: 'Derive the divider',
+                summary:
+                  'Derive the unloaded divider from Ohm’s law and KVL: Vout = Vin · R₂/(R₁+R₂).',
+                sectionHint: 'Derive the formula',
+                demo: 'voltage-divider',
               },
+              {
+                id: 'compute-vout',
+                title: 'Compute Vout',
+                summary:
+                  'Plug in Vin, R₁, R₂ and get the unloaded output voltage.',
+                sectionHint: 'Derive the formula',
+                demo: 'voltage-divider',
+              },
+              {
+                id: 'ratio-vs-scale',
+                title: 'Ratio vs absolute scale',
+                summary:
+                  'Explain why the ratio sets the fraction while absolute R values set current and stiffness.',
+                sectionHint: 'Ratio vs scale',
+              },
+              {
+                id: 'loading',
+                title: 'Spot loading effects',
+                summary:
+                  'Recognize when a load on Vout invalidates the unloaded divider formula.',
+                sectionHint: 'Loading in one line',
+                demo: 'voltage-divider',
+              },
+            ],
+            sections: [
               {
                 heading: 'Series intuition',
                 body:
                   'The same current flows through series resistors (one path). Larger resistance drops a larger share of Vin — voltage divides in proportion to resistance. Think of a height drop along a chain of steps: the taller step takes more of the total drop.',
+                visual: 'series-resistors',
               },
               {
                 heading: 'Derive the formula',
                 body:
                   'Vin across R₁ then R₂ to ground. KVL: Vin = I R₁ + I R₂ = I(R₁+R₂), so I = Vin/(R₁+R₂). Vout across R₂ is I·R₂ = Vin · R₂/(R₁+R₂). Swap the numerator if you measure across R₁ instead. The unloaded assumption means nothing else is attached at the Vout node.',
+                visual: 'divider-formula',
               },
               {
                 heading: 'Ratio vs scale',
@@ -1281,6 +1545,7 @@ export const courses: Course[] = [
                 heading: 'Loading in one line',
                 body:
                   'A load R_L from Vout to ground sits in parallel with R₂. The bottom resistance becomes R₂∥R_L < R₂, so Vout falls. Rule of thumb: if R_L ≫ R₂ (say 10× or more), the unloaded formula is a decent approximation; if not, recompute with the parallel combination.',
+                visual: 'loading',
               },
               {
                 heading: 'Common mistakes',
@@ -1406,21 +1671,51 @@ export const courses: Course[] = [
             title: 'KCL and KVL',
             summary:
               'Charge and energy conservation as circuit laws — KCL at nodes, KVL around loops — with a first single-loop solve.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) state KCL and KVL in words as conservation laws; (2) write KCL at a simple node and KVL around a simple loop with a consistent sign convention; (3) combine Ohm’s law with KVL to solve a single-loop resistive circuit; (4) use a quick KVL check (sum of drops equals the source) after solving.',
+                id: 'state-laws',
+                title: 'State KCL and KVL',
+                summary:
+                  'Phrase KCL and KVL as conservation of charge and energy around a node or loop.',
+                sectionHint: 'KCL — charge conservation',
+                demo: 'kvl-loop',
               },
+              {
+                id: 'write-eqs',
+                title: 'Write node and loop equations',
+                summary:
+                  'Write KCL at a simple node and KVL around a loop with a consistent sign convention.',
+                sectionHint: 'KVL — energy conservation',
+                demo: 'kvl-loop',
+              },
+              {
+                id: 'solve-loop',
+                title: 'Solve a single-loop circuit',
+                summary:
+                  'Combine Ohm’s law with KVL to find current and drops in a resistive loop.',
+                sectionHint: 'How they work together',
+              },
+              {
+                id: 'kvl-check',
+                title: 'Check with KVL',
+                summary:
+                  'After solving, verify that the sum of drops equals the source.',
+                sectionHint: 'Sign conventions worth locking in',
+                demo: 'kvl-loop',
+              },
+            ],
+            sections: [
               {
                 heading: 'KCL — charge conservation',
                 body:
                   'At a node, current in equals current out (equivalently: the algebraic sum of currents leaving the node is zero). Charge does not pile up at an ideal connection point. Pick “leaving positive” or “entering positive” and stay consistent for every term.',
+                visual: 'kcl-node',
               },
               {
                 heading: 'KVL — energy conservation',
                 body:
                   'Around any closed loop, the signed sum of voltage rises and drops is zero. Intuition: walking a closed path in an electrostatic field returns you to the same potential. Traverse the loop once; add rises and drops with one rule (e.g. + when going from − to + through a source, − when going with the current through a resistor).',
+                visual: 'kvl-loop-viz',
               },
               {
                 heading: 'How they work together',
@@ -1554,12 +1849,40 @@ export const courses: Course[] = [
             title: 'Ideal gas law',
             summary:
               'Relate P, V, n, and T for an ideal gas, keep temperature absolute, and recognize the three common simple processes.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) use PV = nRT with consistent units and absolute temperature; (2) convert °C → K before substituting; (3) specialize to isothermal (PV = const), isochoric (P/T = const), and isobaric (V/T = const) processes; (4) catch unit mismatches between R and (P, V).',
+                id: 'pvnrt',
+                title: 'Use PV = nRT',
+                summary:
+                  'Apply the ideal-gas law with consistent units and absolute temperature.',
+                sectionHint: 'Equation of state',
+                demo: 'ideal-gas',
               },
+              {
+                id: 'abs-temp',
+                title: 'Convert to kelvin',
+                summary:
+                  'Always convert °C → K before substituting into PV = nRT or process ratios.',
+                sectionHint: 'Why absolute temperature',
+                demo: 'ideal-gas',
+              },
+              {
+                id: 'named-proc',
+                title: 'Specialize processes',
+                summary:
+                  'Use PV = const (isothermal), P/T = const (isochoric), V/T = const (isobaric).',
+                sectionHint: 'Named processes',
+                demo: 'ideal-gas',
+              },
+              {
+                id: 'unit-r',
+                title: 'Match R to units',
+                summary:
+                  'Catch mismatches between the gas constant R and the units of P and V.',
+                sectionHint: 'Common mistakes',
+              },
+            ],
+            sections: [
               {
                 heading: 'Model idea',
                 body:
@@ -1569,6 +1892,7 @@ export const courses: Course[] = [
                 heading: 'Equation of state',
                 body:
                   'PV = nRT with T absolute (Kelvin). Common R ≈ 8.314 J/(mol·K) when P·V is in joules (Pa·m³). Other unit systems need a matching R (e.g. 0.0821 L·atm/(mol·K)). Intensive forms: Pv = RT per mole, or a mass-based gas constant — do not mix molar and mass bases in one equation.',
+                visual: 'pvt-state',
               },
               {
                 heading: 'Why absolute temperature',
@@ -1579,6 +1903,7 @@ export const courses: Course[] = [
                 heading: 'Named processes',
                 body:
                   'Isothermal (T fixed): PV = const for fixed n. Isochoric (V fixed): P/T = const. Isobaric (P fixed): V/T = const. Name the constraint first, then cancel the fixed symbols in PV = nRT. Real devices only approximate these ideals, but the limits organize problem solving.',
+                visual: 'named-process',
               },
               {
                 heading: 'Common mistakes',
@@ -1706,16 +2031,45 @@ export const courses: Course[] = [
             title: 'First law (closed system)',
             summary:
               'Track energy with ΔU = Q − W (W out positive here), and use Carnot efficiency as the ceiling between two reservoirs.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) apply a closed-system energy balance with a stated sign convention; (2) interpret Q in, W out, and ΔU in words; (3) use ΔU_cycle = 0 to relate net heat and net work over a cycle; (4) compute Carnot efficiency η_C = 1 − T_C/T_H with absolute temperatures.',
+                id: 'energy-bal',
+                title: 'Apply energy balance',
+                summary:
+                  'Write a closed-system energy balance with a stated sign convention for Q and W.',
+                sectionHint: 'Energy balance',
+                demo: 'first-law',
               },
+              {
+                id: 'read-signs',
+                title: 'Interpret Q, W, ΔU',
+                summary:
+                  'Read Q in, W out, and ΔU in words under your chosen convention.',
+                sectionHint: 'Reading the signs',
+                demo: 'first-law',
+              },
+              {
+                id: 'cycle-du',
+                title: 'Use ΔU_cycle = 0',
+                summary:
+                  'Relate net heat and net work over a cycle because state functions return to start.',
+                sectionHint: 'Energy balance',
+              },
+              {
+                id: 'carnot',
+                title: 'Compute Carnot efficiency',
+                summary:
+                  'Evaluate η_C = 1 − T_C/T_H with absolute temperatures only.',
+                sectionHint: 'Why Carnot is a ceiling',
+                demo: 'first-law',
+              },
+            ],
+            sections: [
               {
                 heading: 'Energy balance',
                 body:
                   'For a closed system (no mass crossing the boundary), this course uses ΔU = Q − W: Q positive when heat enters the system, W positive when the system does work on the surroundings. Other textbooks write ΔU = Q + W with W in positive — always check the local convention before copying a formula from another source.',
+                visual: 'energy-balance',
               },
               {
                 heading: 'Reading the signs',
@@ -1726,6 +2080,7 @@ export const courses: Course[] = [
                 heading: 'Why Carnot is a ceiling',
                 body:
                   'Between a hot reservoir at T_H and a cold reservoir at T_C (absolute), no heat engine is more efficient than η_C = 1 − T_C/T_H. The result follows from the second law; treat it as a hard upper bound set by the two temperatures. Real engines fall short because of friction, heat leaks, and finite-temperature-difference transfers.',
+                visual: 'carnot',
               },
               {
                 heading: 'Closed vs open systems',
@@ -1864,12 +2219,40 @@ export const courses: Course[] = [
             title: 'Stress and strain',
             summary:
               'Define engineering stress and strain, connect them with Hooke’s law, and use Poisson’s ratio for lateral strain.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) compute engineering stress σ = F/A₀ and strain ε = ΔL/L₀; (2) use Hooke’s law σ = E ε in the linear elastic range with consistent units; (3) estimate lateral strain from Poisson’s ratio; (4) explain why we normalize force and elongation before comparing materials.',
+                id: 'stress-strain-def',
+                title: 'Compute σ and ε',
+                summary:
+                  'Calculate engineering stress σ = F/A₀ and strain ε = ΔL/L₀ from measured force and elongation.',
+                sectionHint: 'Definitions',
+                demo: 'stress-strain',
               },
+              {
+                id: 'hooke',
+                title: 'Use Hooke’s law',
+                summary:
+                  'Apply σ = Eε in the linear elastic range with consistent units for E.',
+                sectionHint: 'Hooke’s law and Young’s modulus',
+                demo: 'stress-strain',
+              },
+              {
+                id: 'poisson',
+                title: 'Estimate lateral strain',
+                summary:
+                  'Use Poisson’s ratio to relate axial and lateral strain in the elastic range.',
+                sectionHint: 'Poisson’s ratio',
+              },
+              {
+                id: 'why-normalize',
+                title: 'Why we normalize',
+                summary:
+                  'Explain why force and elongation are normalized before comparing materials.',
+                sectionHint: 'Why normalize force and stretch',
+                demo: 'stress-strain',
+              },
+            ],
+            sections: [
               {
                 heading: 'Why normalize force and stretch',
                 body:
@@ -1879,16 +2262,19 @@ export const courses: Course[] = [
                 heading: 'Definitions',
                 body:
                   'Engineering stress σ = F/A₀ uses the original cross section. Engineering strain ε = ΔL/L₀ uses the original length. True stress/strain use instantaneous geometry — important in plasticity, but most intro elastic calculations stay with engineering measures.',
+                visual: 'stress-def',
               },
               {
                 heading: 'Hooke’s law and Young’s modulus',
                 body:
                   'In the linear elastic regime, σ = E ε. Young’s modulus E is the slope of the σ–ε line — a material stiffness, not a strength. Strength (yield, ultimate) is a stress level; E is how steeply stress rises with strain before yield.',
+                visual: 'hooke',
               },
               {
                 heading: 'Poisson’s ratio',
                 body:
                   'Axial stretch usually comes with lateral contraction: ν = −ε_lateral / ε_axial. The minus sign makes ν positive when lateral strain is opposite in sign to axial strain. Metals often ν ≈ 0.3; rubber can approach 0.5 (nearly incompressible).',
+                visual: 'poisson',
               },
               {
                 heading: 'Common mistakes',
@@ -2017,16 +2403,44 @@ export const courses: Course[] = [
             title: 'Hall–Petch and Arrhenius',
             summary:
               'See how finer grains raise yield strength, and how thermally activated rates follow an Arrhenius exponential in 1/T.',
-            sections: [
+            objectives: [
               {
-                heading: 'Learning objectives',
-                body:
-                  'By the end of this lesson you should be able to: (1) explain why grain boundaries impede dislocation motion; (2) use σ_y = σ₀ + k/√d qualitatively and in a simple plug-in; (3) state why Arrhenius rates depend so strongly on temperature; (4) avoid extrapolating Hall–Petch to arbitrarily small d or putting °C into Q/RT.',
+                id: 'grain-obstacle',
+                title: 'Grain boundaries impede slip',
+                summary:
+                  'Explain why grain boundaries block dislocation motion and raise yield strength.',
+                sectionHint: 'Grain boundaries as obstacles',
+                demo: 'hall-petch',
               },
+              {
+                id: 'hp-formula',
+                title: 'Use Hall–Petch',
+                summary:
+                  'Apply σ_y = σ₀ + k/√d qualitatively and in a simple numerical plug-in.',
+                sectionHint: 'Hall–Petch relation',
+                demo: 'hall-petch',
+              },
+              {
+                id: 'arrhenius',
+                title: 'Respect Arrhenius sensitivity',
+                summary:
+                  'State why thermally activated rates depend so strongly on absolute temperature.',
+                sectionHint: 'Arrhenius rates',
+              },
+              {
+                id: 'limits',
+                title: 'Know the limits',
+                summary:
+                  'Avoid extrapolating Hall–Petch to arbitrarily small d or putting °C into Q/RT.',
+                sectionHint: 'Common mistakes',
+              },
+            ],
+            sections: [
               {
                 heading: 'Grain boundaries as obstacles',
                 body:
                   'Plastic deformation in metals is carried by dislocations — line defects that glide under shear. Grain boundaries are interfaces between differently oriented crystals; they impede dislocation motion. Smaller grains mean more boundary area per volume, so a higher applied stress is needed to yield — the microstructural idea behind Hall–Petch strengthening.',
+                visual: 'grain-boundary',
               },
               {
                 heading: 'Hall–Petch relation',
@@ -2037,6 +2451,7 @@ export const courses: Course[] = [
                 heading: 'Arrhenius rates',
                 body:
                   'Diffusion, creep, and many activated chemical processes scale as rate ∝ exp(−Q/RT), with activation energy Q, gas constant R, and absolute temperature T. Because the exponent contains 1/T, a modest temperature rise can change rates by orders of magnitude — process windows care about tens of degrees.',
+                visual: 'arrhenius',
               },
               {
                 heading: 'Two ideas, one materials mindset',

@@ -3,6 +3,9 @@ import { getLesson } from '../data/courses'
 import { WorkedExample } from '../components/WorkedExample'
 import { Quiz } from '../components/Quiz'
 import { CourseArt } from '../components/CourseArt'
+import { ObjectiveCards } from '../components/ObjectiveCards'
+import { SectionVisual } from '../components/demos/SectionVisuals'
+import { realityFor } from '../data/enrichment'
 import type { CourseId, ProgressState } from '../types'
 import type { CSSProperties } from 'react'
 
@@ -63,9 +66,14 @@ export function LessonPage({ progress, onComplete }: Props) {
         </div>
       </header>
 
+      <ObjectiveCards objectives={lesson.objectives} courseColor={course.color} />
+
       <div className="lesson-toc" aria-label="Lesson sections">
         <span className="lesson-toc__label">In this lesson</span>
         <ol>
+          <li>
+            <a href="#learning-objectives">Learning objectives</a>
+          </li>
           {lesson.sections.map((s) => (
             <li key={s.heading}>
               <a href={`#sec-${slug(s.heading)}`}>{s.heading}</a>
@@ -81,21 +89,31 @@ export function LessonPage({ progress, onComplete }: Props) {
       </div>
 
       <div className="lesson-body">
-        {lesson.sections.map((s, i) => (
-          <section
-            key={s.heading}
-            id={`sec-${slug(s.heading)}`}
-            className="prose-block prose-card"
-          >
-            <span className="prose-block__n" aria-hidden>
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <div>
-              <h2>{s.heading}</h2>
-              <p>{s.body}</p>
-            </div>
-          </section>
-        ))}
+        {lesson.sections.map((s, i) => {
+          const reality = s.reality ?? realityFor(lesson.id, s.heading)
+          return (
+            <section
+              key={s.heading}
+              id={`sec-${slug(s.heading)}`}
+              className="prose-block prose-card"
+            >
+              <span className="prose-block__n" aria-hidden>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div>
+                <h2>{s.heading}</h2>
+                <p>{s.body}</p>
+                {reality && (
+                  <aside className="reality-callout">
+                    <span className="reality-callout__label">Where you’d see this</span>
+                    <p>{reality}</p>
+                  </aside>
+                )}
+                {s.visual && <SectionVisual id={s.visual} />}
+              </div>
+            </section>
+          )
+        })}
 
         <h2 id="worked-examples" className="section-title">
           Worked examples
