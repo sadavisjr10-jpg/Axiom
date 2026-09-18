@@ -119,12 +119,46 @@ export interface LessonSection {
   reality?: string
 }
 
+
+export type ExampleVisualKind =
+  | 'poly-limit'
+  | 'removable-hole'
+  | 'scaled-sinc'
+  | 'signum-jump'
+  | 'secant-at'
+  | 'line-slope'
+  | 'product-uv'
+  | 'power-recip'
+  | 'area-integral'
+  | 'kinematics'
+  | 'fbd-push'
+  | 'fbd-elevator'
+  | 'vector-sum'
+  | 'particle-cables'
+  | 'divider'
+  | 'series-kvl'
+  | 'kcl-node'
+  | 'pvt-state'
+  | 'energy-balance'
+  | 'hooke-rod'
+  | 'poisson-lateral'
+  | 'stress-bar'
+  | 'hall-petch'
+  | 'arrhenius'
+
+export interface ExampleVisualSpec {
+  kind: ExampleVisualKind
+  params?: Record<string, number | string | boolean>
+}
+
 export interface WorkedExample {
   id: string
   title: string
   problem: string
   steps: WorkedStep[]
   answer: string
+  /** Optional inline visual; registry also maps by id */
+  visual?: ExampleVisualSpec
 }
 
 export interface WorkedStep {

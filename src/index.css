@@ -1018,6 +1018,31 @@ img {
   color: #cbd5e1;
 }
 
+.worked-example__visual {
+  margin: 0.85rem 0 1.1rem;
+}
+
+.worked-example__visual .obj-demo {
+  margin: 0;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(7, 11, 20, 0.45);
+  overflow: hidden;
+}
+
+.worked-example__visual .obj-demo__svg {
+  max-height: 200px;
+}
+
+@media (max-width: 640px) {
+  .worked-example__visual .obj-demo__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+
+
 .worked-example__steps {
   list-style: none;
   padding: 0;

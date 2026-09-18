@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { WorkedExample as WE } from '../types'
+import { ExampleVisual } from './demos/ExampleVisuals'
 
 interface Props {
   example: WE
@@ -18,6 +19,7 @@ export function WorkedExample({ example }: Props) {
       <p className="worked-example__problem">
         <strong>Problem.</strong> {example.problem}
       </p>
+      <ExampleVisual exampleId={example.id} visual={example.visual} />
       <ol className="worked-example__steps">
         {example.steps.map((step, i) => {
           const open = i < revealed
