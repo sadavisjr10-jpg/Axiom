@@ -21,7 +21,7 @@ export default function App() {
   } = useProgress()
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Axiom">
       <Routes>
         <Route
           path="/"
