@@ -2,6 +2,8 @@ import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import type { LearningObjective } from '../types'
 import { ObjectiveDemo } from './demos/ObjectiveDemos'
 import { enrichObjective } from '../data/enrichment'
+import { predictionForDemo } from '../data/demoPredictions'
+import { PredictCommitReveal } from './PredictCommitReveal'
 
 interface Props {
   objectives: LearningObjective[]
@@ -119,9 +121,26 @@ export function ObjectiveCards({ objectives, courseColor }: Props) {
               </aside>
             )}
 
-            {current.demo && (
-              <ObjectiveDemo id={current.demo} className="objective-dialog__demo" />
-            )}
+            {current.demo && (() => {
+              const pred = predictionForDemo(current.demo)
+              const demo = (
+                <ObjectiveDemo id={current.demo} className="objective-dialog__demo" />
+              )
+              if (!pred) return demo
+              return (
+                <PredictCommitReveal
+                  className="objective-dialog__pcr"
+                  spec={{
+                    prompt: pred.prompt,
+                    choices: pred.choices,
+                    correctIndex: pred.correctIndex,
+                    revealNote: pred.reveal,
+                  }}
+                >
+                  {demo}
+                </PredictCommitReveal>
+              )
+            })()}
 
             {current.video && (
               <aside className="objective-dialog__video">

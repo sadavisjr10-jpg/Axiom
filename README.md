@@ -17,11 +17,11 @@ Pocket undergraduate engineering academy — the first two years of a bachelor�
 
 ## Features
 
-- **Learn** — catalog, module outlines, lessons with revealable worked-example steps and quizzes
-- **Drill** — deterministic daily 5-question set, mixed quizzes, flashcards
-- **Labs** — Statics 2D resultant, Mechanics constant-acceleration, Circuits voltage divider, Thermo ideal-gas
+- **Learn** — catalog, module outlines, lessons with revealable worked-example steps, fading practice, mistake clinics, and mastery-gated quizzes
+- **Drill** — daily 5, mixed quizzes, spaced retrieval of weak objectives, flashcards
+- **Labs** — predict–commit–reveal on Statics / Mechanics / Circuits / Thermo labs
 - **Formulas** — ~48 searchable identities with course filters
-- **Progress** — streak, mastery %, lessons done, per-course bars; `localStorage` schema `axiom-progress-v1`
+- **Progress** — streak, mastery %, lessons done, review schedule, unlocked modules; `localStorage` schema v2 (migrates from v1)
 
 ## Stack
 
@@ -58,5 +58,6 @@ src/
 
 ## Notes
 
-- Progress is stored only in the browser (`localStorage`); use Progress → Reset to clear.
+- Progress is stored only in the browser (`localStorage`, versioned schema v2); use Progress → Reset to clear.
+- Next modules unlock after prior module lesson checks pass (≥ 80%, e.g. 4/5).
 - Daily drills are seeded from the calendar date so the set is stable for a given day.

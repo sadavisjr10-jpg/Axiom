@@ -1,18 +1,24 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { CourseId, ProgressState } from '../types'
+import { MASTERY_PASS_PCT } from '../types'
 import {
   loadProgress,
-  markLessonComplete,
   overallMastery,
   recordDrill,
+  recordLessonAttempt,
   resetProgress,
   saveProgress,
   touchStreak,
 } from '../lib/progress'
-import { lessonCountForCourse } from '../data/courses'
+import { scheduleReview } from '../lib/spacedRetrieval'
+import { syncModuleUnlocks } from '../lib/mastery'
+import { courses, lessonCountForCourse } from '../data/courses'
 
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressState>(() => loadProgress())
+  const [progress, setProgress] = useState<ProgressState>(() => {
+    const loaded = loadProgress()
+    return syncModuleUnlocks(loaded, courses)
+  })
 
   useEffect(() => {
     saveProgress(progress)
@@ -23,16 +29,18 @@ export function useProgress() {
   }, [])
 
   const completeLesson = useCallback(
-    (lessonId: string, scorePct: number, courseId: CourseId) => {
-      setProgress((p) =>
-        markLessonComplete(
+    (lessonId: string, scorePct: number, courseId: CourseId, _passed?: boolean) => {
+      setProgress((p) => {
+        const next = recordLessonAttempt(
           p,
           lessonId,
           scorePct,
           courseId,
           lessonCountForCourse(courseId),
-        ),
-      )
+          MASTERY_PASS_PCT,
+        )
+        return syncModuleUnlocks(next, courses)
+      })
     },
     [],
   )
@@ -41,8 +49,12 @@ export function useProgress() {
     setProgress((p) => recordDrill(p))
   }, [])
 
+  const recordReview = useCallback((objectiveId: string, correct: boolean) => {
+    setProgress((p) => scheduleReview(p, objectiveId, correct))
+  }, [])
+
   const reset = useCallback(() => {
-    setProgress(resetProgress())
+    setProgress(syncModuleUnlocks(resetProgress(), courses))
   }, [])
 
   const markFlashcard = useCallback((id: string) => {
@@ -57,6 +69,7 @@ export function useProgress() {
     start,
     completeLesson,
     completeDrill,
+    recordReview,
     reset,
     markFlashcard,
     mastery: overallMastery(progress),

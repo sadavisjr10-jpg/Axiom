@@ -20,7 +20,7 @@ export function ProgressPage({ progress, onReset }: Props) {
         <h1>Your trajectory</h1>
         <p className="lede">
           Streak, mastery, and lesson completion — saved in localStorage with a versioned
-          schema (v1).
+          schema (v2 — spaced reviews + module unlocks).
         </p>
       </header>
 
@@ -49,7 +49,7 @@ export function ProgressPage({ progress, onReset }: Props) {
           </div>
           <div>
             <h3>Lessons done</h3>
-            <p className="muted">Quizzes submitted count as complete</p>
+            <p className="muted">Lessons count when quiz ≥ 80% mastery gate</p>
           </div>
         </div>
         <div className="stat-card">
@@ -57,6 +57,20 @@ export function ProgressPage({ progress, onReset }: Props) {
           <div>
             <h3>Drills completed</h3>
             <p className="muted">Daily & mixed submissions</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{Object.keys(progress.reviewSchedule).length}</div>
+          <div>
+            <h3>Objectives scheduled</h3>
+            <p className="muted">Spaced retrieval queue</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-number">{progress.unlockedModules.length}</div>
+          <div>
+            <h3>Modules unlocked</h3>
+            <p className="muted">Persisted mastery gates</p>
           </div>
         </div>
       </div>

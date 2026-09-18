@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getCourse } from '../data/courses'
 import { ProgressRing } from '../components/ProgressRing'
 import { CourseArt } from '../components/CourseArt'
+import { isModuleUnlocked, lessonPassed } from '../lib/mastery'
 import type { ProgressState } from '../types'
 import type { CSSProperties } from 'react'
 
@@ -25,7 +26,7 @@ export function CourseOutline({ progress }: Props) {
   const mastery = progress.courseMastery[course.id] ?? 0
   const totalLessons = course.modules.reduce((n, m) => n + m.lessons.length, 0)
   const doneLessons = course.modules.reduce(
-    (n, m) => n + m.lessons.filter((l) => progress.completedLessons.includes(l.id)).length,
+    (n, m) => n + m.lessons.filter((l) => lessonPassed(progress, l.id)).length,
     0,
   )
 
@@ -55,7 +56,8 @@ export function CourseOutline({ progress }: Props) {
               />
             </div>
             <span className="muted">
-              {doneLessons}/{totalLessons} lessons · {mastery}% mastery
+              {doneLessons}/{totalLessons} lessons mastered · {mastery}% · next module unlocks at
+              80% quiz gate
             </span>
           </div>
         </div>
@@ -64,19 +66,31 @@ export function CourseOutline({ progress }: Props) {
 
       <div className="modules" style={{ '--course-color': course.color } as CSSProperties}>
         {course.modules.map((mod, mi) => {
-          const modDone = mod.lessons.filter((l) =>
-            progress.completedLessons.includes(l.id),
-          ).length
+          const unlocked = isModuleUnlocked(progress, course, mod.id)
+          const modDone = mod.lessons.filter((l) => lessonPassed(progress, l.id)).length
           const modPct = Math.round((modDone / Math.max(1, mod.lessons.length)) * 100)
           return (
-            <section key={mod.id} className="module-block">
+            <section
+              key={mod.id}
+              className={unlocked ? 'module-block' : 'module-block module-block--locked'}
+            >
               <header className="module-block__header">
                 <div>
-                  <span className="module-index">Module {mi + 1}</span>
+                  <span className="module-index">
+                    Module {mi + 1}
+                    {!unlocked && ' · Locked'}
+                  </span>
                   <h2>{mod.title}</h2>
-                  <p className="module-block__desc">{mod.description}</p>
+                  <p className="module-block__desc">
+                    {unlocked
+                      ? mod.description
+                      : 'Pass the prior module’s lesson checks (≥ 80%) to unlock.'}
+                  </p>
                 </div>
-                <div className="module-block__meta" aria-label={`${modDone} of ${mod.lessons.length} lessons complete`}>
+                <div
+                  className="module-block__meta"
+                  aria-label={`${modDone} of ${mod.lessons.length} lessons mastered`}
+                >
                   <span className="module-block__count">
                     {modDone}/{mod.lessons.length}
                   </span>
@@ -93,7 +107,22 @@ export function CourseOutline({ progress }: Props) {
               </header>
               <ol className="lesson-list">
                 {mod.lessons.map((lesson, li) => {
-                  const done = progress.completedLessons.includes(lesson.id)
+                  const done = lessonPassed(progress, lesson.id)
+                  if (!unlocked) {
+                    return (
+                      <li key={lesson.id}>
+                        <div className="lesson-list__locked">
+                          <span className="status-dot" aria-hidden />
+                          <div>
+                            <span className="lesson-list__n">Lesson {li + 1}</span>
+                            <strong>{lesson.title}</strong>
+                            <span>Locked until prior module is mastered</span>
+                          </div>
+                          <span className="lesson-list__go">Locked</span>
+                        </div>
+                      </li>
+                    )
+                  }
                   return (
                     <li key={lesson.id}>
                       <Link

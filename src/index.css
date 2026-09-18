@@ -2412,3 +2412,220 @@ img {
   outline: 2px solid var(--accent-2);
   outline-offset: 2px;
 }
+
+/* —— Elite teaching upgrades —— */
+.fade-phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem;
+}
+.fade-phases__btn {
+  border: 1px solid var(--border);
+  background: rgba(7, 11, 20, 0.55);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.fade-phases__btn.is-active {
+  color: #0b1220;
+  background: var(--accent);
+  border-color: transparent;
+  font-weight: 600;
+}
+.fade-coach {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+.step-body--blank {
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.75;
+}
+.your-turn__hints {
+  margin: 0.75rem 0;
+}
+.your-turn__hints ul {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+  color: #cbd5e1;
+}
+
+.pcr {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: rgba(7, 11, 20, 0.4);
+  margin: 0.5rem 0;
+}
+.pcr__head {
+  margin-bottom: 0.75rem;
+}
+.pcr__prompt {
+  margin: 0.5rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+}
+.pcr__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.pcr__estimate {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.pcr__estimate input {
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(7, 11, 20, 0.7);
+  color: inherit;
+}
+.pcr__gate-hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+}
+.pcr__compare {
+  margin-bottom: 0.75rem;
+}
+.pcr__ok {
+  color: #6ee7b7;
+}
+.pcr__miss {
+  color: #fca5a5;
+}
+.pcr__note {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+.pcr__reset {
+  margin-top: 0.75rem;
+}
+.lab__reveal-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.contrast-clinic {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  background: rgba(251, 191, 36, 0.05);
+}
+.contrast-clinic__head h3 {
+  margin: 0 0 0.25rem;
+  font-family: var(--font-serif);
+}
+.contrast-clinic__head p {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+}
+.contrast-card {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.contrast-card:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.contrast-card__prompt {
+  font-weight: 600;
+  margin: 0.5rem 0 0.75rem;
+}
+.contrast-card__options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.contrast-option {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  text-align: left;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(7, 11, 20, 0.55);
+  color: inherit;
+  cursor: pointer;
+}
+.contrast-option.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.contrast-option.is-wrong-answer {
+  border-color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+}
+.contrast-option.is-ok-answer {
+  border-color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.08);
+}
+.contrast-option__tag {
+  font-weight: 700;
+  color: var(--accent);
+}
+.contrast-card__reveal {
+  margin-top: 0.5rem;
+  color: #cbd5e1;
+}
+
+.module-block--locked {
+  opacity: 0.72;
+}
+.lesson-list__locked {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+}
+.lock-panel {
+  max-width: 36rem;
+  padding: 2rem 0;
+}
+.quiz__result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+.spaced-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.08);
+}
+.pill--obj {
+  font-size: 0.7rem;
+  opacity: 0.85;
+}
+.pill--success {
+  background: rgba(110, 231, 183, 0.2);
+  color: #6ee7b7;
+}
+.objective-dialog__pcr {
+  margin: 1rem 0;
+}

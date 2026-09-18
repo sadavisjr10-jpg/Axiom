@@ -1,4 +1,4 @@
-import type { CourseId, ProgressState } from '../types'
+import type { CourseId, ProgressState, ReviewItem } from '../types'
 import { PROGRESS_VERSION } from '../types'
 
 export const STORAGE_KEY = 'axiom-progress-v1'
@@ -26,6 +26,8 @@ export function emptyProgress(): ProgressState {
     drillsCompleted: 0,
     flashcardsSeen: [],
     started: false,
+    reviewSchedule: {},
+    unlockedModules: [],
   }
 }
 
@@ -38,12 +40,34 @@ function daysBetween(a: string, b: string): number {
   return Math.round(ms / 86_400_000)
 }
 
-/** Migrate / validate stored JSON into ProgressState */
+function parseReviewSchedule(raw: unknown): Record<string, ReviewItem> {
+  if (!raw || typeof raw !== 'object') return {}
+  const out: Record<string, ReviewItem> = {}
+  for (const [key, val] of Object.entries(raw as Record<string, unknown>)) {
+    if (!val || typeof val !== 'object') continue
+    const v = val as Partial<ReviewItem>
+    if (typeof v.nextReviewISO !== 'string') continue
+    out[key] = {
+      objectiveId: typeof v.objectiveId === 'string' ? v.objectiveId : key,
+      nextReviewISO: v.nextReviewISO,
+      intervalDays: typeof v.intervalDays === 'number' ? Math.max(1, v.intervalDays) : 1,
+      strength: typeof v.strength === 'number' ? Math.max(0, v.strength) : 0,
+      lastResult: v.lastResult === 'ok' ? 'ok' : 'weak',
+      updatedISO: typeof v.updatedISO === 'string' ? v.updatedISO : v.nextReviewISO,
+    }
+  }
+  return out
+}
+
+/** Migrate / validate stored JSON into ProgressState (v1 → v2 safe). */
 export function parseProgress(raw: unknown): ProgressState {
   const base = emptyProgress()
   if (!raw || typeof raw !== 'object') return base
-  const o = raw as Partial<ProgressState>
-  if (o.version !== PROGRESS_VERSION) return base
+  const o = raw as Record<string, unknown>
+
+  // Accept v1 (migrate) or v2; reject unknown future/garbage versions
+  const ver = o.version
+  if (ver !== 1 && ver !== PROGRESS_VERSION) return base
 
   const courseMastery = { ...base.courseMastery }
   if (o.courseMastery && typeof o.courseMastery === 'object') {
@@ -55,28 +79,36 @@ export function parseProgress(raw: unknown): ProgressState {
     }
   }
 
+  const completedLessons = Array.isArray(o.completedLessons)
+    ? o.completedLessons.filter((x): x is string => typeof x === 'string')
+    : []
+  const flashcardsSeen = Array.isArray(o.flashcardsSeen)
+    ? o.flashcardsSeen.filter((x): x is string => typeof x === 'string')
+    : []
+  const unlockedModules = Array.isArray(o.unlockedModules)
+    ? o.unlockedModules.filter((x): x is string => typeof x === 'string')
+    : []
+
   return {
     version: PROGRESS_VERSION,
     streak: typeof o.streak === 'number' ? Math.max(0, o.streak) : 0,
     lastActiveDate: typeof o.lastActiveDate === 'string' ? o.lastActiveDate : null,
-    completedLessons: Array.isArray(o.completedLessons)
-      ? o.completedLessons.filter((x): x is string => typeof x === 'string')
-      : [],
+    completedLessons,
     lessonScores:
       o.lessonScores && typeof o.lessonScores === 'object'
-        ? Object.fromEntries(
-            Object.entries(o.lessonScores).filter(
-              ([, v]) => typeof v === 'number',
+        ? (Object.fromEntries(
+            Object.entries(o.lessonScores as Record<string, unknown>).filter(
+              (entry): entry is [string, number] => typeof entry[1] === 'number',
             ),
-          )
+          ) as Record<string, number>)
         : {},
     courseMastery,
     drillsCompleted:
       typeof o.drillsCompleted === 'number' ? Math.max(0, o.drillsCompleted) : 0,
-    flashcardsSeen: Array.isArray(o.flashcardsSeen)
-      ? o.flashcardsSeen.filter((x): x is string => typeof x === 'string')
-      : [],
+    flashcardsSeen,
     started: Boolean(o.started),
+    reviewSchedule: parseReviewSchedule(o.reviewSchedule),
+    unlockedModules,
   }
 }
 
@@ -139,12 +171,31 @@ export function markLessonComplete(
     totalLessonsInCourse > 0
       ? Math.round((courseLessonIds.length / totalLessonsInCourse) * 100)
       : 0
-  const next = touchStreak({
+  return touchStreak({
     ...state,
     completedLessons: completed,
     lessonScores,
     courseMastery: { ...state.courseMastery, [courseId]: mastery },
   })
+}
+
+/** Record a quiz attempt; only marks complete when score meets mastery gate. */
+export function recordLessonAttempt(
+  state: ProgressState,
+  lessonId: string,
+  scorePct: number,
+  courseId: CourseId,
+  totalLessonsInCourse: number,
+  passPct: number,
+): ProgressState {
+  const lessonScores = {
+    ...state.lessonScores,
+    [lessonId]: Math.max(state.lessonScores[lessonId] ?? 0, scorePct),
+  }
+  let next: ProgressState = touchStreak({ ...state, lessonScores })
+  if (scorePct >= passPct) {
+    next = markLessonComplete(next, lessonId, scorePct, courseId, totalLessonsInCourse)
+  }
   return next
 }
 

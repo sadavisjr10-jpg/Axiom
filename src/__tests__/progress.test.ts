@@ -5,10 +5,14 @@ import {
   markLessonComplete,
   overallMastery,
   parseProgress,
+  recordLessonAttempt,
   seededShuffle,
   touchStreak,
 } from '../lib/progress'
-import { PROGRESS_VERSION } from '../types'
+import { PROGRESS_VERSION, MASTERY_PASS_PCT } from '../types'
+import { scheduleReview, dueReviews, almostForgotten } from '../lib/spacedRetrieval'
+import { isModuleUnlocked, meetsMasteryGate, syncModuleUnlocks } from '../lib/mastery'
+import { courses } from '../data/courses'
 
 describe('parseProgress', () => {
   it('returns empty state for garbage', () => {
@@ -16,9 +20,28 @@ describe('parseProgress', () => {
     expect(parseProgress({}).completedLessons).toEqual([])
   })
 
-  it('rejects wrong version', () => {
+  it('rejects unknown version', () => {
     const p = parseProgress({ version: 999, streak: 99 })
     expect(p.streak).toBe(0)
+  })
+
+  it('migrates v1 → v2 preserving streak and lessons', () => {
+    const p = parseProgress({
+      version: 1,
+      streak: 4,
+      lastActiveDate: '2026-09-17',
+      completedLessons: ['calculus:limits-continuity'],
+      lessonScores: { 'calculus:limits-continuity': 100 },
+      courseMastery: { calculus: 25 },
+      drillsCompleted: 2,
+      flashcardsSeen: ['fc-deriv-def'],
+      started: true,
+    })
+    expect(p.version).toBe(2)
+    expect(p.streak).toBe(4)
+    expect(p.completedLessons).toContain('calculus:limits-continuity')
+    expect(p.reviewSchedule).toEqual({})
+    expect(p.unlockedModules).toEqual([])
   })
 
   it('clamps mastery', () => {
@@ -63,6 +86,73 @@ describe('markLessonComplete', () => {
     const p = markLessonComplete(emptyProgress(), 'calculus:limits-continuity', 100, 'calculus', 4)
     expect(p.completedLessons).toContain('calculus:limits-continuity')
     expect(p.courseMastery.calculus).toBe(25)
+  })
+})
+
+describe('recordLessonAttempt / mastery gate', () => {
+  it('does not complete below gate', () => {
+    const p = recordLessonAttempt(
+      emptyProgress(),
+      'calculus:limits-continuity',
+      60,
+      'calculus',
+      4,
+      MASTERY_PASS_PCT,
+    )
+    expect(p.completedLessons).not.toContain('calculus:limits-continuity')
+    expect(p.lessonScores['calculus:limits-continuity']).toBe(60)
+  })
+
+  it('completes at or above gate', () => {
+    const p = recordLessonAttempt(
+      emptyProgress(),
+      'calculus:limits-continuity',
+      80,
+      'calculus',
+      4,
+      MASTERY_PASS_PCT,
+    )
+    expect(p.completedLessons).toContain('calculus:limits-continuity')
+  })
+
+  it('meetsMasteryGate matches 4/5', () => {
+    expect(meetsMasteryGate(4, 5)).toBe(true)
+    expect(meetsMasteryGate(3, 5)).toBe(false)
+  })
+})
+
+describe('module unlocks', () => {
+  it('first module unlocked; second locked until prior passed', () => {
+    const calc = courses.find((c) => c.id === 'calculus')!
+    let p = emptyProgress()
+    p = syncModuleUnlocks(p, courses)
+    expect(isModuleUnlocked(p, calc, 'calc-m1')).toBe(true)
+    expect(isModuleUnlocked(p, calc, 'calc-m2')).toBe(false)
+
+    // Pass both lessons in calc-m1
+    for (const lesson of calc.modules[0].lessons) {
+      p = recordLessonAttempt(p, lesson.id, 100, 'calculus', 4, MASTERY_PASS_PCT)
+    }
+    p = syncModuleUnlocks(p, courses)
+    expect(isModuleUnlocked(p, calc, 'calc-m2')).toBe(true)
+    expect(p.unlockedModules).toContain('calc-m2')
+  })
+})
+
+describe('spaced retrieval', () => {
+  it('schedules weak item for tomorrow; success stretches interval', () => {
+    let p = emptyProgress()
+    p = scheduleReview(p, 'lim-sinx', false, '2026-09-18')
+    expect(p.reviewSchedule['lim-sinx'].nextReviewISO).toBe('2026-09-19')
+    expect(p.reviewSchedule['lim-sinx'].intervalDays).toBe(1)
+    expect(dueReviews(p, '2026-09-19').map((r) => r.objectiveId)).toContain('lim-sinx')
+
+    p = scheduleReview(p, 'lim-sinx', true, '2026-09-19')
+    expect(p.reviewSchedule['lim-sinx'].intervalDays).toBe(3)
+    expect(p.reviewSchedule['lim-sinx'].nextReviewISO).toBe('2026-09-22')
+
+    const soon = almostForgotten(p, 3, '2026-09-19')
+    expect(soon.some((r) => r.objectiveId === 'lim-sinx')).toBe(true)
   })
 })
 

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { constantAcceleration, round } from '../lib/labMath'
+import { PredictCommitReveal } from '../components/PredictCommitReveal'
 
 export function MechanicsLab() {
   const [x0, setX0] = useState(0)
@@ -24,11 +25,33 @@ export function MechanicsLab() {
     })
     .join(' ')
 
+  const results = (
+    <>
+      <dl className="lab__results">
+        <div>
+          <dt>x(t)</dt>
+          <dd>{round(x, 3)} m</dd>
+        </div>
+        <div>
+          <dt>v(t)</dt>
+          <dd>{round(v, 3)} m/s</dd>
+        </div>
+      </dl>
+      <svg className="lab__canvas" viewBox={`0 0 ${w} ${h + 40}`} role="img" aria-label="Position vs time">
+        <text x={pad} y="16" fill="#94a3b8" fontSize="11">
+          x vs t
+        </text>
+        <polyline fill="none" stroke="#38bdf8" strokeWidth="2.5" points={points} />
+        <line x1={pad} y1={h - pad} x2={w - pad} y2={h - pad} stroke="rgba(148,163,184,0.4)" />
+      </svg>
+    </>
+  )
+
   return (
     <div className="lab">
       <div className="lab__controls">
         <h2>Constant acceleration</h2>
-        <p className="muted">v = v₀ + a t · x = x₀ + v₀ t + ½ a t²</p>
+        <p className="muted">v = v₀ + a t · x = x₀ + v₀ t + ½ a t² — predict x(t)</p>
         {(
           [
             ['x₀ (m)', x0, setX0, -50, 50],
@@ -43,24 +66,22 @@ export function MechanicsLab() {
             <input type="number" step={0.1} value={val} onChange={(e) => set(+e.target.value)} />
           </label>
         ))}
-        <dl className="lab__results">
-          <div>
-            <dt>x(t)</dt>
-            <dd>{round(x, 3)} m</dd>
-          </div>
-          <div>
-            <dt>v(t)</dt>
-            <dd>{round(v, 3)} m/s</dd>
-          </div>
-        </dl>
       </div>
-      <svg className="lab__canvas" viewBox={`0 0 ${w} ${h + 40}`} role="img" aria-label="Position vs time">
-        <text x={pad} y="16" fill="#94a3b8" fontSize="11">
-          x vs t
-        </text>
-        <polyline fill="none" stroke="#38bdf8" strokeWidth="2.5" points={points} />
-        <line x1={pad} y1={h - pad} x2={w - pad} y2={h - pad} stroke="rgba(148,163,184,0.4)" />
-      </svg>
+      <div className="lab__reveal-col">
+        <PredictCommitReveal
+          key={`${x0}-${v0}-${a}-${t}`}
+          mode="estimate"
+          estimateLabel="Predict x(t) (m)"
+          actualDisplay={`${round(x, 3)} m`}
+          spec={{
+            prompt: 'Estimate position x(t) before revealing the curve.',
+            choices: [],
+            revealNote: 'Check: x = x₀ + v₀ t + ½ a t².',
+          }}
+        >
+          {results}
+        </PredictCommitReveal>
+      </div>
     </div>
   )
 }

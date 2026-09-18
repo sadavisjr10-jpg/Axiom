@@ -5,13 +5,16 @@ import { Quiz } from '../components/Quiz'
 import { CourseArt } from '../components/CourseArt'
 import { ObjectiveCards } from '../components/ObjectiveCards'
 import { SectionVisual } from '../components/demos/SectionVisuals'
+import { ContrastClinic } from '../components/ContrastClinic'
 import { realityFor } from '../data/enrichment'
+import { clinicsForLesson } from '../data/contrastClinics'
+import { isModuleUnlocked, lessonPassed } from '../lib/mastery'
 import type { CourseId, ProgressState } from '../types'
 import type { CSSProperties } from 'react'
 
 interface Props {
   progress: ProgressState
-  onComplete: (lessonId: string, scorePct: number, courseId: CourseId) => void
+  onComplete: (lessonId: string, scorePct: number, courseId: CourseId, passed: boolean) => void
 }
 
 export function LessonPage({ progress, onComplete }: Props) {
@@ -29,9 +32,33 @@ export function LessonPage({ progress, onComplete }: Props) {
   }
 
   const { course, module, lesson } = found
-  const done = progress.completedLessons.includes(lesson.id)
+  const unlocked = isModuleUnlocked(progress, course, module.id)
+  const done = lessonPassed(progress, lesson.id)
   const lessonIndex = module.lessons.findIndex((l) => l.id === lesson.id)
   const moduleIndex = course.modules.findIndex((m) => m.id === module.id)
+  const clinics = clinicsForLesson(lesson.id)
+
+  if (!unlocked) {
+    return (
+      <div className="page">
+        <nav className="crumbs">
+          <Link to="/learn">Learn</Link>
+          <span>/</span>
+          <Link to={`/learn/${course.id}`}>{course.shortTitle}</Link>
+        </nav>
+        <div className="lock-panel">
+          <h1>Module locked</h1>
+          <p className="lede">
+            Pass the check in the previous module (mastery gate ≥ 80%) to unlock{' '}
+            <strong>{module.title}</strong>.
+          </p>
+          <Link className="btn btn--primary" to={`/learn/${course.id}`}>
+            Back to outline
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div
@@ -61,7 +88,7 @@ export function LessonPage({ progress, onComplete }: Props) {
           <p className="lede">{lesson.summary}</p>
           <div className="lesson-hero__chips">
             <span className="pill">{module.title}</span>
-            {done && <span className="pill pill--success">Completed</span>}
+            {done && <span className="pill pill--success">Mastered</span>}
           </div>
         </div>
       </header>
@@ -82,6 +109,11 @@ export function LessonPage({ progress, onComplete }: Props) {
           <li>
             <a href="#worked-examples">Worked examples</a>
           </li>
+          {clinics.length > 0 && (
+            <li>
+              <a href="#mistake-clinic">Mistake clinic</a>
+            </li>
+          )}
           <li>
             <a href="#quiz">Quiz</a>
           </li>
@@ -122,10 +154,16 @@ export function LessonPage({ progress, onComplete }: Props) {
           <WorkedExample key={ex.id} example={ex} />
         ))}
 
+        {clinics.length > 0 && (
+          <div id="mistake-clinic">
+            <ContrastClinic cases={clinics} />
+          </div>
+        )}
+
         <div id="quiz">
           <Quiz
             questions={lesson.quiz}
-            onComplete={(score) => onComplete(lesson.id, score, course.id)}
+            onComplete={(score, passed) => onComplete(lesson.id, score, course.id, passed)}
           />
         </div>
       </div>

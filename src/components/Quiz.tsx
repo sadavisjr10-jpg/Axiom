@@ -1,18 +1,24 @@
 import { useState } from 'react'
 import type { QuizQuestion } from '../types'
+import { MASTERY_PASS_PCT } from '../types'
+import { meetsMasteryGate, passThresholdLabel } from '../lib/mastery'
 
 interface Props {
   questions: QuizQuestion[]
-  onComplete?: (scorePct: number) => void
+  onComplete?: (scorePct: number, passed: boolean) => void
+  /** When true, require mastery gate to count as passed (default true) */
+  masteryGate?: boolean
 }
 
-export function Quiz({ questions, onComplete }: Props) {
+export function Quiz({ questions, onComplete, masteryGate = true }: Props) {
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
 
   const correctCount = questions.filter((q) => answers[q.id] === q.correctIndex).length
   const scorePct =
     questions.length === 0 ? 100 : Math.round((correctCount / questions.length) * 100)
+  const passed = !masteryGate || meetsMasteryGate(correctCount, questions.length)
+  const need = passThresholdLabel(questions.length)
 
   function select(qid: string, idx: number) {
     if (submitted) return
@@ -21,14 +27,27 @@ export function Quiz({ questions, onComplete }: Props) {
 
   function submit() {
     setSubmitted(true)
-    onComplete?.(scorePct)
+    onComplete?.(scorePct, passed)
+  }
+
+  function retry() {
+    setAnswers({})
+    setSubmitted(false)
   }
 
   return (
     <section className="quiz" aria-label="Lesson quiz">
       <header className="quiz__header">
         <h3>Check understanding</h3>
-        <p>Select an answer for each question, then submit.</p>
+        <p>
+          Select an answer for each question, then submit.
+          {masteryGate && (
+            <>
+              {' '}
+              Pass gate: <strong>{need}</strong> ({MASTERY_PASS_PCT}%) to unlock the next module.
+            </>
+          )}
+        </p>
       </header>
       {questions.map((q, qi) => {
         const chosen = answers[q.id]
@@ -59,9 +78,7 @@ export function Quiz({ questions, onComplete }: Props) {
                 )
               })}
             </div>
-            {submitted && (
-              <p className="quiz__explain">{q.explanation}</p>
-            )}
+            {submitted && <p className="quiz__explain">{q.explanation}</p>}
           </fieldset>
         )
       })}
@@ -75,9 +92,27 @@ export function Quiz({ questions, onComplete }: Props) {
           Submit quiz
         </button>
       ) : (
-        <p className="quiz__score" role="status">
-          Score: {correctCount}/{questions.length} ({scorePct}%)
-        </p>
+        <div className="quiz__result">
+          <p className="quiz__score" role="status">
+            Score: {correctCount}/{questions.length} ({scorePct}%)
+            {masteryGate && (
+              <>
+                {' '}
+                ·{' '}
+                {passed ? (
+                  <span className="pcr__ok">Passed mastery gate</span>
+                ) : (
+                  <span className="pcr__miss">Need {need} — practice until ready</span>
+                )}
+              </>
+            )}
+          </p>
+          {!passed && (
+            <button type="button" className="btn btn--primary" onClick={retry}>
+              Practice until ready
+            </button>
+          )}
+        </div>
       )}
     </section>
   )

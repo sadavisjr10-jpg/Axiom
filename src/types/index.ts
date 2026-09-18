@@ -159,11 +159,20 @@ export interface WorkedExample {
   answer: string
   /** Optional inline visual; registry also maps by id */
   visual?: ExampleVisualSpec
+  /** Independent "Your turn" problem used in worked-example fading */
+  practice?: ExamplePractice
 }
 
 export interface WorkedStep {
   label: string
   content: string
+}
+
+/** Independent practice problem for fading / Your turn */
+export interface ExamplePractice {
+  problem: string
+  hints: string[]
+  answer: string
 }
 
 export interface QuizQuestion {
@@ -172,6 +181,32 @@ export interface QuizQuestion {
   choices: string[]
   correctIndex: number
   explanation: string
+  /** Optional link into spaced-retrieval objective ids */
+  objectiveId?: string
+}
+
+/** A/B contrast clinic: which solution is wrong and why */
+export interface ContrastCase {
+  id: string
+  lessonId: string
+  courseId: CourseId
+  prompt: string
+  optionA: string
+  optionB: string
+  /** 0 = A is wrong, 1 = B is wrong */
+  wrongIndex: 0 | 1
+  explanation: string
+  topic?: string
+}
+
+export interface DrillQuestion {
+  id: string
+  courseId: CourseId
+  prompt: string
+  choices: string[]
+  correctIndex: number
+  explanation: string
+  objectiveId?: string
 }
 
 export interface Formula {
@@ -191,16 +226,19 @@ export interface Flashcard {
   tags: string[]
 }
 
-export interface DrillQuestion {
-  id: string
-  courseId: CourseId
-  prompt: string
-  choices: string[]
-  correctIndex: number
-  explanation: string
-}
+export const PROGRESS_VERSION = 2 as const
 
-export const PROGRESS_VERSION = 1 as const
+/** Quiz / lesson mastery gate — e.g. 4/5 correct */
+export const MASTERY_PASS_PCT = 80 as const
+
+export interface ReviewItem {
+  objectiveId: string
+  nextReviewISO: string
+  intervalDays: number
+  strength: number
+  lastResult: 'weak' | 'ok'
+  updatedISO: string
+}
 
 export interface ProgressState {
   version: typeof PROGRESS_VERSION
@@ -212,4 +250,8 @@ export interface ProgressState {
   drillsCompleted: number
   flashcardsSeen: string[]
   started: boolean
+  /** Spaced retrieval schedule keyed by objective id */
+  reviewSchedule: Record<string, ReviewItem>
+  /** Module ids the learner has unlocked (persisted) */
+  unlockedModules: string[]
 }

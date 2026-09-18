@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { idealGas, round } from '../lib/labMath'
+import { PredictCommitReveal } from '../components/PredictCommitReveal'
 
 type Unknown = 'P' | 'V' | 'n' | 'T'
 
@@ -26,11 +27,72 @@ export function ThermoLab() {
     }
   }, [unknown, P, V, n, T])
 
+  const actual =
+    result.ok
+      ? unknown === 'P'
+        ? `${round(result.value.P, 2)} Pa`
+        : unknown === 'V'
+          ? `${round(result.value.V, 6)} m³`
+          : unknown === 'n'
+            ? `${round(result.value.n, 4)} mol`
+            : `${round(result.value.T, 2)} K`
+      : result.error
+
+  const results = (
+    <>
+      <dl className="lab__results">
+        {result.ok ? (
+          <>
+            <div>
+              <dt>P</dt>
+              <dd>{round(result.value.P, 2)} Pa</dd>
+            </div>
+            <div>
+              <dt>V</dt>
+              <dd>{round(result.value.V, 6)} m³</dd>
+            </div>
+            <div>
+              <dt>n</dt>
+              <dd>{round(result.value.n, 4)} mol</dd>
+            </div>
+            <div>
+              <dt>T</dt>
+              <dd>{round(result.value.T, 2)} K</dd>
+            </div>
+          </>
+        ) : (
+          <div>
+            <dt>Error</dt>
+            <dd>{result.error}</dd>
+          </div>
+        )}
+      </dl>
+      <div className="lab__canvas lab__canvas--panel">
+        <p className="thermo-viz-title">State snapshot</p>
+        <div className="thermo-viz">
+          <div
+            className="thermo-viz__box"
+            style={{
+              transform: `scale(${result.ok ? Math.min(1.4, 0.6 + result.value.V * 8) : 1})`,
+            }}
+          >
+            <span>gas</span>
+          </div>
+          <ul>
+            <li>Higher T → higher P at fixed V</li>
+            <li>Higher V → lower P at fixed T</li>
+            <li>Absolute temperature in kelvin</li>
+          </ul>
+        </div>
+      </div>
+    </>
+  )
+
   return (
     <div className="lab">
       <div className="lab__controls">
         <h2>Ideal gas law</h2>
-        <p className="muted">PV = nRT · R = 8.314 J/(mol·K) · leave one unknown</p>
+        <p className="muted">PV = nRT · predict the unknown before reveal</p>
         <label>
           Solve for
           <select value={unknown} onChange={(e) => setUnknown(e.target.value as Unknown)}>
@@ -64,51 +126,21 @@ export function ThermoLab() {
             <input type="number" value={T} onChange={(e) => setT(+e.target.value)} />
           </label>
         )}
-        <dl className="lab__results">
-          {result.ok ? (
-            <>
-              <div>
-                <dt>P</dt>
-                <dd>{round(result.value.P, 2)} Pa</dd>
-              </div>
-              <div>
-                <dt>V</dt>
-                <dd>{round(result.value.V, 6)} m³</dd>
-              </div>
-              <div>
-                <dt>n</dt>
-                <dd>{round(result.value.n, 4)} mol</dd>
-              </div>
-              <div>
-                <dt>T</dt>
-                <dd>{round(result.value.T, 2)} K</dd>
-              </div>
-            </>
-          ) : (
-            <div>
-              <dt>Error</dt>
-              <dd>{result.error}</dd>
-            </div>
-          )}
-        </dl>
       </div>
-      <div className="lab__canvas lab__canvas--panel">
-        <p className="thermo-viz-title">State snapshot</p>
-        <div className="thermo-viz">
-          <div
-            className="thermo-viz__box"
-            style={{
-              transform: `scale(${result.ok ? Math.min(1.4, 0.6 + result.value.V * 8) : 1})`,
-            }}
-          >
-            <span>gas</span>
-          </div>
-          <ul>
-            <li>Higher T → higher P at fixed V</li>
-            <li>Higher V → lower P at fixed T</li>
-            <li>Absolute temperature in kelvin</li>
-          </ul>
-        </div>
+      <div className="lab__reveal-col">
+        <PredictCommitReveal
+          key={`${unknown}-${P}-${V}-${n}-${T}`}
+          mode="estimate"
+          estimateLabel={`Predict ${unknown}`}
+          actualDisplay={actual}
+          spec={{
+            prompt: `Commit a value for ${unknown} before the state panel opens.`,
+            choices: [],
+            revealNote: 'Remember absolute temperature (K) in PV = nRT.',
+          }}
+        >
+          {results}
+        </PredictCommitReveal>
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { resultant2D, round } from '../lib/labMath'
+import { PredictCommitReveal } from '../components/PredictCommitReveal'
 
 export function StaticsLab() {
   const [f1, setF1] = useState(100)
@@ -22,50 +23,26 @@ export function StaticsLab() {
   const t2 = tip(f2, a2)
   const tr = tip(r.magnitude, r.angleDeg)
 
-  return (
-    <div className="lab">
-      <div className="lab__controls">
-        <h2>2D force resultant</h2>
-        <p className="muted">Two concurrent forces — live Cartesian resultant.</p>
-        <label>
-          F₁ magnitude (N)
-          <input type="range" min={0} max={200} value={f1} onChange={(e) => setF1(+e.target.value)} />
-          <input type="number" value={f1} onChange={(e) => setF1(+e.target.value)} />
-        </label>
-        <label>
-          F₁ angle (°)
-          <input type="range" min={-180} max={180} value={a1} onChange={(e) => setA1(+e.target.value)} />
-          <input type="number" value={a1} onChange={(e) => setA1(+e.target.value)} />
-        </label>
-        <label>
-          F₂ magnitude (N)
-          <input type="range" min={0} max={200} value={f2} onChange={(e) => setF2(+e.target.value)} />
-          <input type="number" value={f2} onChange={(e) => setF2(+e.target.value)} />
-        </label>
-        <label>
-          F₂ angle (°)
-          <input type="range" min={-180} max={180} value={a2} onChange={(e) => setA2(+e.target.value)} />
-          <input type="number" value={a2} onChange={(e) => setA2(+e.target.value)} />
-        </label>
-        <dl className="lab__results">
-          <div>
-            <dt>Rₓ</dt>
-            <dd>{round(r.rx, 2)} N</dd>
-          </div>
-          <div>
-            <dt>Rᵧ</dt>
-            <dd>{round(r.ry, 2)} N</dd>
-          </div>
-          <div>
-            <dt>|R|</dt>
-            <dd>{round(r.magnitude, 2)} N</dd>
-          </div>
-          <div>
-            <dt>θ</dt>
-            <dd>{round(r.angleDeg, 2)}°</dd>
-          </div>
-        </dl>
-      </div>
+  const results = (
+    <>
+      <dl className="lab__results">
+        <div>
+          <dt>Rₓ</dt>
+          <dd>{round(r.rx, 2)} N</dd>
+        </div>
+        <div>
+          <dt>Rᵧ</dt>
+          <dd>{round(r.ry, 2)} N</dd>
+        </div>
+        <div>
+          <dt>|R|</dt>
+          <dd>{round(r.magnitude, 2)} N</dd>
+        </div>
+        <div>
+          <dt>θ</dt>
+          <dd>{round(r.angleDeg, 2)}°</dd>
+        </div>
+      </dl>
       <svg className="lab__canvas" viewBox="0 0 320 280" role="img" aria-label="Force vector diagram">
         <defs>
           <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
@@ -88,6 +65,50 @@ export function StaticsLab() {
           R
         </text>
       </svg>
+    </>
+  )
+
+  return (
+    <div className="lab">
+      <div className="lab__controls">
+        <h2>2D force resultant</h2>
+        <p className="muted">Two concurrent forces — predict |R| before revealing.</p>
+        <label>
+          F₁ magnitude (N)
+          <input type="range" min={0} max={200} value={f1} onChange={(e) => setF1(+e.target.value)} />
+          <input type="number" value={f1} onChange={(e) => setF1(+e.target.value)} />
+        </label>
+        <label>
+          F₁ angle (°)
+          <input type="range" min={-180} max={180} value={a1} onChange={(e) => setA1(+e.target.value)} />
+          <input type="number" value={a1} onChange={(e) => setA1(+e.target.value)} />
+        </label>
+        <label>
+          F₂ magnitude (N)
+          <input type="range" min={0} max={200} value={f2} onChange={(e) => setF2(+e.target.value)} />
+          <input type="number" value={f2} onChange={(e) => setF2(+e.target.value)} />
+        </label>
+        <label>
+          F₂ angle (°)
+          <input type="range" min={-180} max={180} value={a2} onChange={(e) => setA2(+e.target.value)} />
+          <input type="number" value={a2} onChange={(e) => setA2(+e.target.value)} />
+        </label>
+      </div>
+      <div className="lab__reveal-col">
+        <PredictCommitReveal
+          key={`${f1}-${a1}-${f2}-${a2}`}
+          mode="estimate"
+          estimateLabel="Predict |R| (N)"
+          actualDisplay={`${round(r.magnitude, 2)} N`}
+          spec={{
+            prompt: 'Before revealing the diagram: estimate the resultant magnitude |R|.',
+            choices: [],
+            revealNote: 'Compare your estimate to the live Cartesian resultant.',
+          }}
+        >
+          {results}
+        </PredictCommitReveal>
+      </div>
     </div>
   )
 }

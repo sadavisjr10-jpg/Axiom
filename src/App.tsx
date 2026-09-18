@@ -16,6 +16,7 @@ export default function App() {
     start,
     completeLesson,
     completeDrill,
+    recordReview,
     reset,
     markFlashcard,
   } = useProgress()
@@ -46,6 +47,7 @@ export default function App() {
                 progress={progress}
                 onDrillComplete={completeDrill}
                 onFlashcard={markFlashcard}
+                onReviewResult={recordReview}
               />
             }
           />
