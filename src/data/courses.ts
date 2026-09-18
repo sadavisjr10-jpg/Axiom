@@ -578,27 +578,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'List the constant-acceleration equations, assign a consistent sign convention, and solve for displacement, velocity, or time in a single-axis problem.',
+                  'By the end of this lesson you should be able to: (1) state when the constant-acceleration equations apply; (2) pick a consistent sign convention for v₀, v, a, and Δx; (3) choose among v = v₀ + a t, Δx = v₀ t + ½ a t², and v² = v₀² + 2 a Δx by which unknown is missing; (4) solve a single-axis problem and sanity-check the sign and magnitude of the answer.',
+              },
+              {
+                heading: 'Why kinematics before forces',
+                body:
+                  'Kinematics answers “how does position and velocity change with time?” without asking “what caused the acceleration?” That separation is deliberate: once you can describe motion, Newton’s laws later explain why a has the value it does. Free fall, braking, and runway takeoff are everyday cases where a is nearly constant, so the algebra is exact enough for first-pass design.',
               },
               {
                 heading: 'When these equations apply',
                 body:
-                  'They assume acceleration is constant in magnitude and direction along the line of motion (or a single axis). Variable a needs calculus or piecewise constants. Free fall near Earth is the usual a = −g example once you pick “up” as positive.',
+                  'They assume acceleration is constant in magnitude and direction along one axis (or a single line of motion). If a changes continuously, you need calculus or you break the trip into piecewise-constant segments. Near Earth’s surface, free-fall magnitude is g ≈ 9.8 m/s²; the sign of a is ±g only after you choose which way is positive.',
               },
               {
                 heading: 'The three workhorses',
                 body:
-                  'v = v₀ + a t (no displacement).  x = x₀ + v₀ t + ½ a t² (no final v).  v² = v₀² + 2 a Δx (no time). Choose the equation that omits the quantity you were not given and do not need.',
+                  'v = v₀ + a t drops displacement — use it when you care about speed after a known time. Δx = v₀ t + ½ a t² (with x = x₀ + Δx) drops final velocity — use it for “how far in time t?” v² = v₀² + 2 a Δx drops time — use it for stopping distance and any problem where the clock is unknown. Each equation is a rearrangement of the same a = constant story; they are not independent physics laws.',
               },
               {
-                heading: 'Signs matter',
+                heading: 'Signs and “slowing down”',
                 body:
-                  'Pick a positive direction and stick to it for v₀, v, a, and Δx. Acceleration opposite velocity means slowing down; same sign means speeding up. A negative Δx only means net motion toward the negative axis — not “impossible.”',
+                  'Pick a positive direction once and stick to it for every signed quantity. Acceleration opposite velocity means the speed is decreasing; same sign means speeding up. A negative Δx is not “impossible” — it means net displacement toward the negative axis. The v² equation uses signed a and Δx even though v² and v₀² are squares.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Mixing frames mid-problem. Using v = v₀ + a t when a is not constant. Dropping the ½ in ½ a t². Squaring velocities and losing track of direction (v² equation is scalar in 1D but still uses signed a and Δx).',
+                  'Mixing frames mid-problem (flipping “up positive” halfway). Using v = v₀ + a t when a is not constant. Dropping the ½ in ½ a t². Treating the v² equation as direction-free and then assigning a random sign to Δx. Forgetting that “from rest” means v₀ = 0, not a = 0.',
               },
             ],
             workedExamples: [
@@ -611,7 +616,12 @@ export const courses: Course[] = [
                   {
                     label: 'Identify knowns and unknown',
                     content:
-                      'v₀ = 20 m/s, v = 0, a = −4 m/s². Unknown: Δx. Time is unknown and unneeded → use v² = v₀² + 2 a Δx.',
+                      'v₀ = 20 m/s, v = 0 (stopped), a = −4 m/s². Unknown: Δx. Time is unknown and unneeded.',
+                  },
+                  {
+                    label: 'Choose the no-time equation',
+                    content:
+                      'Use v² = v₀² + 2 a Δx. (If you only remembered Δx = v₀ t + ½ a t² you would first need t = (v − v₀)/a.)',
                   },
                   {
                     label: 'Substitute',
@@ -622,9 +632,9 @@ export const courses: Course[] = [
                     content: '8 Δx = 400 → Δx = 50 m. Positive: the car travels forward 50 m while slowing.',
                   },
                   {
-                    label: 'Check',
+                    label: 'Sanity check',
                     content:
-                      'Rough feel: average speed while braking is ~10 m/s; time to stop is v₀/|a| = 5 s; distance ≈ 10·5 = 50 m. Consistent.',
+                      'Time to stop: t = (0 − 20)/(−4) = 5 s. Average speed while braking ≈ (20+0)/2 = 10 m/s, so distance ≈ 10·5 = 50 m. Consistent.',
                   },
                 ],
                 answer: '50 m',
@@ -632,18 +642,51 @@ export const courses: Course[] = [
               {
                 id: 'we-from-rest',
                 title: 'Speed after constant boost',
-                problem: 'From rest, a = 2 m/s² for 5 s. Find final speed.',
+                problem: 'From rest, a = 2 m/s² for 5 s. Find final speed and distance traveled.',
                 steps: [
                   {
-                    label: 'Pick equation',
-                    content: 'v₀ = 0, a = 2, t = 5. Use v = v₀ + a t.',
+                    label: 'Translate words',
+                    content: '“From rest” ⇒ v₀ = 0. Given a = 2 m/s², t = 5 s. Find v and Δx.',
                   },
                   {
-                    label: 'Compute',
-                    content: 'v = 0 + 2·5 = 10 m/s.',
+                    label: 'Final speed',
+                    content: 'v = v₀ + a t = 0 + 2·5 = 10 m/s.',
+                  },
+                  {
+                    label: 'Distance',
+                    content:
+                      'Δx = v₀ t + ½ a t² = 0 + ½·2·25 = 25 m. (Check: v² = v₀² + 2 a Δx ⇒ 100 = 0 + 4 Δx ⇒ Δx = 25 m.)',
                   },
                 ],
-                answer: '10 m/s',
+                answer: '10 m/s after 25 m',
+              },
+              {
+                id: 'we-freefall',
+                title: 'Drop time (free fall)',
+                problem:
+                  'A ball is dropped from rest from a height of 20 m. Take down as positive and g = 10 m/s². How long to hit the ground?',
+                steps: [
+                  {
+                    label: 'Set signs',
+                    content:
+                      'Down positive ⇒ a = +10 m/s², v₀ = 0, Δx = +20 m. Unknown: t.',
+                  },
+                  {
+                    label: 'Choose equation',
+                    content:
+                      'Δx = v₀ t + ½ a t² → 20 = 0 + ½·10·t² = 5 t².',
+                  },
+                  {
+                    label: 'Solve',
+                    content: 't² = 4 → t = 2 s (take the positive root for elapsed time).',
+                  },
+                  {
+                    label: 'Check with speed',
+                    content:
+                      'Impact speed v = 0 + 10·2 = 20 m/s. Then v² = 400 and 2 a Δx = 2·10·20 = 400 — matches.',
+                  },
+                ],
+                answer: '2 s',
               },
             ],
             quiz: [
@@ -678,6 +721,25 @@ export const courses: Course[] = [
                 correctIndex: 1,
                 explanation: 'Opposite signs of a and v reduce speed until a stop or reversal.',
               },
+              {
+                id: 'q-kin-4',
+                prompt: 'Dropped from rest, down positive, Δx = ½ g t². If g = 10 m/s² and Δx = 45 m, t is…',
+                choices: ['1.5 s', '3 s', '4.5 s', '9 s'],
+                correctIndex: 1,
+                explanation: '45 = 5 t² ⇒ t² = 9 ⇒ t = 3 s.',
+              },
+              {
+                id: 'q-kin-5',
+                prompt: 'You know v₀, v, and a, but not t or Δx. Fastest path to Δx?',
+                choices: [
+                  'Only Δx = v₀ t + ½ a t² (must find t first)',
+                  'v² = v₀² + 2 a Δx',
+                  'Average speed is always v₀',
+                  'You cannot find Δx without t',
+                ],
+                correctIndex: 1,
+                explanation: 'The v² equation gives Δx directly when time is missing.',
+              },
             ],
           },
         ],
@@ -696,22 +758,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Draw a clean FBD, write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ with a consistent axis choice, and solve a single-body horizontal or vertical problem.',
+                  'By the end of this lesson you should be able to: (1) state ΣF = m a as a vector statement about the net force; (2) draw a clean free-body diagram (FBD) with only forces on the chosen body; (3) write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ with a consistent axis choice; (4) solve a single-body horizontal or vertical problem, including a simple elevator/cable tension case.',
               },
               {
                 heading: 'Net force, not “the” force',
                 body:
-                  'Newton’s second law is about the vector sum of forces: ΣF = m a. Individual forces (push, weight, normal, tension) appear on the FBD; acceleration responds only to the total.',
+                  'Newton’s second law is about the vector sum of forces: ΣF = m a. Individual agents (push, weight, normal, tension, friction) each contribute an arrow on the FBD; acceleration responds only to the total. Mass m measures inertia — how stubborn the velocity is against change — and is not itself a force.',
+              },
+              {
+                heading: 'Why FBDs before algebra',
+                body:
+                  'Most mistakes are missing or double-counted forces, not arithmetic. Isolating one body and drawing every force that touches it forces you to name the interactions. Only after the diagram do you resolve into components and write ΣF = ma. If you skip the picture, you are guessing which terms belong in the sum.',
               },
               {
                 heading: 'FBD discipline',
                 body:
-                  'Isolate one body. Draw every force as an arrow on that body (not on neighbors). Resolve into components. Only then write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ. If the body does not accelerate vertically, ΣFᵧ = 0 is still an equation — it often finds a normal force.',
+                  'Isolate one body. Draw every force as an arrow on that body (not on neighbors). Resolve into components along axes you choose. Then write ΣFₓ = m aₓ and ΣFᵧ = m aᵧ. If the body does not accelerate vertically, ΣFᵧ = 0 is still an equation — it often finds a normal force. Never draw “ma” as an extra force on the FBD; ma is what ΣF equals.',
+              },
+              {
+                heading: 'Weight vs mass',
+                body:
+                  'Weight is the gravitational force mg (near Earth), directed toward the ground. Mass is the scalar in ΣF = m a. In an elevator, your weight mg still points down; the scale reading is the normal force, which equals mg only when a = 0.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Putting ma on the FBD as if it were a force. Omitting weight or the normal. Using ΣF = m a with F as a single contact force while ignoring friction or other contributors.',
+                  'Putting ma on the FBD as if it were a force. Omitting weight or the normal. Using ΣF = m a with F as a single contact force while ignoring friction or other contributors. Mixing “up positive” for forces with a different convention for a.',
               },
             ],
             workedExamples: [
@@ -721,38 +793,73 @@ export const courses: Course[] = [
                 problem: 'A 5 kg block on a frictionless surface is pushed by 15 N. Find a.',
                 steps: [
                   {
-                    label: 'FBD and net force',
+                    label: 'FBD',
                     content:
-                      'Horizontal: only the 15 N push (frictionless). Vertical: weight and normal cancel, aᵧ = 0.',
+                      'Horizontal: only the 15 N push (frictionless). Vertical: weight mg down and normal N up, with aᵧ = 0 so N = mg.',
+                  },
+                  {
+                    label: 'Net force',
+                    content:
+                      'ΣFₓ = 15 N, ΣFᵧ = 0. No other horizontal forces appear on a frictionless surface.',
                   },
                   {
                     label: 'Apply ΣFₓ = m aₓ',
                     content: '15 N = (5 kg) a → a = 3 m/s² in the direction of the push.',
+                  },
+                  {
+                    label: 'Check units',
+                    content: 'N = kg·m/s², so 15/5 = 3 m/s² — units consistent.',
                   },
                 ],
                 answer: '3 m/s²',
               },
               {
                 id: 'we-n2-weight',
-                title: 'Elevator cable tension (intro)',
+                title: 'Elevator cable tension',
                 problem:
-                  'A 10 kg mass accelerates upward at 2 m/s². Find tension T in the supporting cable (g = 10 m/s² for easy numbers).',
+                  'A 10 kg mass accelerates upward at 2 m/s². Find tension T in the supporting cable (use g = 10 m/s² for easy numbers).',
                 steps: [
                   {
-                    label: 'FBD',
-                    content: 'Up: T. Down: mg = 100 N. Take up as positive.',
+                    label: 'FBD and axis',
+                    content: 'Up: T. Down: mg = 100 N. Take up as positive so a = +2 m/s².',
                   },
                   {
-                    label: 'ΣF = ma',
-                    content: 'T − 100 = 10·2 → T − 100 = 20 → T = 120 N.',
+                    label: 'Write ΣF = ma',
+                    content: 'ΣFᵧ = T − mg = m a → T − 100 = 10·2.',
                   },
                   {
-                    label: 'Check',
+                    label: 'Solve',
+                    content: 'T − 100 = 20 → T = 120 N.',
+                  },
+                  {
+                    label: 'Interpret',
                     content:
-                      'T > mg when accelerating up — matches the “heavier in an elevating elevator” intuition.',
+                      'T > mg when accelerating up — matches the “heavier in an elevating elevator” feeling. If a were zero, T would equal mg = 100 N.',
                   },
                 ],
                 answer: '120 N',
+              },
+              {
+                id: 'we-n2-down',
+                title: 'Elevator accelerating down',
+                problem:
+                  'Same 10 kg mass, now accelerating downward at 2 m/s². Find T (g = 10 m/s², up positive).',
+                steps: [
+                  {
+                    label: 'Same FBD, new a',
+                    content: 'Up positive ⇒ a = −2 m/s². Forces unchanged: T up, mg = 100 N down.',
+                  },
+                  {
+                    label: 'ΣF = ma',
+                    content: 'T − 100 = 10·(−2) = −20 → T = 80 N.',
+                  },
+                  {
+                    label: 'Interpret',
+                    content:
+                      'T < mg when accelerating down — you feel “lighter.” Free fall (a = −g) would make T = 0.',
+                  },
+                ],
+                answer: '80 N',
               },
             ],
             quiz: [
@@ -775,6 +882,25 @@ export const courses: Course[] = [
                 correctIndex: 1,
                 explanation:
                   'FBDs show forces on the chosen body; ma is the result, not an extra force.',
+              },
+              {
+                id: 'q-n2-3',
+                prompt: 'Elevator cable, mass m accelerating upward at a. Tension is…',
+                choices: ['mg', 'm a', 'm(g + a)', 'm(g − a)'],
+                correctIndex: 2,
+                explanation: 'Up positive: T − mg = m a ⇒ T = m(g + a).',
+              },
+              {
+                id: 'q-n2-4',
+                prompt: 'If ΣF = 0 on a particle, then…',
+                choices: [
+                  'Velocity must be zero',
+                  'Acceleration is zero (constant velocity, including rest)',
+                  'Mass must be zero',
+                  'The particle must be on the ground',
+                ],
+                correctIndex: 1,
+                explanation: 'ΣF = 0 ⇒ a = 0; velocity can be any constant, including zero.',
               },
             ],
           },
@@ -807,27 +933,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Convert a force given by magnitude and angle into Fₓ, Fᵧ; sum concurrent forces; and report the resultant as magnitude plus angle (or as components).',
+                  'By the end of this lesson you should be able to: (1) convert a force given by magnitude and angle into Fₓ, Fᵧ with a clear angle reference; (2) sum concurrent planar forces by components; (3) rebuild the resultant as |R| and θ (with correct quadrant); (4) avoid the “add magnitudes” trap when forces are not collinear.',
               },
               {
                 heading: 'Why components',
                 body:
-                  'Vector addition by parallelogram is fine for two forces; for many forces, components scale cleanly: add all x-pieces, add all y-pieces, then rebuild one vector.',
+                  'Vector addition by parallelogram is fine for two forces; for three or more, sketching parallelograms stacks poorly. Components scale cleanly: project every force onto x and y, add the scalars, then rebuild one vector. That is the everyday language of statics software and hand calculations alike.',
               },
               {
-                heading: 'Components',
+                heading: 'Angle reference first',
                 body:
-                  'With θ measured from +x, counterclockwise positive: Fₓ = F cos θ, Fᵧ = F sin θ. If a problem states “30° above −x,” sketch first — do not force a formula that assumes a different reference.',
+                  'Formulas Fₓ = F cos θ and Fᵧ = F sin θ assume θ measured from +x, counterclockwise positive. If a problem says “30° above the −x axis,” sketch before plugging in — the reference is not the default. Wrong reference is the #1 source of sign errors.',
               },
               {
-                heading: 'Resultant',
+                heading: 'Components and resultant',
                 body:
-                  'Rₓ = Σ Fₓ, Rᵧ = Σ Fᵧ; |R| = √(Rₓ² + Rᵧ²); θ = atan2(Rᵧ, Rₓ) so the quadrant is correct. Concurrent forces (lines of action through one point) need no moment bookkeeping for the resultant force alone.',
+                  'With a consistent θ: Fₓ = F cos θ, Fᵧ = F sin θ. Then Rₓ = Σ Fₓ, Rᵧ = Σ Fᵧ; |R| = √(Rₓ² + Rᵧ²); θ_R = atan2(Rᵧ, Rₓ) so the quadrant is correct. Concurrent forces (lines of action through one point) need no moment bookkeeping for the resultant force alone.',
+              },
+              {
+                heading: 'Special cases worth memorizing',
+                body:
+                  'Two equal perpendicular forces of magnitude F give |R| = F√2 at 45° between them. Equal-and-opposite collinear forces cancel. Three forces at 120° of equal magnitude sum to zero — a quick check for “balanced” planar sets.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Using degrees in a calculator set to radians (or vice versa). Taking atan(Rᵧ/Rₓ) and ignoring quadrant. Adding magnitudes instead of components.',
+                  'Using degrees in a calculator set to radians (or vice versa). Taking atan(Rᵧ/Rₓ) and ignoring quadrant (e.g. both components negative). Adding magnitudes instead of components. Forgetting that a force at 180° has Fₓ = −F, not +F.',
               },
             ],
             workedExamples: [
@@ -837,18 +968,23 @@ export const courses: Course[] = [
                 problem: 'F₁ = 100 N at 0°, F₂ = 100 N at 90°. Find R.',
                 steps: [
                   {
-                    label: 'Resolve',
+                    label: 'Resolve each force',
                     content:
-                      'F₁: (100, 0) N. F₂: (0, 100) N.',
+                      'F₁ along +x: (100, 0) N. F₂ along +y: (0, 100) N.',
                   },
                   {
                     label: 'Sum components',
-                    content: 'Rₓ = 100, Rᵧ = 100.',
+                    content: 'Rₓ = 100 + 0 = 100 N, Rᵧ = 0 + 100 = 100 N.',
                   },
                   {
-                    label: 'Magnitude and angle',
+                    label: 'Magnitude',
                     content:
-                      '|R| = √(100²+100²) = 100√2 N ≈ 141 N. θ = 45° from +x.',
+                      '|R| = √(100² + 100²) = 100√2 N ≈ 141.4 N.',
+                  },
+                  {
+                    label: 'Direction',
+                    content:
+                      'θ = atan2(100, 100) = 45° from +x. Both components positive ⇒ first quadrant — no ambiguity.',
                   },
                 ],
                 answer: '100√2 N at 45°',
@@ -857,20 +993,51 @@ export const courses: Course[] = [
                 id: 'we-res-3',
                 title: 'Three concurrent forces (components)',
                 problem:
-                  'Forces 30 N at 0°, 40 N at 90°, and 50 N at 180°. Find Rₓ and Rᵧ.',
+                  'Forces 30 N at 0°, 40 N at 90°, and 50 N at 180°. Find Rₓ, Rᵧ, and |R|.',
                 steps: [
                   {
                     label: 'List components',
                     content:
-                      '(30, 0) + (0, 40) + (−50, 0) → Rₓ = 30 − 50 = −20 N, Rᵧ = 40 N.',
+                      '(30, 0) + (0, 40) + (−50, 0). Note 180° ⇒ cos 180° = −1.',
+                  },
+                  {
+                    label: 'Sum',
+                    content: 'Rₓ = 30 − 50 = −20 N, Rᵧ = 40 N.',
+                  },
+                  {
+                    label: 'Magnitude',
+                    content:
+                      '|R| = √((−20)² + 40²) = √(400 + 1600) = √2000 = 20√5 N ≈ 44.7 N.',
                   },
                   {
                     label: 'Interpret',
                     content:
-                      'Resultant points left and up; |R| = √(400+1600) = √2000 = 20√5 N if needed.',
+                      'Resultant points left and up (second quadrant). Rough angle: atan(40/20) = atan(2) above the −x axis.',
                   },
                 ],
-                answer: 'Rₓ = −20 N, Rᵧ = 40 N',
+                answer: 'Rₓ = −20 N, Rᵧ = 40 N (|R| = 20√5 N)',
+              },
+              {
+                id: 'we-res-angle',
+                title: 'Force not on an axis',
+                problem: 'A 50 N force acts at 30° above +x. Find Fₓ and Fᵧ.',
+                steps: [
+                  {
+                    label: 'Confirm reference',
+                    content: 'θ = 30° from +x — standard convention applies.',
+                  },
+                  {
+                    label: 'Compute',
+                    content:
+                      'Fₓ = 50 cos 30° = 50·(√3/2) = 25√3 N ≈ 43.3 N. Fᵧ = 50 sin 30° = 50·(1/2) = 25 N.',
+                  },
+                  {
+                    label: 'Check',
+                    content:
+                      '√(Fₓ² + Fᵧ²) should recover 50: √(1875 + 625) = √2500 = 50 N.',
+                  },
+                ],
+                answer: 'Fₓ = 25√3 N, Fᵧ = 25 N',
               },
             ],
             quiz: [
@@ -887,6 +1054,25 @@ export const courses: Course[] = [
                 choices: ['10 N', '0', '−10 N', '10√2 N'],
                 correctIndex: 2,
                 explanation: 'cos 180° = −1 → Fₓ = −10 N, Fᵧ = 0.',
+              },
+              {
+                id: 'q-res-3',
+                prompt: 'Rₓ = −3 N, Rᵧ = −3 N. The resultant lies in quadrant…',
+                choices: ['I', 'II', 'III', 'IV'],
+                correctIndex: 2,
+                explanation: 'Both components negative ⇒ third quadrant.',
+              },
+              {
+                id: 'q-res-4',
+                prompt: 'Best first step when combining many planar forces?',
+                choices: [
+                  'Add all magnitudes',
+                  'Resolve each into components, then sum',
+                  'Ignore angles under 45°',
+                  'Only keep the largest force',
+                ],
+                correctIndex: 1,
+                explanation: 'Component method scales cleanly; magnitudes alone do not add as vectors.',
               },
             ],
           },
@@ -906,22 +1092,27 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Write planar particle equilibrium equations from an FBD and set up (and for simple cases solve) cable or link tension problems.',
+                  'By the end of this lesson you should be able to: (1) explain why a particle needs only ΣFₓ = 0 and ΣFᵧ = 0; (2) draw an FBD at a knot or pin treated as a particle; (3) write component equilibrium equations with correct tension directions; (4) solve a two-cable hanging-mass problem for the two tensions.',
               },
               {
                 heading: 'Particle vs rigid body',
                 body:
-                  'A particle (or a knot treated as a particle) has no size for moment purposes: only force balance matters. A rigid body in 2D also needs ΣM = 0 — three equations total. This lesson stays with particles.',
+                  'A particle (or a knot treated as a particle) has no size for moment purposes: only force balance matters. A rigid body in 2D also needs ΣM = 0 — three equations total. This lesson stays with particles so you master the force equations before moments enter.',
               },
               {
-                heading: 'Two equations',
+                heading: 'Why equilibrium means zero net force',
                 body:
-                  'ΣFₓ = 0 and ΣFᵧ = 0. Supports and cables contribute unknown magnitudes along known lines of action. Count unknowns: two independent scalar equations support two unknowns in a well-posed planar particle problem.',
+                  'If a particle’s acceleration is zero, Newton’s second law says ΣF = 0. Statics problems are the a = 0 special case of dynamics. Two independent planar components give two scalar equations — enough for two unknown force magnitudes when directions are known (cables, links along known lines).',
+              },
+              {
+                heading: 'Setup strategy',
+                body:
+                  '(1) Cut free the particle/knot. (2) Draw every force: known loads plus unknown support magnitudes along known directions. (3) Pick axes. (4) Write ΣFₓ = 0 and ΣFᵧ = 0. (5) Solve the linear system. Count unknowns: two independent equations support two unknowns in a well-posed planar particle problem.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Resolving tensions with the wrong angle reference. Writing only one equilibrium equation when two unknowns remain. Treating a continuous cable over a pulley as two independent directions without a free-body cut.',
+                  'Resolving tensions with the wrong angle reference (using the complement by accident). Writing only one equilibrium equation when two unknowns remain. Drawing both cable tensions with the same x-sign when they pull opposite ways. Treating a continuous cable over a frictionless pulley as two independent directions without a free-body cut.',
               },
             ],
             workedExamples: [
@@ -929,17 +1120,17 @@ export const courses: Course[] = [
                 id: 'we-particle',
                 title: 'Hanging mass, two cables',
                 problem:
-                  'A 100 N weight hangs from two cables at 30° and 60° to the horizontal. Set up equations for tensions T₁ (30° side) and T₂ (60° side).',
+                  'A 100 N weight hangs from two cables at 30° and 60° to the horizontal. Find tensions T₁ (30° side) and T₂ (60° side).',
                 steps: [
                   {
                     label: 'FBD at the knot',
                     content:
-                      'Three forces: T₁ along 30°, T₂ along 60°, and weight 100 N downward.',
+                      'Three forces: T₁ at 30° to horizontal, T₂ at 60°, and weight 100 N downward. Take T₁ on the shallow side pulling up-and-out one way, T₂ the other.',
                   },
                   {
-                    label: 'Resolve',
+                    label: 'Resolve into components',
                     content:
-                      'T₁ₓ = T₁ cos 30°, T₁ᵧ = T₁ sin 30°; T₂ₓ = T₂ cos 60°, T₂ᵧ = T₂ sin 60°.',
+                      'T₁ₓ = T₁ cos 30°, T₁ᵧ = T₁ sin 30°; T₂ₓ = T₂ cos 60°, T₂ᵧ = T₂ sin 60°. Weight: (0, −100). Opposing horizontal components cancel in equilibrium.',
                   },
                   {
                     label: 'Equilibrium equations',
@@ -947,12 +1138,50 @@ export const courses: Course[] = [
                       'ΣFₓ: T₁ cos 30° − T₂ cos 60° = 0. ΣFᵧ: T₁ sin 30° + T₂ sin 60° − 100 = 0.',
                   },
                   {
-                    label: 'Solve (optional numbers)',
+                    label: 'Relate T₁ and T₂',
                     content:
-                      'From ΣFₓ: T₁ (√3/2) = T₂ (1/2) → T₁ √3 = T₂. Substitute into ΣFᵧ to get T₁ = 50 N, T₂ = 50√3 N.',
+                      'From ΣFₓ: T₁ (√3/2) = T₂ (1/2) → T₂ = T₁ √3.',
+                  },
+                  {
+                    label: 'Solve ΣFᵧ',
+                    content:
+                      'T₁ (1/2) + (T₁ √3)(√3/2) − 100 = 0 → T₁/2 + 3 T₁/2 = 100 → 2 T₁ = 100 → T₁ = 50 N, T₂ = 50√3 N.',
+                  },
+                  {
+                    label: 'Check',
+                    content:
+                      'Steeper cable (60°) carries larger tension. Vertical: 50·0.5 + 50√3·(√3/2) = 25 + 75 = 100 N.',
                   },
                 ],
                 answer: 'T₁ = 50 N, T₂ = 50√3 N',
+              },
+              {
+                id: 'we-particle-sym',
+                title: 'Symmetric cables',
+                problem:
+                  'A 200 N weight hangs from two cables, each at 45° to the horizontal (symmetric). Find each tension T.',
+                steps: [
+                  {
+                    label: 'Symmetry',
+                    content:
+                      'Identical angles and shared load ⇒ the two tensions are equal. Call each T.',
+                  },
+                  {
+                    label: 'Vertical balance',
+                    content:
+                      'ΣFᵧ: 2 · T sin 45° − 200 = 0 → 2 T (√2/2) = 200 → T√2 = 200.',
+                  },
+                  {
+                    label: 'Solve',
+                    content: 'T = 200/√2 = 100√2 N ≈ 141 N.',
+                  },
+                  {
+                    label: 'Horizontal check',
+                    content:
+                      'ΣFₓ: T cos 45° − T cos 45° = 0 automatically — symmetry already satisfied horizontal balance.',
+                  },
+                ],
+                answer: 'T = 100√2 N each',
               },
             ],
             quiz: [
@@ -974,6 +1203,31 @@ export const courses: Course[] = [
                 ],
                 correctIndex: 1,
                 explanation: 'Three planar equilibrium equations: two force, one moment.',
+              },
+              {
+                id: 'q-eq-3',
+                prompt: 'For a hanging mass on two cables, the steeper cable generally…',
+                choices: [
+                  'Carries less tension',
+                  'Carries more tension',
+                  'Carries zero tension',
+                  'Must be vertical',
+                ],
+                correctIndex: 1,
+                explanation:
+                  'The steeper cable contributes more vertical support per unit tension and usually a larger share of the load.',
+              },
+              {
+                id: 'q-eq-4',
+                prompt: 'If ΣFₓ = 0 and ΣFᵧ = 0 for a particle, then…',
+                choices: [
+                  'It must be moving',
+                  'Net force is zero',
+                  'Each individual force is zero',
+                  'Moments about every point are automatically nonzero',
+                ],
+                correctIndex: 1,
+                explanation: 'Zero net force is the particle equilibrium condition.',
               },
             ],
           },
@@ -1006,34 +1260,39 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Derive the unloaded voltage-divider formula from Ohm’s law and KVL, compute Vout for given Vin and resistors, and explain why resistor scale matters even when the ratio is fixed.',
+                  'By the end of this lesson you should be able to: (1) derive the unloaded divider formula from Ohm’s law and KVL; (2) compute Vout for given Vin, R₁, R₂; (3) explain why the ratio sets the fraction while absolute values set current and loading stiffness; (4) spot when a load on Vout invalidates the unloaded formula.',
               },
               {
                 heading: 'Series intuition',
                 body:
-                  'Same current flows through series resistors. Larger resistance drops a larger share of Vin — voltage divides in proportion to resistance.',
+                  'The same current flows through series resistors (one path). Larger resistance drops a larger share of Vin — voltage divides in proportion to resistance. Think of a height drop along a chain of steps: the taller step takes more of the total drop.',
               },
               {
-                heading: 'Divider formula',
+                heading: 'Derive the formula',
                 body:
-                  'For Vin across R₁ then R₂ to ground: current I = Vin/(R₁+R₂), and Vout across R₂ is I·R₂ = Vin · R₂/(R₁+R₂). Swap labels if you measure across R₁ instead.',
+                  'Vin across R₁ then R₂ to ground. KVL: Vin = I R₁ + I R₂ = I(R₁+R₂), so I = Vin/(R₁+R₂). Vout across R₂ is I·R₂ = Vin · R₂/(R₁+R₂). Swap the numerator if you measure across R₁ instead. The unloaded assumption means nothing else is attached at the Vout node.',
               },
               {
-                heading: 'Design tip',
+                heading: 'Ratio vs scale',
                 body:
-                  'The ratio R₂/(R₁+R₂) sets the fraction. Absolute values set current (power burn) and how stiff the divider is when a load attaches in parallel with R₂ — a light load needs much larger load resistance than R₂.',
+                  'The fraction R₂/(R₁+R₂) sets Vout/Vin. Absolute values set current I = Vin/(R₁+R₂) and therefore power burn I²R. A “stiff” divider uses smaller resistors (more current) so a moderate load in parallel with R₂ does not drag Vout down as much — at the cost of battery drain and heat.',
+              },
+              {
+                heading: 'Loading in one line',
+                body:
+                  'A load R_L from Vout to ground sits in parallel with R₂. The bottom resistance becomes R₂∥R_L < R₂, so Vout falls. Rule of thumb: if R_L ≫ R₂ (say 10× or more), the unloaded formula is a decent approximation; if not, recompute with the parallel combination.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Putting the wrong resistor in the numerator. Assuming the formula still holds exactly with a heavy load on Vout. Mixing kΩ and Ω mid-equation.',
+                  'Putting the wrong resistor in the numerator. Assuming the formula still holds exactly with a heavy load on Vout. Mixing kΩ and Ω mid-equation. Thinking equal resistors always give Vin/2 even after a load attaches.',
               },
             ],
             workedExamples: [
               {
                 id: 'we-div',
                 title: 'Half-rail divider',
-                problem: 'Vin = 10 V, R₁ = 2 kΩ, R₂ = 2 kΩ. Find Vout across R₂.',
+                problem: 'Vin = 10 V, R₁ = 2 kΩ, R₂ = 2 kΩ. Find Vout across R₂ and the series current.',
                 steps: [
                   {
                     label: 'Recognize equal resistors',
@@ -1044,11 +1303,16 @@ export const courses: Course[] = [
                     content: 'Vout = 10 · 1/2 = 5 V.',
                   },
                   {
-                    label: 'Current (optional)',
-                    content: 'I = 10/(4000 Ω) = 2.5 mA — useful if you care about power.',
+                    label: 'Current',
+                    content: 'I = Vin/(R₁+R₂) = 10/(4000 Ω) = 2.5 mA.',
+                  },
+                  {
+                    label: 'Power check (optional)',
+                    content:
+                      'Each resistor dissipates I²R = (0.0025)²·2000 = 12.5 mW; total 25 mW = Vin·I.',
                   },
                 ],
-                answer: '5 V',
+                answer: '5 V (I = 2.5 mA)',
               },
               {
                 id: 'we-div-unequal',
@@ -1056,15 +1320,44 @@ export const courses: Course[] = [
                 problem: 'Vin = 12 V, R₁ = 1 kΩ, R₂ = 3 kΩ. Vout across R₂?',
                 steps: [
                   {
-                    label: 'Fraction',
+                    label: 'Write the fraction',
                     content: 'R₂/(R₁+R₂) = 3/(1+3) = 3/4.',
                   },
                   {
-                    label: 'Vout',
+                    label: 'Compute Vout',
                     content: 'Vout = 12 · 3/4 = 9 V.',
+                  },
+                  {
+                    label: 'Cross-check with current',
+                    content:
+                      'I = 12/4000 = 3 mA; V₂ = I R₂ = 0.003·3000 = 9 V. Same answer.',
                   },
                 ],
                 answer: '9 V',
+              },
+              {
+                id: 'we-div-load',
+                title: 'Loaded divider (idea)',
+                problem:
+                  'Vin = 10 V, R₁ = R₂ = 2 kΩ, and a load R_L = 2 kΩ attaches across R₂. Approximate new Vout.',
+                steps: [
+                  {
+                    label: 'Parallel bottom',
+                    content:
+                      'R₂∥R_L = (2k∥2k) = 1 kΩ. Top still R₁ = 2 kΩ.',
+                  },
+                  {
+                    label: 'New divider',
+                    content:
+                      'Vout = 10 · (1k)/(2k+1k) = 10/3 ≈ 3.33 V — down from the unloaded 5 V.',
+                  },
+                  {
+                    label: 'Takeaway',
+                    content:
+                      'A load comparable to R₂ significantly pulls Vout down. Design with R_L ≫ R₂ or buffer with an op-amp.',
+                  },
+                ],
+                answer: '≈ 3.33 V',
               },
             ],
             quiz: [
@@ -1087,6 +1380,25 @@ export const courses: Course[] = [
                 correctIndex: 1,
                 explanation: 'Vout/Vin = R₂/(R₁+R₂) grows as R₂ grows relative to R₁.',
               },
+              {
+                id: 'q-div-3',
+                prompt: 'Vin = 10 V, R₁ = 3 kΩ, R₂ = 1 kΩ. Unloaded Vout across R₂?',
+                choices: ['1 V', '2.5 V', '7.5 V', '10 V'],
+                correctIndex: 1,
+                explanation: 'Vout = 10 · 1/(3+1) = 2.5 V.',
+              },
+              {
+                id: 'q-div-4',
+                prompt: 'A heavy load on Vout (small R_L across R₂) tends to…',
+                choices: [
+                  'Raise Vout',
+                  'Lower Vout versus the unloaded prediction',
+                  'Leave Vout exactly Vin/2 always',
+                  'Violate Ohm’s law',
+                ],
+                correctIndex: 1,
+                explanation: 'R₂∥R_L < R₂ shrinks the bottom fraction, so Vout drops.',
+              },
             ],
           },
           {
@@ -1098,27 +1410,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'State KCL and KVL in words, write them for a simple node and loop, and solve a single-loop resistive circuit for current and element voltages.',
+                  'By the end of this lesson you should be able to: (1) state KCL and KVL in words as conservation laws; (2) write KCL at a simple node and KVL around a simple loop with a consistent sign convention; (3) combine Ohm’s law with KVL to solve a single-loop resistive circuit; (4) use a quick KVL check (sum of drops equals the source) after solving.',
               },
               {
                 heading: 'KCL — charge conservation',
                 body:
-                  'At a node, current in equals current out (algebraic sum of currents leaving is zero). Charge does not pile up at an ideal node. Pick a sign convention and stay consistent.',
+                  'At a node, current in equals current out (equivalently: the algebraic sum of currents leaving the node is zero). Charge does not pile up at an ideal connection point. Pick “leaving positive” or “entering positive” and stay consistent for every term.',
               },
               {
                 heading: 'KVL — energy conservation',
                 body:
-                  'Around any closed loop, the signed sum of voltage drops is zero. Traverse the loop: add rises and drops with a consistent rule (e.g. + when going from − to + through a source).',
+                  'Around any closed loop, the signed sum of voltage rises and drops is zero. Intuition: walking a closed path in an electrostatic field returns you to the same potential. Traverse the loop once; add rises and drops with one rule (e.g. + when going from − to + through a source, − when going with the current through a resistor).',
               },
               {
                 heading: 'How they work together',
                 body:
-                  'Ohm’s law relates V and I on each resistor; KCL/KVL supply the topology constraints. Series loop: one KVL equation often finds the single current; then V = IR on each element.',
+                  'Ohm’s law relates V and I on each resistor (V = IR with passive sign convention). KCL/KVL supply the topology constraints from how elements are wired. A single series loop often needs only one KVL equation to find the loop current; then V = IR on each element. Nodes with multiple branches need KCL to relate branch currents.',
+              },
+              {
+                heading: 'Sign conventions worth locking in',
+                body:
+                  'For resistors, the voltage drop is in the direction of assumed current. If your computed I comes out negative, the actual current is opposite your assumed arrow — the math is fine; flip the arrow in your mental picture. Inconsistent signs around a loop are the usual reason KVL “doesn’t close.”',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Inconsistent voltage signs around a loop. Writing KCL with mixed “into” and “out of” without converting. Applying KVL to an open path.',
+                  'Inconsistent voltage signs around a loop. Writing KCL with mixed “into” and “out of” without converting. Applying KVL to an open path. Forgetting that series elements share one current while parallel elements share one voltage.',
               },
             ],
             workedExamples: [
@@ -1128,7 +1445,12 @@ export const courses: Course[] = [
                 problem: '12 V source in series with 3 Ω and 1 Ω. Find loop current and voltage on the 3 Ω resistor.',
                 steps: [
                   {
-                    label: 'KVL',
+                    label: 'Assume a current direction',
+                    content:
+                      'Let I flow out of the source + terminal through the 3 Ω then the 1 Ω and back.',
+                  },
+                  {
+                    label: 'Write KVL',
                     content:
                       'Starting at the source − terminal and going with the current: +12 − 3I − 1I = 0.',
                   },
@@ -1137,11 +1459,38 @@ export const courses: Course[] = [
                     content: '12 = 4I → I = 3 A.',
                   },
                   {
-                    label: 'Element voltage',
-                    content: 'V₃Ω = 3I = 9 V; V₁Ω = 3 V; 9 + 3 = 12 checks KVL.',
+                    label: 'Element voltages',
+                    content: 'V₃Ω = 3I = 9 V; V₁Ω = 1·I = 3 V.',
+                  },
+                  {
+                    label: 'KVL check',
+                    content: '9 + 3 = 12 V — drops sum to the source. Good.',
                   },
                 ],
                 answer: 'I = 3 A (9 V on the 3 Ω)',
+              },
+              {
+                id: 'we-kcl',
+                title: 'Simple node (KCL)',
+                problem:
+                  'Three wires meet at a node. Currents into the node: 2 A and 3 A. One wire leaves with unknown I_out. Find I_out.',
+                steps: [
+                  {
+                    label: 'State KCL',
+                    content:
+                      'Sum of currents into the node equals sum leaving (steady state).',
+                  },
+                  {
+                    label: 'Apply',
+                    content: '2 + 3 = I_out → I_out = 5 A.',
+                  },
+                  {
+                    label: 'Algebraic form',
+                    content:
+                      'If “leaving positive”: −2 − 3 + I_out = 0 → same result. Convention choice does not change physics.',
+                  },
+                ],
+                answer: '5 A',
               },
             ],
             quiz: [
@@ -1163,6 +1512,20 @@ export const courses: Course[] = [
                 ],
                 correctIndex: 1,
                 explanation: 'Algebraic sum of signed voltages around a loop is zero.',
+              },
+              {
+                id: 'q-kvl-3',
+                prompt: '12 V series with 4 Ω total resistance. Loop current?',
+                choices: ['0.3 A', '3 A', '12 A', '48 A'],
+                correctIndex: 1,
+                explanation: 'I = V/R = 12/4 = 3 A.',
+              },
+              {
+                id: 'q-kvl-4',
+                prompt: 'Two currents of 1 A and 4 A enter a node; one wire leaves. Leaving current is…',
+                choices: ['3 A', '5 A', '4 A', '0'],
+                correctIndex: 1,
+                explanation: 'KCL: 1 + 4 = 5 A leaving.',
               },
             ],
           },
@@ -1195,27 +1558,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Use PV = nRT with consistent units, convert °C to K, and reason about isothermal, isobaric, and isochoric changes.',
+                  'By the end of this lesson you should be able to: (1) use PV = nRT with consistent units and absolute temperature; (2) convert °C → K before substituting; (3) specialize to isothermal (PV = const), isochoric (P/T = const), and isobaric (V/T = const) processes; (4) catch unit mismatches between R and (P, V).',
               },
               {
                 heading: 'Model idea',
                 body:
-                  'An ideal gas ignores intermolecular forces and molecule size — excellent for many dilute gases. The equation of state ties four quantities so three determine the fourth for a fixed mass/mole amount.',
+                  'An ideal gas ignores intermolecular forces and molecule volume — a strong approximation for many dilute gases away from liquefaction. The equation of state ties four quantities (P, V, n, T) so any three determine the fourth for a fixed chemical amount. It is a constitutive model, not a universal law of all matter.',
               },
               {
                 heading: 'Equation of state',
                 body:
-                  'PV = nRT with T absolute (Kelvin). R ≈ 8.314 J/(mol·K) when P·V is in joules. Intensive form for specific volume v: Pv = RT (per mole) or use mass-based R̃ carefully — do not mix molar and mass bases.',
+                  'PV = nRT with T absolute (Kelvin). Common R ≈ 8.314 J/(mol·K) when P·V is in joules (Pa·m³). Other unit systems need a matching R (e.g. 0.0821 L·atm/(mol·K)). Intensive forms: Pv = RT per mole, or a mass-based gas constant — do not mix molar and mass bases in one equation.',
               },
               {
-                heading: 'Processes',
+                heading: 'Why absolute temperature',
                 body:
-                  'Isothermal (T fixed): PV = const. Isochoric (V fixed): P/T = const. Isobaric (P fixed): V/T = const. Name the constraint first, then simplify PV = nRT.',
+                  'T = 0 in PV = nRT is absolute zero, not 0 °C. Using Celsius would claim zero pressure at the ice point, which is false. Always convert: T(K) = T(°C) + 273.15 (or +273 for rough work).',
+              },
+              {
+                heading: 'Named processes',
+                body:
+                  'Isothermal (T fixed): PV = const for fixed n. Isochoric (V fixed): P/T = const. Isobaric (P fixed): V/T = const. Name the constraint first, then cancel the fixed symbols in PV = nRT. Real devices only approximate these ideals, but the limits organize problem solving.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Using Celsius in PV = nRT. Mixing R = 8.314 with pressure in atm and volume in liters without the matching R. Treating “constant pressure” as constant volume.',
+                  'Using Celsius in PV = nRT. Mixing R = 8.314 with pressure in atm and volume in liters without the matching R. Treating “constant pressure” as constant volume. Forgetting n (or mass) when comparing two states.',
               },
             ],
             workedExamples: [
@@ -1229,14 +1597,18 @@ export const courses: Course[] = [
                     content: 'P = nRT / V.',
                   },
                   {
-                    label: 'Compute',
+                    label: 'Substitute',
                     content:
-                      'P = (1)(8.314)(300)/0.0821 = 2494.2 / 0.0821 ≈ 30,380 Pa ≈ 30.4 kPa.',
+                      'P = (1)(8.314)(300)/0.0821 = 2494.2 / 0.0821.',
+                  },
+                  {
+                    label: 'Compute',
+                    content: 'P ≈ 30,380 Pa ≈ 30.4 kPa.',
                   },
                   {
                     label: 'Units check',
                     content:
-                      'J = N·m, so J/m³ = N/m² = Pa. The units hang together.',
+                      'J = N·m, so J/m³ = N/m² = Pa. The units hang together with this R.',
                   },
                 ],
                 answer: '≈ 30.4 kPa',
@@ -1248,15 +1620,42 @@ export const courses: Course[] = [
                   'Ideal gas at P₁ = 100 kPa, V₁ = 2 L is compressed isothermally to V₂ = 1 L. Find P₂.',
                 steps: [
                   {
-                    label: 'Use PV = const',
-                    content: 'T fixed ⇒ P₁V₁ = P₂V₂.',
+                    label: 'Identify process',
+                    content: 'Isothermal ⇒ T fixed ⇒ for fixed n, P₁V₁ = P₂V₂.',
                   },
                   {
                     label: 'Solve',
-                    content: 'P₂ = P₁ V₁/V₂ = 100 · 2/1 = 200 kPa.',
+                    content: 'P₂ = P₁ V₁/V₂ = 100 · (2/1) = 200 kPa.',
+                  },
+                  {
+                    label: 'Intuition',
+                    content:
+                      'Halving volume at fixed T doubles pressure — Boyle’s law special case of the ideal gas law.',
                   },
                 ],
                 answer: '200 kPa',
+              },
+              {
+                id: 'we-ig-temp',
+                title: 'Isochoric heat-up',
+                problem:
+                  'Gas in a rigid tank (V fixed) at 300 K and 200 kPa is heated to 600 K. Find P₂.',
+                steps: [
+                  {
+                    label: 'Constraint',
+                    content: 'Rigid tank ⇒ V fixed, n fixed ⇒ P/T = const ⇒ P₂/P₁ = T₂/T₁.',
+                  },
+                  {
+                    label: 'Compute',
+                    content: 'P₂ = 200 · (600/300) = 400 kPa.',
+                  },
+                  {
+                    label: 'Note',
+                    content:
+                      'Temperatures were already absolute. If they had been 27 °C and 327 °C, you would convert first — the ratio (327+273)/(27+273) is the same 600/300 here.',
+                  },
+                ],
+                answer: '400 kPa',
               },
             ],
             quiz: [
@@ -1273,6 +1672,25 @@ export const courses: Course[] = [
                 choices: ['°C', '°F', 'Kelvin (absolute)', 'Any scale'],
                 correctIndex: 2,
                 explanation: 'Absolute temperature — Kelvin (or Rankine with a matched R).',
+              },
+              {
+                id: 'q-ig-3',
+                prompt: 'Isothermal compression of an ideal gas to half volume…',
+                choices: [
+                  'Halves pressure',
+                  'Doubles pressure',
+                  'Leaves pressure unchanged',
+                  'Zeros pressure',
+                ],
+                correctIndex: 1,
+                explanation: 'PV = const ⇒ P₂ = P₁ (V₁/V₂) = 2 P₁.',
+              },
+              {
+                id: 'q-ig-4',
+                prompt: '25 °C in an ideal-gas calculation should be entered as…',
+                choices: ['25 K', '298 K (approx)', '0 K', '77 K'],
+                correctIndex: 1,
+                explanation: 'T(K) ≈ 25 + 273 = 298 K.',
               },
             ],
           },
@@ -1292,27 +1710,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Apply a closed-system energy balance with a stated sign convention, and compute Carnot efficiency from T_H and T_C.',
+                  'By the end of this lesson you should be able to: (1) apply a closed-system energy balance with a stated sign convention; (2) interpret Q in, W out, and ΔU in words; (3) use ΔU_cycle = 0 to relate net heat and net work over a cycle; (4) compute Carnot efficiency η_C = 1 − T_C/T_H with absolute temperatures.',
               },
               {
                 heading: 'Energy balance',
                 body:
-                  'For a closed system (no mass crossing the boundary), ΔU = Q − W with this course’s convention: Q positive when heat enters, W positive when the system does work on the surroundings. Other textbooks flip the work sign — always check the local convention before copying a formula.',
+                  'For a closed system (no mass crossing the boundary), this course uses ΔU = Q − W: Q positive when heat enters the system, W positive when the system does work on the surroundings. Other textbooks write ΔU = Q + W with W in positive — always check the local convention before copying a formula from another source.',
               },
               {
                 heading: 'Reading the signs',
                 body:
-                  'Heat in tends to raise U or pay for work out. Work out without heat in depletes U. Cycles return to the same state so ΔU_cycle = 0, which forces W_net = Q_net over a cycle.',
+                  'Heat in tends to raise stored energy U or pay for work out. Work out without heat in depletes U. If both Q and W are 10 kJ with our convention, ΔU = 0 — energy throughput with no storage change. Cycles return to the same state, so ΔU_cycle = 0 and therefore W_net = Q_net over a full cycle.',
               },
               {
-                heading: 'Carnot limit',
+                heading: 'Why Carnot is a ceiling',
                 body:
-                  'Between hot reservoir T_H and cold T_C (absolute), no engine is more efficient than η_C = 1 − T_C/T_H. Real engines fall short due to irreversibilities; Carnot is the thermometer-scale ceiling, not a promise.',
+                  'Between a hot reservoir at T_H and a cold reservoir at T_C (absolute), no heat engine is more efficient than η_C = 1 − T_C/T_H. The result follows from the second law; treat it as a hard upper bound set by the two temperatures. Real engines fall short because of friction, heat leaks, and finite-temperature-difference transfers.',
+              },
+              {
+                heading: 'Closed vs open systems',
+                body:
+                  'Closed-system ΔU = Q − W is not the whole story for turbines and nozzles, where mass flows and enthalpy appears. If mass crosses the boundary, you need an open-system (control volume) balance — flagged here so you do not force ΔU = Q − W onto a steady-flow device.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Mixing °C into η_C. Using η = T_C/T_H instead of 1 − T_C/T_H. Applying ΔU = Q − W to an open device without enthalpy/flow work terms.',
+                  'Mixing °C into η_C. Using η = T_C/T_H instead of 1 − T_C/T_H. Flipping the work sign relative to the stated convention. Applying ΔU = Q − W to an open device without enthalpy/flow work terms.',
               },
             ],
             workedExamples: [
@@ -1323,11 +1746,15 @@ export const courses: Course[] = [
                 steps: [
                   {
                     label: 'Confirm absolute temperatures',
-                    content: 'Both given in K — good.',
+                    content: 'Both given in kelvin — good to use directly.',
                   },
                   {
-                    label: 'Apply formula',
-                    content: 'η_C = 1 − T_C/T_H = 1 − 300/600 = 0.5 = 50%.',
+                    label: 'Apply Carnot formula',
+                    content: 'η_C = 1 − T_C/T_H = 1 − 300/600 = 0.5.',
+                  },
+                  {
+                    label: 'Report',
+                    content: 'Maximum efficiency is 50%. Any real engine between these reservoirs is strictly less.',
                   },
                 ],
                 answer: '50%',
@@ -1339,15 +1766,41 @@ export const courses: Course[] = [
                   'A closed system takes in Q = 20 kJ and does W = 5 kJ of work. Find ΔU.',
                 steps: [
                   {
-                    label: 'Convention',
+                    label: 'Recall convention',
                     content: 'ΔU = Q − W with W out positive.',
                   },
                   {
-                    label: 'Compute',
+                    label: 'Substitute',
                     content: 'ΔU = 20 − 5 = 15 kJ.',
+                  },
+                  {
+                    label: 'Interpret',
+                    content:
+                      'Of the 20 kJ heat in, 5 kJ left as work and 15 kJ stayed as increased internal energy.',
                   },
                 ],
                 answer: '15 kJ',
+              },
+              {
+                id: 'we-cycle',
+                title: 'Cycle energy',
+                problem:
+                  'A heat engine cycle absorbs Q_H = 100 kJ and rejects Q_C = 60 kJ per cycle. Find W_net.',
+                steps: [
+                  {
+                    label: 'Cycle fact',
+                    content: 'ΔU_cycle = 0 ⇒ W_net = Q_net = Q_H − Q_C for a standard engine accounting.',
+                  },
+                  {
+                    label: 'Compute',
+                    content: 'W_net = 100 − 60 = 40 kJ per cycle.',
+                  },
+                  {
+                    label: 'Efficiency',
+                    content: 'η = W_net/Q_H = 40/100 = 40% (compare to Carnot only if T_H, T_C are known).',
+                  },
+                ],
+                answer: '40 kJ/cycle',
               },
             ],
             quiz: [
@@ -1364,6 +1817,25 @@ export const courses: Course[] = [
                 choices: ['20 kJ', '0', '−10 kJ', '10 kJ'],
                 correctIndex: 1,
                 explanation: 'ΔU = 10 − 10 = 0.',
+              },
+              {
+                id: 'q-carnot-3',
+                prompt: 'Raising T_H while holding T_C fixed…',
+                choices: [
+                  'Lowers Carnot efficiency',
+                  'Raises Carnot efficiency',
+                  'Leaves η_C unchanged',
+                  'Makes η_C negative',
+                ],
+                correctIndex: 1,
+                explanation: 'η_C = 1 − T_C/T_H increases as T_H increases.',
+              },
+              {
+                id: 'q-carnot-4',
+                prompt: 'Over a full thermodynamic cycle, ΔU is…',
+                choices: ['Equal to Q_H', 'Zero', 'Equal to W_net always numerically without signs', 'Undefined'],
+                correctIndex: 1,
+                explanation: 'State function U returns to the start ⇒ ΔU_cycle = 0.',
               },
             ],
           },
@@ -1396,27 +1868,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Compute engineering stress and strain from load and geometry, use σ = E ε in the linear elastic range, and estimate lateral strain from Poisson’s ratio.',
+                  'By the end of this lesson you should be able to: (1) compute engineering stress σ = F/A₀ and strain ε = ΔL/L₀; (2) use Hooke’s law σ = E ε in the linear elastic range with consistent units; (3) estimate lateral strain from Poisson’s ratio; (4) explain why we normalize force and elongation before comparing materials.',
               },
               {
                 heading: 'Why normalize force and stretch',
                 body:
-                  'Raw force depends on specimen size; raw elongation depends on length. Stress and strain let you compare materials and feed constitutive laws that are (approximately) size-independent.',
+                  'Raw force depends on specimen cross section; raw elongation depends on gauge length. Stress and strain strip out geometry so you can compare steel to aluminum and feed constitutive laws that are (approximately) size-independent. Design then multiplies stress by area to recover force.',
               },
               {
                 heading: 'Definitions',
                 body:
-                  'Engineering stress σ = F/A₀ (original cross section). Engineering strain ε = ΔL/L₀ (original length). Young’s modulus E is the slope of the linear elastic σ–ε line: σ = E ε.',
+                  'Engineering stress σ = F/A₀ uses the original cross section. Engineering strain ε = ΔL/L₀ uses the original length. True stress/strain use instantaneous geometry — important in plasticity, but most intro elastic calculations stay with engineering measures.',
               },
               {
-                heading: 'Poisson',
+                heading: 'Hooke’s law and Young’s modulus',
                 body:
-                  'Stretching axially usually shrinks the cross section: ν = −ε_lateral / ε_axial. Metals often ν ≈ 0.3; rubber can approach 0.5 (nearly incompressible).',
+                  'In the linear elastic regime, σ = E ε. Young’s modulus E is the slope of the σ–ε line — a material stiffness, not a strength. Strength (yield, ultimate) is a stress level; E is how steeply stress rises with strain before yield.',
+              },
+              {
+                heading: 'Poisson’s ratio',
+                body:
+                  'Axial stretch usually comes with lateral contraction: ν = −ε_lateral / ε_axial. The minus sign makes ν positive when lateral strain is opposite in sign to axial strain. Metals often ν ≈ 0.3; rubber can approach 0.5 (nearly incompressible).',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Using instantaneous area when the problem asks for engineering stress. Mixing MPa and GPa when computing ε = σ/E. Forgetting the minus sign in Poisson’s definition (ν is reported positive).',
+                  'Using instantaneous area when the problem asks for engineering stress. Mixing MPa and GPa when computing ε = σ/E (100 MPa / 200 GPa = 5×10⁻⁴, not 0.5). Forgetting the minus in Poisson’s definition while still reporting ν > 0. Treating E as a failure stress.',
               },
             ],
             workedExamples: [
@@ -1428,15 +1905,20 @@ export const courses: Course[] = [
                   {
                     label: 'Align units',
                     content:
-                      '100 MPa = 100×10⁶ Pa; 200 GPa = 200×10⁹ Pa.',
+                      '100 MPa = 100×10⁶ Pa; 200 GPa = 200×10⁹ Pa. Same base units required before dividing.',
                   },
                   {
-                    label: 'Strain',
-                    content: 'ε = σ/E = 100e6 / 200e9 = 5×10⁻⁴ (dimensionless).',
+                    label: 'Strain from Hooke',
+                    content: 'ε = σ/E = 100×10⁶ / 200×10⁹ = 5×10⁻⁴ (dimensionless).',
                   },
                   {
                     label: 'Elongation',
                     content: 'ΔL = ε L₀ = 5×10⁻⁴ · 1 m = 5×10⁻⁴ m = 0.5 mm.',
+                  },
+                  {
+                    label: 'Feel check',
+                    content:
+                      'Half a millimeter on a meter rod under 100 MPa is typical for steel — stiff, small strain.',
                   },
                 ],
                 answer: '0.5 mm',
@@ -1445,19 +1927,46 @@ export const courses: Course[] = [
                 id: 'we-poisson',
                 title: 'Lateral strain',
                 problem:
-                  'Axial strain ε_z = 0.001, ν = 0.3. Find lateral strain magnitude.',
+                  'Axial strain ε_z = 0.001, ν = 0.3. Find lateral strain.',
                 steps: [
                   {
                     label: 'Poisson definition',
                     content: 'ε_lateral = −ν ε_axial = −0.3 · 0.001 = −3×10⁻⁴.',
                   },
                   {
-                    label: 'Interpret',
+                    label: 'Interpret sign',
                     content:
-                      'Negative means contraction when the axis is in tension — magnitude 3×10⁻⁴.',
+                      'Negative means contraction when the axis is in tension. Magnitude 3×10⁻⁴.',
+                  },
+                  {
+                    label: 'Diameter change idea',
+                    content:
+                      'If original diameter is D₀, ΔD ≈ ε_lateral D₀ = −3×10⁻⁴ D₀ (slight thinning).',
                   },
                 ],
-                answer: '3×10⁻⁴ (contraction)',
+                answer: '−3×10⁻⁴ (contraction)',
+              },
+              {
+                id: 'we-stress',
+                title: 'Stress from load',
+                problem:
+                  'A rod with A₀ = 100 mm² carries F = 20 kN. Find engineering stress in MPa.',
+                steps: [
+                  {
+                    label: 'Convert area',
+                    content: '100 mm² = 100×10⁻⁶ m² = 1×10⁻⁴ m².',
+                  },
+                  {
+                    label: 'σ = F/A₀',
+                    content: 'σ = 20,000 N / 1×10⁻⁴ m² = 2×10⁸ Pa = 200 MPa.',
+                  },
+                  {
+                    label: 'Shortcut',
+                    content:
+                      'In convenient units: MPa = N/mm², so 20,000 N / 100 mm² = 200 MPa — same result.',
+                  },
+                ],
+                answer: '200 MPa',
               },
             ],
             quiz: [
@@ -1474,6 +1983,25 @@ export const courses: Course[] = [
                 choices: ['σ E', 'σ / E', 'E / σ', 'σ² / E'],
                 correctIndex: 1,
                 explanation: 'Hooke’s law: σ = E ε ⇒ ε = σ/E.',
+              },
+              {
+                id: 'q-ss-3',
+                prompt: 'Poisson’s ratio ν is…',
+                choices: [
+                  'ε_lateral / ε_axial without a minus (always negative)',
+                  '−ε_lateral / ε_axial (reported positive for usual contraction)',
+                  'Equal to E',
+                  'A stress unit',
+                ],
+                correctIndex: 1,
+                explanation: 'ν = −ε_lateral/ε_axial so ordinary materials have ν > 0.',
+              },
+              {
+                id: 'q-ss-4',
+                prompt: '100 MPa on a material with E = 200 GPa gives strain…',
+                choices: ['0.5', '0.05', '5×10⁻⁴', '200'],
+                correctIndex: 2,
+                explanation: 'ε = 100×10⁶/200×10⁹ = 5×10⁻⁴.',
               },
             ],
           },
@@ -1493,27 +2021,32 @@ export const courses: Course[] = [
               {
                 heading: 'Learning objectives',
                 body:
-                  'Interpret the Hall–Petch relation qualitatively and quantitatively, and explain why many diffusion/reaction rates rise sharply with temperature.',
+                  'By the end of this lesson you should be able to: (1) explain why grain boundaries impede dislocation motion; (2) use σ_y = σ₀ + k/√d qualitatively and in a simple plug-in; (3) state why Arrhenius rates depend so strongly on temperature; (4) avoid extrapolating Hall–Petch to arbitrarily small d or putting °C into Q/RT.',
               },
               {
                 heading: 'Grain boundaries as obstacles',
                 body:
-                  'Dislocations carry plastic deformation. Grain boundaries impede dislocation motion; smaller grains mean more boundary area per volume, so higher stress is needed to yield — until other mechanisms intervene at extreme sizes.',
+                  'Plastic deformation in metals is carried by dislocations — line defects that glide under shear. Grain boundaries are interfaces between differently oriented crystals; they impede dislocation motion. Smaller grains mean more boundary area per volume, so a higher applied stress is needed to yield — the microstructural idea behind Hall–Petch strengthening.',
               },
               {
-                heading: 'Hall–Petch',
+                heading: 'Hall–Petch relation',
                 body:
-                  'σ_y = σ₀ + k / √d, where d is grain diameter, σ₀ is a friction stress, and k is a material strengthening coefficient. Halving d multiplies the k/√d term by √2 ≈ 1.41 — a real but not infinite boost.',
+                  'σ_y = σ₀ + k / √d, where d is mean grain diameter, σ₀ is a lattice friction stress, and k is a strengthening coefficient. Halving d multiplies the k/√d term by √2 ≈ 1.41. The boost is real but not infinite: at nanocrystalline sizes other mechanisms can dominate and the classic form may fail.',
               },
               {
                 heading: 'Arrhenius rates',
                 body:
-                  'Diffusion and many activated processes scale as rate ∝ exp(−Q/RT), with activation energy Q and gas constant R. A modest rise in T can change rates by orders of magnitude because of the exponential.',
+                  'Diffusion, creep, and many activated chemical processes scale as rate ∝ exp(−Q/RT), with activation energy Q, gas constant R, and absolute temperature T. Because the exponent contains 1/T, a modest temperature rise can change rates by orders of magnitude — process windows care about tens of degrees.',
+              },
+              {
+                heading: 'Two ideas, one materials mindset',
+                body:
+                  'Hall–Petch is about structure controlling strength at a fixed temperature. Arrhenius is about temperature controlling how fast structure can change (diffusion, recovery, grain growth). Raising T can accelerate diffusion that coarsens grains — which then lowers the Hall–Petch contribution. Strength and kinetics are coupled in heat treatment.',
               },
               {
                 heading: 'Common mistakes',
                 body:
-                  'Assuming Hall–Petch continues forever as d → 0 (nanocrystalline regimes can deviate). Putting T in °C inside Q/RT. Confusing “higher T raises rate” with “higher T always raises yield strength” (creep softens materials at high T).',
+                  'Assuming Hall–Petch continues forever as d → 0. Putting T in °C inside Q/RT. Confusing “higher T raises rate” with “higher T always raises yield strength” (creep and recovery soften materials at high T). Mixing up σ₀ (friction stress) with E (modulus).',
               },
             ],
             workedExamples: [
@@ -1525,31 +2058,62 @@ export const courses: Course[] = [
                   {
                     label: 'Inspect the formula',
                     content:
-                      'σ_y = σ₀ + k/√d. If d → d/2, √d → √d/√2, so k/√d increases by √2.',
+                      'σ_y = σ₀ + k/√d. If d → d/2, √d shrinks by √2, so k/√d grows by √2.',
                   },
                   {
                     label: 'Conclude',
                     content:
-                      'Yield strength increases (how much depends on how large k/√d is compared with σ₀).',
+                      'Yield strength increases. How much depends on whether k/√d is large compared with σ₀.',
+                  },
+                  {
+                    label: 'Caveat',
+                    content:
+                      'At extremely fine grain sizes the simple Hall–Petch form may not hold — do not extrapolate blindly.',
                   },
                 ],
                 answer: 'Increase yield strength',
               },
               {
+                id: 'we-hp-num',
+                title: 'Numeric Hall–Petch',
+                problem:
+                  'σ₀ = 100 MPa, k = 0.5 MPa·m¹/², d = 25×10⁻⁶ m. Estimate σ_y.',
+                steps: [
+                  {
+                    label: 'Compute √d',
+                    content: 'd = 2.5×10⁻⁵ m ⇒ √d = √(2.5×10⁻⁵) ≈ 5.0×10⁻³ m¹/².',
+                  },
+                  {
+                    label: 'Grain-boundary term',
+                    content: 'k/√d = 0.5 / 0.005 = 100 MPa.',
+                  },
+                  {
+                    label: 'Yield strength',
+                    content: 'σ_y = 100 + 100 = 200 MPa.',
+                  },
+                ],
+                answer: '200 MPa',
+              },
+              {
                 id: 'we-arrhenius',
                 title: 'Arrhenius temperature sensitivity',
                 problem:
-                  'If a diffusion rate doubles when T increases at fixed Q, what feature of the law explains the strong T dependence?',
+                  'Why can a diffusion rate change sharply from a relatively small temperature increase at fixed Q?',
                 steps: [
                   {
                     label: 'Look at the form',
                     content:
-                      'rate ∝ exp(−Q/RT). The exponent contains 1/T, so small fractional changes in T change the exponent linearly and the rate exponentially.',
+                      'rate ∝ exp(−Q/RT). The exponent depends on 1/T, so ΔT changes the exponent by about (Q/R) Δ(1/T).',
                   },
                   {
-                    label: 'Takeaway',
+                    label: 'Exponential amplification',
                     content:
-                      'Thermally activated kinetics are steep in T — tables and process windows care about tens of degrees, not only hundreds.',
+                      'A linear change in the exponent becomes a multiplicative change in the rate — that is why kinetics are steep in T.',
+                  },
+                  {
+                    label: 'Practical takeaway',
+                    content:
+                      'Heat-treatment and diffusion schedules specify temperatures tightly; “about 500 °C” is not the same as 520 °C when Q is large.',
                   },
                 ],
                 answer: 'Exponential dependence on −1/T',
@@ -1579,6 +2143,20 @@ export const courses: Course[] = [
                 ],
                 correctIndex: 0,
                 explanation: 'The classic factor is exp(−Q/RT).',
+              },
+              {
+                id: 'q-hp-3',
+                prompt: 'In σ_y = σ₀ + k/√d, decreasing d by 4× multiplies k/√d by…',
+                choices: ['1/2', '2', '4', '16'],
+                correctIndex: 1,
+                explanation: '√d shrinks by 2, so k/√d doubles.',
+              },
+              {
+                id: 'q-hp-4',
+                prompt: 'Activation energy Q in Arrhenius expressions should be paired with T in…',
+                choices: ['°C', '°F', 'Kelvin (absolute)', 'Any convenient scale'],
+                correctIndex: 2,
+                explanation: 'Q/RT uses absolute temperature.',
               },
             ],
           },
