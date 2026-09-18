@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { Course } from '../types'
 import { ProgressRing } from './ProgressRing'
+import { CourseArt } from './CourseArt'
 import type { CSSProperties } from 'react'
 
 interface Props {
@@ -17,9 +18,10 @@ export function CourseCard({ course, mastery }: Props) {
       style={{ '--course-color': course.color, '--course-accent': course.accent } as CSSProperties}
     >
       <div className="course-card__glow" aria-hidden />
+      <div className="course-card__motif" aria-hidden />
       <div className="course-card__top">
         <span className="course-card__icon" aria-hidden>
-          {course.icon}
+          <CourseArt courseId={course.id} size={40} />
         </span>
         <ProgressRing value={mastery} size={56} stroke={5} color={course.color} />
       </div>

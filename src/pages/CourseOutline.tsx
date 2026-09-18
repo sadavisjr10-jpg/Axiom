@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 import { getCourse } from '../data/courses'
 import { ProgressRing } from '../components/ProgressRing'
+import { CourseArt } from '../components/CourseArt'
 import type { ProgressState } from '../types'
 import type { CSSProperties } from 'react'
 
@@ -22,6 +23,11 @@ export function CourseOutline({ progress }: Props) {
   }
 
   const mastery = progress.courseMastery[course.id] ?? 0
+  const totalLessons = course.modules.reduce((n, m) => n + m.lessons.length, 0)
+  const doneLessons = course.modules.reduce(
+    (n, m) => n + m.lessons.filter((l) => progress.completedLessons.includes(l.id)).length,
+    0,
+  )
 
   return (
     <div className="page">
@@ -34,41 +40,81 @@ export function CourseOutline({ progress }: Props) {
         className="course-hero"
         style={{ '--course-color': course.color } as CSSProperties}
       >
-        <div>
+        <div className="course-hero__art" aria-hidden>
+          <CourseArt courseId={course.id} size={88} />
+        </div>
+        <div className="course-hero__copy">
           <p className="eyebrow">{course.code}</p>
           <h1>{course.title}</h1>
           <p className="lede">{course.description}</p>
+          <div className="course-hero__progress">
+            <div className="bar course-hero__bar" aria-hidden>
+              <div
+                className="bar__fill"
+                style={{ width: `${mastery}%`, background: course.color }}
+              />
+            </div>
+            <span className="muted">
+              {doneLessons}/{totalLessons} lessons · {mastery}% mastery
+            </span>
+          </div>
         </div>
         <ProgressRing value={mastery} size={88} stroke={7} color={course.color} label="Course mastery" />
       </header>
 
-      <div className="modules">
-        {course.modules.map((mod, mi) => (
-          <section key={mod.id} className="module-block">
-            <header>
-              <span className="module-index">Module {mi + 1}</span>
-              <h2>{mod.title}</h2>
-              <p>{mod.description}</p>
-            </header>
-            <ul className="lesson-list">
-              {mod.lessons.map((lesson) => {
-                const done = progress.completedLessons.includes(lesson.id)
-                return (
-                  <li key={lesson.id}>
-                    <Link to={`/learn/${course.id}/${encodeURIComponent(lesson.id)}`}>
-                      <span className={`status-dot ${done ? 'is-done' : ''}`} aria-hidden />
-                      <div>
-                        <strong>{lesson.title}</strong>
-                        <span>{lesson.summary}</span>
-                      </div>
-                      <span className="lesson-list__go">Open →</span>
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ))}
+      <div className="modules" style={{ '--course-color': course.color } as CSSProperties}>
+        {course.modules.map((mod, mi) => {
+          const modDone = mod.lessons.filter((l) =>
+            progress.completedLessons.includes(l.id),
+          ).length
+          const modPct = Math.round((modDone / Math.max(1, mod.lessons.length)) * 100)
+          return (
+            <section key={mod.id} className="module-block">
+              <header className="module-block__header">
+                <div>
+                  <span className="module-index">Module {mi + 1}</span>
+                  <h2>{mod.title}</h2>
+                  <p className="module-block__desc">{mod.description}</p>
+                </div>
+                <div className="module-block__meta" aria-label={`${modDone} of ${mod.lessons.length} lessons complete`}>
+                  <span className="module-block__count">
+                    {modDone}/{mod.lessons.length}
+                  </span>
+                  <div className="bar module-block__bar" aria-hidden>
+                    <div
+                      className="bar__fill"
+                      style={{
+                        width: `${modPct}%`,
+                        background: 'var(--course-color, var(--accent))',
+                      }}
+                    />
+                  </div>
+                </div>
+              </header>
+              <ol className="lesson-list">
+                {mod.lessons.map((lesson, li) => {
+                  const done = progress.completedLessons.includes(lesson.id)
+                  return (
+                    <li key={lesson.id}>
+                      <Link
+                        to={`/learn/${course.id}/${encodeURIComponent(lesson.id)}`}
+                        className={done ? 'is-done' : undefined}
+                      >
+                        <span className={`status-dot ${done ? 'is-done' : ''}`} aria-hidden />
+                        <div>
+                          <span className="lesson-list__n">Lesson {li + 1}</span>
+                          <strong>{lesson.title}</strong>
+                          <span>{lesson.summary}</span>
+                        </div>
+                        <span className="lesson-list__go">{done ? 'Review →' : 'Open →'}</span>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ol>
+            </section>
+          )
+        })}
       </div>
     </div>
   )
