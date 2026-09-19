@@ -3,13 +3,16 @@
 export const SS_E = 800
 export const SS_EY = 0.08
 export const SS_SY = SS_E * SS_EY // 64
+/** End of Lüders-style plateau (mild-steel teaching curve). */
+export const SS_PLATEAU_END = 0.14
 
-/** Piecewise σ(ε): elastic → short plateau → hardening. ε in [0, 0.22]. */
+/** Piecewise σ(ε): elastic → longer flat plateau → hardening. ε in [0, 0.22]. */
 export function sigma(eps: number): number {
   const e = Math.max(0, eps)
   if (e <= SS_EY) return SS_E * e
-  if (e <= 0.12) return SS_SY + (e - SS_EY) * 40
-  return SS_SY + 0.04 * 40 + (e - 0.12) * 220
+  // Flat/very gentle plateau for Hibbeler mild-steel feel
+  if (e <= SS_PLATEAU_END) return SS_SY + (e - SS_EY) * 12
+  return SS_SY + (SS_PLATEAU_END - SS_EY) * 12 + (e - SS_PLATEAU_END) * 260
 }
 
 export type StressStrainMap = {
@@ -55,4 +58,20 @@ export function stressStrainPath(
 
 export function clamp(n: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, n))
+}
+
+/** Position for E label: midpoint of elastic chord, offset clear of the stroke. */
+export function elasticChordLabel(
+  map: StressStrainMap,
+  clear = 8,
+): { x: number; y: number } {
+  const yx = map.mapX(SS_EY)
+  const yy = map.mapY(SS_SY)
+  const mx = (map.ox + yx) / 2
+  const my = (map.oy + yy) / 2
+  const dx = yx - map.ox
+  const dy = yy - map.oy
+  const len = Math.hypot(dx, dy) || 1
+  // Offset up-left of the rising chord (away from hardening branch)
+  return { x: mx + (dy / len) * clear, y: my + (-dx / len) * clear }
 }

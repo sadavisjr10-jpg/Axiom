@@ -6,6 +6,7 @@ import {
   FigurePlate,
   GroundSymbol,
   GuideLine,
+  LabelClear,
   PlotPoint,
   ResistorPath,
   SectionFrame,
@@ -13,7 +14,13 @@ import {
   VectorArrow,
   type DiagramIds,
 } from './diagramPrimitives'
-import { SS_EY, SS_SY, makeStressStrainMap, stressStrainPath } from '../../lib/materialsCurve'
+import {
+  SS_EY,
+  SS_SY,
+  elasticChordLabel,
+  makeStressStrainMap,
+  stressStrainPath,
+} from '../../lib/materialsCurve'
 
 interface Props {
   id: SectionVisualId
@@ -44,6 +51,16 @@ const SECTION_PLATES: Partial<Record<SectionVisualId, { figureId: string; title:
     figureId: '6-1',
     title: 'Engineering stress–strain curve',
     caption: 'Linear elastic region with slope E up to yield σᵧ, then plateau and hardening.',
+  },
+  'series-resistors': {
+    figureId: '4-1',
+    title: 'Voltage divider',
+    caption: 'Series R₁ and R₂ share Vin; tap voltage is Vₒᵤₜ = Vin · R₂/(R₁+R₂).',
+  },
+  'divider-formula': {
+    figureId: '4-1',
+    title: 'Voltage divider',
+    caption: 'Series R₁ and R₂ share Vin; tap voltage is Vₒᵤₜ = Vin · R₂/(R₁+R₂).',
   },
 }
 
@@ -350,7 +367,7 @@ function FbdBlock({ ids }: { ids: DiagramIds }) {
       <FigLabel x={172} y={26} variant="ink">
         N
       </FigLabel>
-      <FigLabel x={172} y={104} variant="ink">
+      <FigLabel x={178} y={96} variant="ink">
         mg
       </FigLabel>
       <FigLabel x={250} y={50} variant="ink">
@@ -408,16 +425,18 @@ function ParticleKnot({ ids }: { ids: DiagramIds }) {
       <line x1={240} y1={18} x2={264} y2={18} className="fig-wire" />
       <VectorArrow x1={kx} y1={ky} x2={56} y2={26} ids={ids} variant="cool" />
       <VectorArrow x1={kx} y1={ky} x2={264} y2={26} ids={ids} variant="cool" />
-      <VectorArrow x1={kx} y1={ky} x2={kx} y2={110} ids={ids} variant="warm" />
+      {/* Tip ≥4uu above mass body */}
+      <VectorArrow x1={kx} y1={ky} x2={kx} y2={108} ids={ids} variant="warm" />
       <PlotPoint cx={kx} cy={ky} r={4} />
-      <BodyRect x={kx - 15} y={112} w={30} h={14} rx={2} />
-      <FigLabel x={48} y={42} variant="ink">
+      <BodyRect x={kx - 15} y={114} w={30} h={12} rx={2} />
+      {/* Labels parked off shafts (≥8uu clearance) — critical at phone width */}
+      <FigLabel x={36} y={52} variant="ink">
         T₁
       </FigLabel>
-      <FigLabel x={268} y={42} variant="ink">
+      <FigLabel x={278} y={52} variant="ink">
         T₂
       </FigLabel>
-      <FigLabel x={174} y={100} variant="ink">
+      <FigLabel x={182} y={96} variant="ink">
         W
       </FigLabel>
       <FigLabel x={16} y={122} variant="eq" className="fig-eq--collapsible">
@@ -440,14 +459,14 @@ function Divider({ ids: _ids }: { ids: DiagramIds }) {
       <PlotPoint cx={150} cy={92} r={3.5} variant="sample" className="fig-point--good" />
       <line x1={150} y1={92} x2={220} y2={92} className="fig-wire fig-wire--accent" />
       <FigLabel x={226} y={96} variant="ink">
-        V_out
+        Vₒᵤₜ
       </FigLabel>
       <ResistorPath x={150} y={96} vertical segments={4} amp={8} pitch={7} />
       <FigLabel x={168} y={118}>R₂</FigLabel>
       <line x1={150} y1={124} x2={50} y2={124} className="fig-wire" />
       <GroundSymbol x={50} y={108} />
       <FigLabel x={24} y={20} variant="eq">
-        V_out = V_in · R₂/(R₁+R₂)
+        Vₒᵤₜ = Vin · R₂/(R₁+R₂)
       </FigLabel>
     </g>
   )
@@ -461,7 +480,7 @@ function Loading() {
       </FigLabel>
       <path d="M155 34 H195" className="fig-curve" markerEnd={`url(#${SharedMarkers.arrow})`} />
       <FigLabel x={205} y={40}>
-        + R_load changes V_out
+        + R_load changes Vₒᵤₜ
       </FigLabel>
       <FigLabel x={28} y={88} variant="eq">
         R₂ ∥ R_load
@@ -585,6 +604,7 @@ function StressStrain({ ids }: { ids: DiagramIds }) {
   const d = stressStrainPath(0.22, map)
   const yx = map.mapX(SS_EY)
   const yy = map.mapY(SS_SY)
+  const eLab = elasticChordLabel(map, LabelClear.stroke)
   return (
     <g>
       <CartesianAxes ids={ids} labelX="ε" labelY="σ" ox={48} oy={108} x={28} y={16} x2={300} y2={120} />
@@ -593,10 +613,11 @@ function StressStrain({ ids }: { ids: DiagramIds }) {
       <line x1={map.ox} y1={yy} x2={yx} y2={yy} className="fig-guide" />
       <line x1={yx} y1={map.oy} x2={yx} y2={yy} className="fig-guide" />
       <PlotPoint cx={yx} cy={yy} r={3.5} variant="ring" />
-      <FigLabel x={54} y={yy - 4}>
+      {/* σᵧ along guide, clear of axis σ tip */}
+      <FigLabel x={Math.max(map.ox + 22, yx - 22)} y={yy - 6}>
         σᵧ
       </FigLabel>
-      <FigLabel x={100} y={70} variant="ink">
+      <FigLabel x={eLab.x} y={eLab.y} variant="ink">
         E
       </FigLabel>
     </g>

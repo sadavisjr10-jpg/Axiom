@@ -7,6 +7,7 @@ import {
   FigurePlate,
   GraphFrame,
   GroundSymbol,
+  LabelClear,
   PlotPoint,
   ResistorPath,
   SharedMarkers,
@@ -17,6 +18,7 @@ import {
   SS_EY,
   SS_SY,
   clamp,
+  elasticChordLabel,
   makeStressStrainMap,
   sigma,
   stressStrainPath,
@@ -531,8 +533,10 @@ function FreeBody({ className, reduced }: { className?: string; reduced: boolean
   const ids = useMemo(() => sharedIds(), [])
   const m = 2
   const a = F / m
+  const fMax = 30
   const fLenMax = narrow ? 72 : 88
-  const fLen = Math.min(Math.max(36 + F * 3.2, 36), fLenMax)
+  // Map scrub 0…fMax onto drawn length so caption N matches arrow length
+  const fLen = 36 + (F / fMax) * (fLenMax - 36)
 
   return (
     <DemoShell
@@ -554,7 +558,7 @@ function FreeBody({ className, reduced }: { className?: string; reduced: boolean
         <FigLabel x={160} y={26} variant="ink">
           N
         </FigLabel>
-        <FigLabel x={160} y={112} variant="ink">
+        <FigLabel x={168} y={98} variant="ink">
           mg
         </FigLabel>
         <FigLabel x={178 + fLen * 0.4} y={56} variant="ink">
@@ -622,6 +626,10 @@ function ForceComponents({ className, reduced }: { className?: string; reduced: 
 function ParticleEq({ className }: { className?: string }) {
   const ids = useMemo(() => sharedIds(), [])
   const narrow = useNarrowViewport()
+  // Phone: park labels further off shafts (≥ LabelClear.stroke from force lines)
+  const t1 = narrow ? { x: 28, y: 56 } : { x: 34, y: 48 }
+  const t2 = narrow ? { x: 246, y: 56 } : { x: 238, y: 48 }
+  const wLab = narrow ? { x: 162, y: 98 } : { x: 158, y: 102 }
   return (
     <DemoShell
       className={className}
@@ -635,16 +643,17 @@ function ParticleEq({ className }: { className?: string }) {
         <line x1={204} y1={22} x2={228} y2={22} className="fig-wire" />
         <VectorArrow x1={140} y1={72} x2={56} y2={28} variant="cool" ids={ids} />
         <VectorArrow x1={140} y1={72} x2={224} y2={28} variant="cool" ids={ids} />
-        <VectorArrow x1={140} y1={72} x2={140} y2={118} variant="warm" ids={ids} />
+        {/* Tip ends ≥4uu above mass body (optical tip–body gap) */}
+        <VectorArrow x1={140} y1={72} x2={140} y2={116} variant="warm" ids={ids} />
         <PlotPoint cx={140} cy={72} r={4} />
-        <BodyRect x={125} y={120} w={30} h={14} rx={2} />
-        <FigLabel x={42} y={44} variant="ink">
+        <BodyRect x={125} y={122} w={30} h={14} rx={2} />
+        <FigLabel x={t1.x} y={t1.y} variant="ink">
           T₁
         </FigLabel>
-        <FigLabel x={228} y={44} variant="ink">
+        <FigLabel x={t2.x} y={t2.y} variant="ink">
           T₂
         </FigLabel>
-        <FigLabel x={152} y={108} variant="ink">
+        <FigLabel x={wLab.x} y={wLab.y} variant="ink">
           W
         </FigLabel>
         {!narrow && (
@@ -861,8 +870,13 @@ function StressStrain({ className, reduced }: { className?: string; reduced: boo
   const showYield = eps >= SS_EY || !reduced
   const yx = map.mapX(SS_EY)
   const yy = map.mapY(SS_SY)
+  const eLab = useMemo(() => elasticChordLabel(map, LabelClear.stroke), [map])
   const px = clamp(map.mapX(eps), map.ox, 250)
   const py = clamp(map.mapY(stress), 24, map.oy)
+  // Keep σᵧ off the axis tip (σ) — especially at 375px
+  const syLabel = narrow
+    ? { x: yx - 14, y: yy - 8 }
+    : { x: Math.max(map.ox + 22, yx - 22), y: yy - 6 }
 
   return (
     <DemoShell
@@ -881,10 +895,10 @@ function StressStrain({ className, reduced }: { className?: string; reduced: boo
             <line x1={map.ox} y1={yy} x2={yx} y2={yy} className="fig-guide" />
             <line x1={yx} y1={map.oy} x2={yx} y2={yy} className="fig-guide" />
             <PlotPoint cx={yx} cy={yy} r={3.5} variant="ring" />
-            <FigLabel x={54} y={yy - 4}>
+            <FigLabel x={syLabel.x} y={syLabel.y}>
               σᵧ
             </FigLabel>
-            <FigLabel x={90} y={72} variant="ink">
+            <FigLabel x={eLab.x} y={eLab.y} variant="ink">
               E
             </FigLabel>
             {!narrow && (
