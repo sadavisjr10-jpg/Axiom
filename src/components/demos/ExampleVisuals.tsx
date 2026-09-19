@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import type { ExampleVisualKind, ExampleVisualSpec } from '../../types'
-import { GraphFrame, TrackAxis, SharedMarkers } from './diagramPrimitives'
+import { FigurePlate, GraphFrame, TrackAxis, SharedMarkers } from './diagramPrimitives'
 
 /** Shared reduced-motion hook (mirrors objective demos). */
 function usePrefersReducedMotion(): boolean {
@@ -20,15 +20,23 @@ function Shell({
   label,
   caption,
   children,
+  figureId,
+  figureTitle,
 }: {
   label: string
   caption?: string
   children: ReactNode
+  figureId?: string
+  figureTitle?: string
 }) {
   return (
     <div className="obj-demo example-visual" role="group" aria-label={label}>
       {children}
-      {caption && <p className="obj-demo__caption">{caption}</p>}
+      {figureId && figureTitle ? (
+        <FigurePlate figureId={figureId} title={figureTitle} caption={caption} />
+      ) : (
+        caption && <p className="obj-demo__caption">{caption}</p>
+      )}
     </div>
   )
 }
@@ -596,6 +604,8 @@ function FbdPush({ params }: { params?: P }) {
   return (
     <Shell
       label="Horizontal free-body"
+      figureId="2-4"
+      figureTitle="Free-body diagram of a block"
       caption={`m=${m} kg, F=${F} N (frictionless) → a = F/m = ${a} m/s². N cancels mg.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
@@ -627,6 +637,8 @@ function FbdElevator({ params }: { params?: P }) {
   return (
     <Shell
       label={`Elevator accelerating ${dir}`}
+      figureId="2-4"
+      figureTitle="Free-body diagram of a block"
       caption={`ΣF = T − mg = ma → T = m(g+a) = ${m}(${g}${accel >= 0 ? '+' : ''}${accel}) = ${T} N.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
@@ -766,6 +778,8 @@ function ParticleCables({ params }: { params?: P }) {
   return (
     <Shell
       label="Hanging mass, two cables"
+      figureId="3-2"
+      figureTitle="Particle equilibrium at a knot"
       caption={
         sym
           ? `Symmetric ${th1}°: each T = W/√2 ≈ ${T1.toFixed(0)} N for W=${W} N.`
