@@ -8,7 +8,7 @@ export const Fig = {
   faint: 'rgba(148, 163, 184, 0.28)',
   grid: 'rgba(148, 163, 184, 0.12)',
   fill: 'color-mix(in srgb, currentColor 14%, transparent)',
-  warn: '#f472b6',
+  warn: '#fb7185',
   warm: '#fbbf24',
   cool: '#38bdf8',
   good: '#6ee7b7',
@@ -72,10 +72,10 @@ function ArrowMarker({ id, fill }: { id: string; fill: string }) {
       viewBox="0 0 10 10"
       refX="9"
       refY="5"
-      markerWidth="7"
-      markerHeight="7"
+      markerWidth="8"
+      markerHeight="8"
       orient="auto"
-      markerUnits="strokeWidth"
+      markerUnits="userSpaceOnUse"
     >
       <path d="M1 1 L9 5 L1 9 L3 5 Z" fill={fill} />
     </marker>
@@ -150,8 +150,7 @@ export function CartesianAxes({
 }: AxisOpts) {
   const originX = ox ?? x
   const originY = oy ?? y2 - 10
-  const local = useDiagramIds()
-  const m = ids ?? local
+  const arrowId = ids?.arrow ?? SharedMarkers.arrow
 
   const gridLines: ReactNode[] = []
   if (showGrid) {
@@ -176,7 +175,7 @@ export function CartesianAxes({
         x2={x2}
         y2={originY}
         className="fig-axis"
-        markerEnd={`url(#${m.arrow})`}
+        markerEnd={`url(#${arrowId})`}
       />
       <line
         x1={originX}
@@ -184,7 +183,7 @@ export function CartesianAxes({
         x2={originX}
         y2={y}
         className="fig-axis"
-        markerEnd={`url(#${m.arrow})`}
+        markerEnd={`url(#${arrowId})`}
       />
       {ticksX?.map((tx) => (
         <line
@@ -303,6 +302,14 @@ export function PlotPoint({
   return <circle cx={cx} cy={cy} r={r} className={`${cls} ${className}`.trim()} />
 }
 
+/** Label clearance presets (viewBox uu): tip=10, stroke=8, edge=8, peer=6 */
+export const LabelClear = {
+  tip: 10,
+  stroke: 8,
+  edge: 8,
+  peer: 6,
+} as const
+
 export function FigLabel({
   x,
   y,
@@ -310,6 +317,8 @@ export function FigLabel({
   anchor = 'start',
   variant = 'muted',
   className = '',
+  dx = 0,
+  dy = 0,
 }: {
   x: number
   y: number
@@ -317,13 +326,38 @@ export function FigLabel({
   anchor?: 'start' | 'middle' | 'end'
   variant?: 'muted' | 'ink' | 'eq'
   className?: string
+  /** Offset from nominal position (use LabelClear presets). */
+  dx?: number
+  dy?: number
 }) {
   const cls =
     variant === 'eq' ? 'fig-eq' : variant === 'ink' ? 'fig-label fig-label--ink' : 'fig-label'
   return (
-    <text x={x} y={y} textAnchor={anchor} className={`${cls} ${className}`.trim()}>
+    <text x={x + dx} y={y + dy} textAnchor={anchor} className={`${cls} ${className}`.trim()}>
       {children}
     </text>
+  )
+}
+
+/** Plate under SVG: Fig. {ch}–{n} + title + optional caption. */
+export function FigurePlate({
+  figureId,
+  title,
+  caption,
+}: {
+  figureId: string
+  title: string
+  caption?: string
+}) {
+  const num = figureId.replace(/-/g, '–')
+  return (
+    <figcaption className="fig-plate">
+      <div className="fig-plate__head">
+        <span className="fig-plate__num">Fig. {num}</span>
+        <span className="fig-plate__title">{title}</span>
+      </div>
+      {caption ? <p className="fig-plate__caption">{caption}</p> : null}
+    </figcaption>
   )
 }
 
@@ -420,7 +454,7 @@ export function Legend({
     <g className="fig-legend" transform={`translate(${x}, ${y})`}>
       {items.map((it, i) => (
         <g key={it.label} transform={`translate(${i * 48}, 0)`}>
-          <line x1={0} y1={0} x2={14} y2={0} stroke={it.color} strokeWidth={2.25} strokeLinecap="round" />
+          <line x1={0} y1={0} x2={14} y2={0} className="fig-vector lab__legend-swatch" stroke={it.color} strokeLinecap="round" />
           <text x={18} y={4} className="fig-label">
             {it.label}
           </text>
@@ -459,31 +493,32 @@ export function SectionFrame({
 
 
 
-/** Standard 280×140 graph frame used by objective/example demos. */
+/** Standard 280×140 graph frame — uses parent ids or FigSprite SharedMarkers (no nested defs). */
 export function GraphFrame({
   labelX = 'x',
   labelY = 'y',
   showY = true,
   ox = 40,
   oy = 110,
+  ids,
 }: {
   labelX?: string
   labelY?: string
   showY?: boolean
   ox?: number
   oy?: number
+  ids?: DiagramIds
 }) {
-  const ids = useDiagramIds()
+  const arrowId = ids?.arrow ?? SharedMarkers.arrow
   return (
     <g className="fig-graph-frame" aria-hidden>
-      <DiagramDefs ids={ids} />
       <line
         x1={24}
         y1={oy}
         x2={260}
         y2={oy}
         className="fig-axis"
-        markerEnd={`url(#${ids.arrow})`}
+        markerEnd={`url(#${arrowId})`}
       />
       {showY && (
         <line
@@ -492,7 +527,7 @@ export function GraphFrame({
           x2={ox}
           y2={20}
           className="fig-axis"
-          markerEnd={`url(#${ids.arrow})`}
+          markerEnd={`url(#${arrowId})`}
         />
       )}
       {labelX && (

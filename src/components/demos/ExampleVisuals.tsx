@@ -704,7 +704,7 @@ function VectorSum({ params, reduced }: { params?: P; reduced: boolean }) {
           <line x1="140" y1="70" x2={140 + 30} y2="70" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
           <line x1="140" y1="70" x2="140" y2={70 - 40} className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
           <line x1="140" y1="70" x2={140 - 50} y2="70" className="demo-force demo-curve--alt" markerEnd={`url(#${SharedMarkers.arrowWarn})`} />
-          <line x1="140" y1="70" x2={140 + rx} y2={70 - ry} className="demo-force demo-force--pull" strokeWidth="2.5" markerEnd={`url(#${SharedMarkers.arrowGood})`} />
+          <line x1="140" y1="70" x2={140 + rx} y2={70 - ry} className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowGood})`} />
           <text x="40" y="30" className="demo-label">
             R
           </text>
@@ -918,6 +918,27 @@ function PvtState({ params }: { params?: P }) {
 
   if (mode === 'isotherm') {
     const P2 = (P1 * V1) / V2
+    const k = P1 * V1
+    const ox = 40
+    const oy = 110
+    const vMin = Math.min(V1, V2) * 0.55
+    const vMax = Math.max(V1, V2) * 1.35
+    const mapV = (V: number) => ox + ((V - vMin) / (vMax - vMin)) * 200
+    const mapP = (P: number) => {
+      const pMax = k / vMin
+      const pMin = k / vMax
+      return oy - ((P - pMin) / (pMax - pMin || 1)) * 80
+    }
+    const pts: string[] = []
+    for (let i = 0; i <= 40; i++) {
+      const V = vMin + (i / 40) * (vMax - vMin)
+      pts.push(`${mapV(V)} ${mapP(k / V)}`)
+    }
+    const d = `M${pts[0]} L${pts.slice(1).join(' L')}`
+    const x1 = mapV(V1)
+    const y1 = mapP(P1)
+    const x2 = mapV(V2)
+    const y2 = mapP(P2)
     return (
       <Shell
         label="Isothermal compression"
@@ -925,13 +946,13 @@ function PvtState({ params }: { params?: P }) {
       >
         <svg viewBox="0 0 280 140" className="obj-demo__svg">
           <GraphFrame ox={40} oy={110} labelX="V" labelY="P" />
-          <path d="M60 40 C100 45 150 70 220 100" className="demo-curve" fill="none" />
-          <circle cx="90" cy="48" r="5" className="demo-dot" />
-          <circle cx="180" cy="88" r="5" className="demo-target" />
-          <text x="70" y="40" className="demo-label">
+          <path d={d} className="fig-curve" fill="none" />
+          <circle cx={x1} cy={y1} r={5} className="demo-dot" />
+          <circle cx={x2} cy={y2} r={5} className="demo-target" />
+          <text x={x1 - 10} y={y1 - 8} className="demo-label">
             1
           </text>
-          <text x="188" y="88" className="demo-label">
+          <text x={x2 + 8} y={y2 + 4} className="demo-label">
             2
           </text>
           <text x="160" y="30" className="demo-label">

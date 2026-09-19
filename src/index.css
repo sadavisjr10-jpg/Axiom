@@ -14,6 +14,16 @@
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --fig-axis-w: 1.25;
+  --fig-guide-w: 1;
+  --fig-curve-w: 2;
+  --fig-vector-w: 2.25;
+  --fig-warn: #fb7185;
+  --fig-warm: #fbbf24;
+  --fig-cool: #38bdf8;
+  --fig-good: #6ee7b7;
+  --fig-ink: #cbd5e1;
+  --fig-muted: #94a3b8;
   color-scheme: dark;
 }
 
@@ -1753,7 +1763,7 @@ img {
 
 /* ═══════════════════════════════════════════════════════════
    Diagram design system — editorial / textbook figures
-   Stroke hierarchy: axis 1.15 · guide 1 · curve 1.85 · vector 2.1
+   Stroke hierarchy: axis 1.25 · guide 1 · curve 2.0 · vector 2.25
    Typography: IBM Plex Sans labels, IBM Plex Mono equations
    ═══════════════════════════════════════════════════════════ */
 
@@ -1789,48 +1799,53 @@ img {
 .fig-axis,
 .demo-axis,
 .sv-axis {
-  stroke: rgba(148, 163, 184, 0.55);
-  stroke-width: 1.15;
+  stroke: rgba(148, 163, 184, 0.65);
+  stroke-width: var(--fig-axis-w);
   fill: none;
   stroke-linecap: round;
 }
 
 .fig-tick {
-  stroke: rgba(148, 163, 184, 0.5);
+  stroke: rgba(148, 163, 184, 0.55);
   stroke-width: 1;
 }
 
 .fig-grid-line {
-  stroke: rgba(148, 163, 184, 0.1);
+  stroke: rgba(148, 163, 184, 0.12);
   stroke-width: 0.75;
 }
 
 .fig-guide,
 .demo-guide,
 .sv-guide {
-  stroke: rgba(148, 163, 184, 0.32);
-  stroke-width: 1;
-  stroke-dasharray: 3.5 3;
+  stroke: rgba(148, 163, 184, 0.40);
+  stroke-width: var(--fig-guide-w);
+  stroke-dasharray: 4 3;
   fill: none;
 }
 
 /* —— Curves & fills —— */
 .fig-curve,
 .demo-curve,
-.sv-curve,
+.sv-curve {
+  stroke: currentColor;
+  stroke-width: var(--fig-curve-w);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .fig-wire,
 .demo-wire,
 .sv-wire,
 .fig-resistor,
 .demo-resistor,
 .sv-res,
-.demo-force,
-.sv-force,
 .demo-loop,
 .fig-loop,
 .fig-source {
   stroke: currentColor;
-  stroke-width: 1.85;
+  stroke-width: 1.5;
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -1851,15 +1866,15 @@ img {
 .fig-resistor,
 .demo-resistor,
 .sv-res {
-  stroke-width: 1.65;
+  stroke-width: 1.75;
   stroke: #c4b5fd;
 }
 
 .fig-curve--alt,
 .demo-curve--alt,
 .sv-curve--alt {
-  stroke: #f472b6;
-  stroke-width: 1.85;
+  stroke: var(--fig-warn);
+  stroke-width: var(--fig-curve-w);
 }
 
 .fig-fill,
@@ -1880,11 +1895,14 @@ img {
 }
 
 /* —— Vectors —— */
-.fig-vector {
+.fig-vector,
+.demo-force,
+.sv-force {
   stroke: currentColor;
-  stroke-width: 2.1;
+  stroke-width: var(--fig-vector-w);
   fill: none;
   stroke-linecap: butt;
+  stroke-linejoin: round;
 }
 
 .fig-vector--accent {
@@ -1893,26 +1911,25 @@ img {
 
 .fig-vector--warn,
 .demo-qin {
-  stroke: #fb7185;
+  stroke: var(--fig-warn);
 }
 
 .fig-vector--warm,
 .demo-force--pull {
-  stroke: #fbbf24;
+  stroke: var(--fig-warm);
 }
 
 .fig-vector--cool,
 .demo-wout {
-  stroke: #38bdf8;
+  stroke: var(--fig-cool);
 }
 
 .fig-vector--good {
-  stroke: #6ee7b7;
+  stroke: var(--fig-good);
 }
 
-.demo-force,
-.sv-force {
-  stroke-width: 2;
+.lab__legend-swatch {
+  stroke-width: var(--fig-vector-w);
 }
 
 /* —— Points —— */
@@ -1993,7 +2010,7 @@ img {
 .demo-label,
 .sv-label {
   fill: #94a3b8;
-  font-size: 11px;
+  font-size: 11.5px;
   font-family: var(--font-sans);
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -2013,7 +2030,7 @@ img {
 .demo-eq,
 .sv-eq {
   fill: #e8eef7;
-  font-size: 13px;
+  font-size: 12.5px;
   font-family: var(--font-mono);
   font-weight: 500;
   letter-spacing: -0.01em;
@@ -2025,8 +2042,8 @@ img {
 }
 
 .demo-badge {
-  fill: rgba(244, 114, 182, 0.15);
-  stroke: #f472b6;
+  fill: color-mix(in srgb, var(--fig-warn) 15%, transparent);
+  stroke: var(--fig-warn);
   stroke-width: 1;
 }
 
@@ -2038,8 +2055,8 @@ img {
 .fig-secant,
 .demo-secant,
 .sv-secant {
-  stroke: #fbbf24;
-  stroke-width: 1.65;
+  stroke: var(--fig-warm);
+  stroke-width: 1.75;
   fill: none;
   stroke-linecap: round;
 }
@@ -2047,10 +2064,11 @@ img {
 .fig-tangent,
 .demo-tangent,
 .sv-tangent {
-  stroke: #6ee7b7;
-  stroke-width: 1.85;
+  stroke: var(--fig-good);
+  stroke-width: 1.75;
   fill: none;
   stroke-linecap: round;
+  opacity: 0.85;
 }
 
 /* —— Measured motion (not toy-like) —— */
@@ -2141,6 +2159,13 @@ img {
 
 .section-visual__svg {
   min-height: 7.5rem;
+}
+
+.section-visual .fig-plate {
+  margin: 0.15rem 0.1rem 0;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  border-top-color: rgba(148, 163, 184, 0.12);
 }
 
 @keyframes demo-grow {
@@ -2271,6 +2296,48 @@ img {
   border-top: 0;
 }
 
+
+/* —— Figure plate —— */
+.fig-plate {
+  padding: 0.55rem 0.9rem 0.85rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.fig-plate__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+}
+
+.fig-plate__num {
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  font-family: var(--font-sans);
+}
+
+.fig-plate__title {
+  font-size: 12px;
+  font-weight: 550;
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+}
+
+.fig-plate__caption {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.45;
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+/* When plate carries caption, skip duplicate obj-demo caption padding clash */
+.obj-demo:has(.fig-plate) > .obj-demo__caption {
+  display: none;
+}
+
 /* Lab figure chrome */
 .lab__canvas {
   width: 100%;
@@ -2289,7 +2356,6 @@ img {
 }
 
 .lab__legend-swatch {
-  stroke-width: 2.25;
   stroke-linecap: round;
 }
 
@@ -2301,13 +2367,19 @@ img {
   .fig-eq,
   .demo-eq,
   .sv-eq {
-    font-size: 11.5px;
+    font-size: 12px;
   }
 
   .fig-label,
   .demo-label,
   .sv-label {
-    font-size: 10px;
+    font-size: 10.5px;
+  }
+
+  /* Drop colliding in-SVG equations — plate/caption carries them */
+  .fig-eq--collapsible,
+  .fig-hide-mobile {
+    display: none;
   }
 }
 

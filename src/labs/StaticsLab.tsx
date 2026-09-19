@@ -81,8 +81,7 @@ export function StaticsLab() {
           y1={cy}
           x2={t1.x}
           y2={t1.y}
-          stroke="#fbbf24"
-          strokeWidth="2.25"
+          className="fig-vector fig-vector--warm"
           markerEnd={`url(#${SharedMarkers.arrowWarm})`}
         />
         <line
@@ -90,8 +89,7 @@ export function StaticsLab() {
           y1={cy}
           x2={t2.x}
           y2={t2.y}
-          stroke="#38bdf8"
-          strokeWidth="2.25"
+          className="fig-vector fig-vector--cool"
           markerEnd={`url(#${SharedMarkers.arrowCool})`}
         />
         <line
@@ -99,21 +97,20 @@ export function StaticsLab() {
           y1={cy}
           x2={tr.x}
           y2={tr.y}
-          stroke="#6ee7b7"
-          strokeWidth="2.5"
+          className="fig-vector fig-vector--good"
           markerEnd={`url(#${SharedMarkers.arrowGood})`}
         />
-        <circle cx={cx} cy={cy} r={3.5} fill="#e2e8f0" />
+        <circle cx={cx} cy={cy} r={3.5} className="fig-point" />
         {/* Legend */}
-        <line x1={24} y1={20} x2={40} y2={20} stroke="#fbbf24" strokeWidth="2.25" strokeLinecap="round" />
+        <line x1={24} y1={20} x2={40} y2={20} className="fig-vector fig-vector--warm lab__legend-swatch" />
         <text x={46} y={24} className="fig-label" fill="#fbbf24">
           F₁
         </text>
-        <line x1={78} y1={20} x2={94} y2={20} stroke="#38bdf8" strokeWidth="2.25" strokeLinecap="round" />
+        <line x1={78} y1={20} x2={94} y2={20} className="fig-vector fig-vector--cool lab__legend-swatch" />
         <text x={100} y={24} className="fig-label" fill="#38bdf8">
           F₂
         </text>
-        <line x1={132} y1={20} x2={148} y2={20} stroke="#6ee7b7" strokeWidth="2.25" strokeLinecap="round" />
+        <line x1={132} y1={20} x2={148} y2={20} className="fig-vector fig-vector--good lab__legend-swatch" />
         <text x={154} y={24} className="fig-label" fill="#6ee7b7">
           R
         </text>

@@ -3,6 +3,7 @@ import {
   BodyRect,
   CartesianAxes,
   FigLabel,
+  FigurePlate,
   GroundSymbol,
   GuideLine,
   PlotPoint,
@@ -12,17 +13,48 @@ import {
   VectorArrow,
   type DiagramIds,
 } from './diagramPrimitives'
+import { SS_EY, SS_SY, makeStressStrainMap, stressStrainPath } from '../../lib/materialsCurve'
 
 interface Props {
   id: SectionVisualId
 }
 
+const SECTION_PLATES: Partial<Record<SectionVisualId, { figureId: string; title: string; caption: string }>> = {
+  'particle-knot': {
+    figureId: '3-2',
+    title: 'Particle equilibrium at a knot',
+    caption: 'Two cables and a weight meet at a pin; ΣFₓ = 0 and ΣFᵧ = 0.',
+  },
+  'fbd-block': {
+    figureId: '2-4',
+    title: 'Free-body diagram of a block',
+    caption: 'Floating FBD with surface reference: N, mg, and applied F. ΣFₓ = ma.',
+  },
+  'net-force': {
+    figureId: '2-4',
+    title: 'Free-body diagram of a block',
+    caption: 'Floating FBD with surface reference: N, mg, and applied F. ΣFₓ = ma.',
+  },
+  'stress-def': {
+    figureId: '6-1',
+    title: 'Engineering stress–strain curve',
+    caption: 'Linear elastic region with slope E up to yield σᵧ, then plateau and hardening.',
+  },
+  hooke: {
+    figureId: '6-1',
+    title: 'Engineering stress–strain curve',
+    caption: 'Linear elastic region with slope E up to yield σᵧ, then plateau and hardening.',
+  },
+}
+
 /** Compact inline diagrams for instruction sections — editorial figure quality. */
 export function SectionVisual({ id }: Props) {
   const label = id.replace(/-/g, ' ')
+  const plate = SECTION_PLATES[id]
   return (
     <div className="section-visual" role="img" aria-label={`Figure: ${label}`}>
       <SectionSvg id={id} />
+      {plate && <FigurePlate figureId={plate.figureId} title={plate.title} caption={plate.caption} />}
     </div>
   )
 }
@@ -304,18 +336,28 @@ function SignsMotion({ ids }: { ids: DiagramIds }) {
 
 function FbdBlock({ ids }: { ids: DiagramIds }) {
   const cx = 160
-  const cy = 62
+  const cy = 58
   return (
     <g>
-      <BodyRect x={cx - 28} y={cy - 20} w={56} h={40} />
-      <VectorArrow x1={cx} y1={cy - 20} x2={cx} y2={18} ids={ids} variant="ink" />
-      <VectorArrow x1={cx} y1={cy + 20} x2={cx} y2={110} ids={ids} variant="ink" />
-      <VectorArrow x1={cx + 28} y1={cy} x2={250} y2={cy} ids={ids} variant="warm" />
-      <FigLabel x={168} y={28}>N</FigLabel>
-      <FigLabel x={168} y={108}>mg</FigLabel>
-      <FigLabel x={230} y={54}>F</FigLabel>
-      <FigLabel x={24} y={28} variant="eq">
-        ΣF = ma
+      <line x1={80} y1={112} x2={280} y2={112} className="fig-wire" />
+      {[108, 140, 172, 204].map((x) => (
+        <line key={x} x1={x} y1={112} x2={x - 6} y2={120} className="fig-tick" />
+      ))}
+      <BodyRect x={cx - 28} y={cy - 18} w={56} h={36} rx={3} />
+      <VectorArrow x1={cx} y1={cy - 18} x2={cx} y2={16} ids={ids} variant="ink" />
+      <VectorArrow x1={cx} y1={cy + 18} x2={cx} y2={108} ids={ids} variant="ink" />
+      <VectorArrow x1={cx + 28} y1={cy} x2={280} y2={cy} ids={ids} variant="warm" />
+      <FigLabel x={172} y={26} variant="ink">
+        N
+      </FigLabel>
+      <FigLabel x={172} y={104} variant="ink">
+        mg
+      </FigLabel>
+      <FigLabel x={250} y={50} variant="ink">
+        F
+      </FigLabel>
+      <FigLabel x={24} y={28} variant="eq" className="fig-eq--collapsible">
+        ΣFₓ = ma
       </FigLabel>
     </g>
   )
@@ -359,17 +401,28 @@ function VectorResolve({ ids }: { ids: DiagramIds }) {
 
 function ParticleKnot({ ids }: { ids: DiagramIds }) {
   const kx = 160
-  const ky = 58
+  const ky = 64
   return (
     <g>
-      <VectorArrow x1={kx} y1={ky} x2={48} y2={22} ids={ids} variant="cool" />
-      <VectorArrow x1={kx} y1={ky} x2={272} y2={22} ids={ids} variant="cool" />
-      <VectorArrow x1={kx} y1={ky} x2={kx} y2={105} ids={ids} variant="warm" />
-      <PlotPoint cx={kx} cy={ky} r={5} />
-      <BodyRect x={kx - 16} y={105} w={32} h={16} rx={2} />
-      <FigLabel x={56} y={40}>T₁</FigLabel>
-      <FigLabel x={248} y={40}>T₂</FigLabel>
-      <FigLabel x={172} y={100}>W</FigLabel>
+      <line x1={56} y1={18} x2={80} y2={18} className="fig-wire" />
+      <line x1={240} y1={18} x2={264} y2={18} className="fig-wire" />
+      <VectorArrow x1={kx} y1={ky} x2={56} y2={26} ids={ids} variant="cool" />
+      <VectorArrow x1={kx} y1={ky} x2={264} y2={26} ids={ids} variant="cool" />
+      <VectorArrow x1={kx} y1={ky} x2={kx} y2={110} ids={ids} variant="warm" />
+      <PlotPoint cx={kx} cy={ky} r={4} />
+      <BodyRect x={kx - 15} y={112} w={30} h={14} rx={2} />
+      <FigLabel x={48} y={42} variant="ink">
+        T₁
+      </FigLabel>
+      <FigLabel x={268} y={42} variant="ink">
+        T₂
+      </FigLabel>
+      <FigLabel x={174} y={100} variant="ink">
+        W
+      </FigLabel>
+      <FigLabel x={16} y={122} variant="eq" className="fig-eq--collapsible">
+        ΣFₓ = 0,  ΣFᵧ = 0
+      </FigLabel>
     </g>
   )
 }
@@ -528,14 +581,23 @@ function Carnot() {
 }
 
 function StressStrain({ ids }: { ids: DiagramIds }) {
+  const map = makeStressStrainMap(48, 108, 1050, 1.0)
+  const d = stressStrainPath(0.22, map)
+  const yx = map.mapX(SS_EY)
+  const yy = map.mapY(SS_SY)
   return (
     <g>
       <CartesianAxes ids={ids} labelX="ε" labelY="σ" ox={48} oy={108} x={28} y={16} x2={300} y2={120} />
-      <path d="M48 108 L140 48 L200 42 L260 88" className="fig-curve" fill="none" />
-      <line x1={48} y1={108} x2={130} y2={55} className="fig-tangent" opacity={0.55} />
-      <FigLabel x={100} y={70}>E</FigLabel>
-      <FigLabel x={20} y={24} variant="ink">
-        stress–strain
+      <path d={d} className="fig-curve" fill="none" />
+      <line x1={map.ox} y1={map.oy} x2={yx} y2={yy} className="fig-tangent" />
+      <line x1={map.ox} y1={yy} x2={yx} y2={yy} className="fig-guide" />
+      <line x1={yx} y1={map.oy} x2={yx} y2={yy} className="fig-guide" />
+      <PlotPoint cx={yx} cy={yy} r={3.5} variant="ring" />
+      <FigLabel x={54} y={yy - 4}>
+        σᵧ
+      </FigLabel>
+      <FigLabel x={100} y={70} variant="ink">
+        E
       </FigLabel>
     </g>
   )

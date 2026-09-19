@@ -100,7 +100,7 @@ export function ThermoLab() {
           stroke="none"
         />
         {/* Piston */}
-        <rect x="108" y={pistonY} width="94" height="10" rx="2" className="fig-body" stroke="#fb7185" />
+        <rect x="108" y={pistonY} width="94" height="10" rx="2" className="fig-body" style={{ stroke: "var(--fig-warn)" }} />
         <line x1="155" y1={pistonY} x2="155" y2={pistonY - 28} className="fig-wire" />
         <text x="162" y={pistonY - 16} className="fig-label">
           piston

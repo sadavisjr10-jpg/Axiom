@@ -82,12 +82,12 @@ export function MechanicsLab() {
         <text x={padL} y={16} className="fig-label fig-label--ink">
           Position vs time
         </text>
-        <polyline fill="none" stroke="#38bdf8" strokeWidth="2.15" strokeLinejoin="round" strokeLinecap="round" points={points} />
+        <polyline fill="none" className="fig-curve" stroke="#38bdf8" strokeLinejoin="round" strokeLinecap="round" points={points} />
         <circle
           cx={padL + (w - padL - padR)}
           cy={h - padB - ((x - minX) / (maxX - minX || 1)) * (h - padT - padB)}
           r="4"
-          fill="#fbbf24"
+          className="fig-point fig-point--sample"
         />
         <text x={12} y={h - padB + 4} className="fig-label" textAnchor="middle">
           {round(minX, 1)}

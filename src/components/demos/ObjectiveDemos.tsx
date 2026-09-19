@@ -1,7 +1,26 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import type { ObjectiveDemoId } from '../../types'
-import { GraphFrame, TrackAxis, SharedMarkers } from './diagramPrimitives'
+import {
+  BodyRect,
+  FigLabel,
+  FigurePlate,
+  GraphFrame,
+  GroundSymbol,
+  PlotPoint,
+  ResistorPath,
+  SharedMarkers,
+  TrackAxis,
+  VectorArrow,
+} from './diagramPrimitives'
+import {
+  SS_EY,
+  SS_SY,
+  clamp,
+  makeStressStrainMap,
+  sigma,
+  stressStrainPath,
+} from '../../lib/materialsCurve'
 
 interface DemoProps {
   id: ObjectiveDemoId
@@ -25,18 +44,38 @@ function DemoShell({
   className,
   children,
   caption,
+  figureId,
+  figureTitle,
 }: {
   label: string
   className?: string
   children: ReactNode
   caption?: string
+  figureId?: string
+  figureTitle?: string
 }) {
   return (
     <div className={`obj-demo ${className ?? ''}`.trim()} role="group" aria-label={label}>
       {children}
-      {caption && <p className="obj-demo__caption">{caption}</p>}
+      {figureId && figureTitle ? (
+        <FigurePlate figureId={figureId} title={figureTitle} caption={caption} />
+      ) : (
+        caption && <p className="obj-demo__caption">{caption}</p>
+      )}
     </div>
   )
+}
+
+function useNarrowViewport(maxPx = 640): boolean {
+  const [narrow, setNarrow] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${maxPx}px)`)
+    setNarrow(mq.matches)
+    const onChange = () => setNarrow(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [maxPx])
+  return narrow
 }
 
 function Scrub({
@@ -475,35 +514,60 @@ function ConstAccel({ className, reduced }: { className?: string; reduced: boole
   )
 }
 
+function sharedIds() {
+  return {
+    arrow: SharedMarkers.arrow,
+    arrowAccent: SharedMarkers.arrow,
+    arrowWarn: SharedMarkers.arrowWarn,
+    arrowWarm: SharedMarkers.arrowWarm,
+    arrowCool: SharedMarkers.arrowCool,
+    grid: 'axiom-unused-grid',
+  }
+}
+
 function FreeBody({ className, reduced }: { className?: string; reduced: boolean }) {
   const [F, setF] = useState(12)
+  const narrow = useNarrowViewport()
+  const ids = useMemo(() => sharedIds(), [])
   const m = 2
   const a = F / m
-  const fLen = 40 + F * 4
+  const fLenMax = narrow ? 72 : 88
+  const fLen = Math.min(Math.max(36 + F * 3.2, 36), fLenMax)
 
   return (
     <DemoShell
       className={className}
       label="Free-body with live net force"
-      caption={`Horizontal ΣF = F = ${F.toFixed(0)} N → a = F/m = ${a.toFixed(1)} m/s². Vertical forces cancel (N = mg).`}
+      figureId="2-4"
+      figureTitle="Free-body diagram of a block"
+      caption={`Horizontal ΣF = F = ${F.toFixed(0)} N → a = F/m = ${a.toFixed(1)} m/s². Vertical forces cancel (N = mg). ΣFₓ = ma.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <rect x="110" y="50" width="60" height="40" rx="4" className="demo-box" />
-        <line x1="140" y1="50" x2="140" y2="20" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
-        <text x="148" y="28" className="demo-label">
+        <line x1={72} y1={108} x2={248} y2={108} className="fig-wire" />
+        {[96, 128, 160, 192].map((x) => (
+          <line key={x} x1={x} y1={108} x2={x - 6} y2={116} className="fig-tick" />
+        ))}
+        <BodyRect x={122} y={46} w={56} h={36} rx={3} />
+        <VectorArrow x1={150} y1={46} x2={150} y2={18} variant="ink" ids={ids} />
+        <VectorArrow x1={150} y1={82} x2={150} y2={118} variant="ink" ids={ids} />
+        <VectorArrow x1={178} y1={64} x2={178 + fLen} y2={64} variant="warm" ids={ids} />
+        <FigLabel x={160} y={26} variant="ink">
           N
-        </text>
-        <line x1="140" y1="90" x2="140" y2="122" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
-        <text x="148" y="118" className="demo-label">
+        </FigLabel>
+        <FigLabel x={160} y={112} variant="ink">
           mg
-        </text>
-        <line x1="170" y1="70" x2={170 + fLen} y2="70" className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
-        <text x={180 + fLen * 0.3} y="62" className="demo-label">
+        </FigLabel>
+        <FigLabel x={178 + fLen * 0.4} y={56} variant="ink">
           F
-        </text>
-        {!reduced && (
-          <text x="40" y="40" className="demo-label">
-            ΣFₓ = m aₓ
+        </FigLabel>
+        {!reduced && !narrow && (
+          <FigLabel x={16} y={28} variant="eq" className="fig-eq--collapsible">
+            ΣFₓ = ma
+          </FigLabel>
+        )}
+        {!narrow && (
+          <text x={72} y={122} className="fig-label fig-label--axis fig-hide-mobile">
+            surface
           </text>
         )}
       </svg>
@@ -556,27 +620,38 @@ function ForceComponents({ className, reduced }: { className?: string; reduced: 
 }
 
 function ParticleEq({ className }: { className?: string }) {
+  const ids = useMemo(() => sharedIds(), [])
+  const narrow = useNarrowViewport()
   return (
     <DemoShell
       className={className}
       label="Particle equilibrium at a knot"
-      caption="Two cables + weight at a knot: ΣFₓ=0 and ΣFᵧ=0 close the system for the two unknown tensions."
+      figureId="3-2"
+      figureTitle="Particle equilibrium at a knot"
+      caption="Two cables and a weight meet at a pin; ΣFₓ = 0 and ΣFᵧ = 0 close the system for the two unknown tensions."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="140" y1="70" x2="40" y2="30" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
-        <line x1="140" y1="70" x2="240" y2="30" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
-        <line x1="140" y1="70" x2="140" y2="115" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
-        <circle cx="140" cy="70" r="6" className="fig-point" />
-        <rect x="125" y="115" width="30" height="18" rx="2" className="demo-box" />
-        <text x="48" y="50" className="demo-label">
+        <line x1={52} y1={22} x2={76} y2={22} className="fig-wire" />
+        <line x1={204} y1={22} x2={228} y2={22} className="fig-wire" />
+        <VectorArrow x1={140} y1={72} x2={56} y2={28} variant="cool" ids={ids} />
+        <VectorArrow x1={140} y1={72} x2={224} y2={28} variant="cool" ids={ids} />
+        <VectorArrow x1={140} y1={72} x2={140} y2={118} variant="warm" ids={ids} />
+        <PlotPoint cx={140} cy={72} r={4} />
+        <BodyRect x={125} y={120} w={30} h={14} rx={2} />
+        <FigLabel x={42} y={44} variant="ink">
           T₁
-        </text>
-        <text x="210" y="50" className="demo-label">
+        </FigLabel>
+        <FigLabel x={228} y={44} variant="ink">
           T₂
-        </text>
-        <text x="148" y="110" className="demo-label">
+        </FigLabel>
+        <FigLabel x={152} y={108} variant="ink">
           W
-        </text>
+        </FigLabel>
+        {!narrow && (
+          <FigLabel x={16} y={128} variant="eq" className="fig-eq--collapsible">
+            ΣFₓ = 0,  ΣFᵧ = 0
+          </FigLabel>
+        )}
       </svg>
     </DemoShell>
   )
@@ -585,11 +660,14 @@ function ParticleEq({ className }: { className?: string }) {
 function VoltageDivider({ className, reduced }: { className?: string; reduced: boolean }) {
   const Vin = 12
   const [r2frac, setR2frac] = useState(0.4)
+  const narrow = useNarrowViewport()
   const Rtot = 10
   const R2 = r2frac * Rtot
   const R1 = Rtot - R2
   const Vout = Vin * (R2 / Rtot)
   const midY = 30 + (1 - r2frac) * 70
+  const r1Y = 28
+  const r2Y = midY + 6
 
   return (
     <DemoShell
@@ -598,30 +676,32 @@ function VoltageDivider({ className, reduced }: { className?: string; reduced: b
       caption={`Vin=${Vin} V · R₁=${R1.toFixed(1)} kΩ · R₂=${R2.toFixed(1)} kΩ → Vout=${Vout.toFixed(2)} V. Ratio sets the fraction.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="50" y1="25" x2="50" y2="125" className="demo-wire" />
-        <line x1="50" y1="25" x2="140" y2="25" className="demo-wire" />
-        <line x1="140" y1="25" x2="140" y2={midY} className="demo-wire" />
-        <path d={`M140 25 l8 6 l-16 6 l16 6 l-16 6 l8 4`} className="demo-resistor" transform={`translate(0, ${(midY - 25) * 0.15})`} />
-        <text x="168" y={25 + (midY - 25) * 0.4} className="demo-label">
+        <line x1={50} y1={25} x2={50} y2={118} className="fig-wire" />
+        <line x1={50} y1={25} x2={140} y2={25} className="fig-wire" />
+        <line x1={140} y1={25} x2={140} y2={r1Y} className="fig-wire" />
+        <ResistorPath x={140} y={r1Y} vertical segments={5} amp={7} pitch={Math.max(5, (midY - r1Y - 8) / 5)} />
+        <FigLabel x={168} y={25 + (midY - 25) * 0.35} variant="ink">
           R₁
-        </text>
-        <circle cx="140" cy={midY} r="4" className="demo-target" />
-        <line x1="140" y1={midY} x2="210" y2={midY} className="demo-wire demo-vout" />
-        <text x="215" y={midY + 4} className="demo-label">
+        </FigLabel>
+        <PlotPoint cx={140} cy={midY} r={4} variant="sample" className="fig-point--good" />
+        <line x1={140} y1={midY} x2={210} y2={midY} className="fig-wire fig-wire--accent" />
+        <FigLabel x={215} y={midY + 4} variant="ink">
           Vout
-        </text>
-        <line x1="140" y1={midY} x2="140" y2="125" className="demo-wire" />
-        <text x="168" y={midY + 30} className="demo-label">
+        </FigLabel>
+        <line x1={140} y1={midY} x2={140} y2={r2Y} className="fig-wire" />
+        <ResistorPath x={140} y={r2Y} vertical segments={5} amp={7} pitch={Math.max(5, (118 - r2Y) / 5)} />
+        <FigLabel x={168} y={midY + 28} variant="ink">
           R₂
-        </text>
-        <line x1="140" y1="125" x2="50" y2="125" className="demo-wire" />
-        <text x="20" y="80" className="demo-label">
+        </FigLabel>
+        <line x1={140} y1={118} x2={50} y2={118} className="fig-wire" />
+        <GroundSymbol x={50} y={118} />
+        <FigLabel x={20} y={80}>
           Vin
-        </text>
-        {!reduced && (
-          <text x="40" y="18" className="demo-label">
+        </FigLabel>
+        {!reduced && !narrow && (
+          <FigLabel x={40} y={18} variant="eq" className="fig-eq--collapsible">
             Vout = Vin · R₂/(R₁+R₂)
-          </text>
+          </FigLabel>
         )}
       </svg>
       <div className="obj-demo__controls">
@@ -768,41 +848,53 @@ function FirstLaw({ className }: { className?: string }) {
 function StressStrain({ className, reduced }: { className?: string; reduced: boolean }) {
   const [eps, setEps] = useState(0.02)
   const [playing, setPlaying] = useState(!reduced)
+  const narrow = useNarrowViewport()
   useEffect(() => {
     if (!playing || reduced) return
     const id = window.setInterval(() => setEps((e) => (e >= 0.22 ? 0.005 : e + 0.003)), 50)
     return () => clearInterval(id)
   }, [playing, reduced])
 
-  // Piecewise: elastic to 0.08, then yield plateau-ish, then rise
-  const E = 800
-  const stress = useMemo(() => {
-    if (eps < 0.08) return E * eps
-    if (eps < 0.14) return E * 0.08 + (eps - 0.08) * 80
-    return E * 0.08 + 0.06 * 80 + (eps - 0.14) * 200
-  }, [eps])
-
-  const px = 50 + eps * 900
-  const py = 110 - stress * 0.12
-
-  // build path up to current eps
-  const samples: string[] = []
-  for (let e = 0; e <= eps; e += 0.005) {
-    const s = e < 0.08 ? E * e : e < 0.14 ? E * 0.08 + (e - 0.08) * 80 : E * 0.08 + 0.06 * 80 + (e - 0.14) * 200
-    samples.push(`${50 + e * 900},${110 - s * 0.12}`)
-  }
-  const d = samples.length ? `M50 110 L${samples.join(' L')}` : 'M50 110'
+  const map = useMemo(() => makeStressStrainMap(48, 118, 920, 1.05), [])
+  const stress = sigma(eps)
+  const d = useMemo(() => stressStrainPath(eps, map), [eps, map])
+  const showYield = eps >= SS_EY || !reduced
+  const yx = map.mapX(SS_EY)
+  const yy = map.mapY(SS_SY)
+  const px = clamp(map.mapX(eps), map.ox, 250)
+  const py = clamp(map.mapY(stress), 24, map.oy)
 
   return (
     <DemoShell
       className={className}
       label="Live stress–strain curve"
-      caption={`ε=${eps.toFixed(3)} → σ≈${stress.toFixed(0)} (arb.). Elastic slope is E; beyond yield the curve bends.`}
+      figureId="6-1"
+      figureTitle="Engineering stress–strain curve"
+      caption={`ε=${eps.toFixed(3)} → σ≈${stress.toFixed(0)} (arb.). Elastic slope is E; yield at σᵧ when ε≥εᵧ.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <GraphFrame ox={50} oy={110} labelX="ε" labelY="σ" />
-        <path d={d} className="demo-curve" fill="none" />
-        <circle cx={Math.min(px, 245)} cy={Math.max(py, 25)} r="5" className="demo-dot" />
+        <GraphFrame ox={48} oy={118} labelX="ε" labelY="σ" />
+        <path d={d} className="fig-curve" fill="none" />
+        <line x1={map.ox} y1={map.oy} x2={yx} y2={yy} className="fig-tangent" />
+        {showYield && (
+          <>
+            <line x1={map.ox} y1={yy} x2={yx} y2={yy} className="fig-guide" />
+            <line x1={yx} y1={map.oy} x2={yx} y2={yy} className="fig-guide" />
+            <PlotPoint cx={yx} cy={yy} r={3.5} variant="ring" />
+            <FigLabel x={54} y={yy - 4}>
+              σᵧ
+            </FigLabel>
+            <FigLabel x={90} y={72} variant="ink">
+              E
+            </FigLabel>
+            {!narrow && (
+              <FigLabel x={yx + 6} y={map.oy - 6} className="fig-hide-mobile">
+                εᵧ
+              </FigLabel>
+            )}
+          </>
+        )}
+        <PlotPoint cx={px} cy={py} r={4} variant="sample" />
       </svg>
       <div className="obj-demo__controls">
         <PlayToggle playing={playing} onToggle={() => setPlaying((p) => !p)} disabled={reduced} />
