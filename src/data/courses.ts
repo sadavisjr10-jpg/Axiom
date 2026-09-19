@@ -1,5 +1,6 @@
 import type { Course, Lesson } from '../types'
 import { plainEnglishFor } from './plainEnglish'
+import { courseBigIdeas } from './courseBigIdeas'
 
 export const courses: Course[] = [
   {
@@ -12,6 +13,7 @@ export const courses: Course[] = [
     color: '#6ee7b7',
     accent: '#064e3b',
     icon: '∫',
+    bigIdea: courseBigIdeas.calculus,
     modules: [
       {
         id: 'calc-m1',
@@ -678,6 +680,7 @@ export const courses: Course[] = [
     color: '#38bdf8',
     accent: '#0c4a6e',
     icon: '↯',
+    bigIdea: courseBigIdeas.mechanics,
     modules: [
       {
         id: 'mech-m1',
@@ -1094,6 +1097,7 @@ export const courses: Course[] = [
     color: '#fbbf24',
     accent: '#78350f',
     icon: '⬡',
+    bigIdea: courseBigIdeas.statics,
     modules: [
       {
         id: 'stat-m1',
@@ -1480,6 +1484,7 @@ export const courses: Course[] = [
     color: '#a78bfa',
     accent: '#4c1d95',
     icon: '⚡',
+    bigIdea: courseBigIdeas.circuits,
     modules: [
       {
         id: 'circ-m1',
@@ -1839,6 +1844,7 @@ export const courses: Course[] = [
     color: '#fb7185',
     accent: '#881337',
     icon: 'Δ',
+    bigIdea: courseBigIdeas.thermo,
     modules: [
       {
         id: 'th-m1',
@@ -2209,6 +2215,7 @@ export const courses: Course[] = [
     color: '#94a3b8',
     accent: '#1e293b',
     icon: '⬢',
+    bigIdea: courseBigIdeas.materials,
     modules: [
       {
         id: 'mat-m1',

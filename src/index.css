@@ -2944,6 +2944,14 @@ img {
 }
 
 
+/* —— Course outline: Big idea sits above module cards —— */
+.page > .big-idea {
+  margin-top: 0.25rem;
+}
+.page > .big-idea + .modules {
+  margin-top: 0.5rem;
+}
+
 /* —— Plain-English / Big idea opening stretch —— */
 .big-idea {
   margin: 1.5rem 0 2rem;

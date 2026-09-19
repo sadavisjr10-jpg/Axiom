@@ -61,6 +61,23 @@ export type SectionVisualId =
   | 'grain-boundary'
   | 'arrhenius'
 
+export interface JargonTerm {
+  term: string
+  meaning: string
+}
+
+/** Opening stretch: everyday language before formulas and practice */
+export interface PlainEnglish {
+  /** What real-world problem this idea helps solve */
+  solves: string
+  /** Everyday analogy + engineering intuition — no equations */
+  idea: string
+  /** Define jargon the first time it appears */
+  jargon?: JargonTerm[]
+  /** Soft bridge into the formal sections that follow */
+  bridge?: string
+}
+
 export interface Course {
   id: CourseId
   code: string
@@ -70,6 +87,8 @@ export interface Course {
   color: string
   accent: string
   icon: string
+  /** Course-level “Big idea” shown first on the subject outline page */
+  bigIdea: PlainEnglish
   modules: Module[]
 }
 
@@ -99,23 +118,6 @@ export interface LearningObjective {
   demo?: ObjectiveDemoId
   /** Optional single curated educational video (max one per objective) */
   video?: ObjectiveVideo
-}
-
-export interface JargonTerm {
-  term: string
-  meaning: string
-}
-
-/** Opening stretch: everyday language before formulas and practice */
-export interface PlainEnglish {
-  /** What real-world problem this idea helps solve */
-  solves: string
-  /** Everyday analogy + engineering intuition — no equations */
-  idea: string
-  /** Define jargon the first time it appears */
-  jargon?: JargonTerm[]
-  /** Soft bridge into the formal sections that follow */
-  bridge?: string
 }
 
 export interface Lesson {

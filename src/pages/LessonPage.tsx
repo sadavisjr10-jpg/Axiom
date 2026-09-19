@@ -3,6 +3,7 @@ import { getLesson } from '../data/courses'
 import { WorkedExample } from '../components/WorkedExample'
 import { Quiz } from '../components/Quiz'
 import { CourseArt } from '../components/CourseArt'
+import { BigIdeaPanel } from '../components/BigIdeaPanel'
 import { ObjectiveCards } from '../components/ObjectiveCards'
 import { SectionVisual } from '../components/demos/SectionVisuals'
 import { ContrastClinic } from '../components/ContrastClinic'
@@ -128,29 +129,11 @@ export function LessonPage({ progress, onComplete }: Props) {
 
       <div className="lesson-body">
         {pe && (
-          <section id="plain-english" className="big-idea" aria-label="In plain English">
-            <div className="big-idea__eyebrow">
-              <span className="big-idea__badge">Big idea</span>
-              <span className="big-idea__label">In plain English</span>
-            </div>
-            <h2>Start here — no formulas yet</h2>
-            <div className="big-idea__solves">
-              <span className="big-idea__solves-label">What problem does this solve?</span>
-              <p>{pe.solves}</p>
-            </div>
-            <p className="big-idea__idea">{pe.idea}</p>
-            {pe.jargon && pe.jargon.length > 0 && (
-              <dl className="jargon-list">
-                {pe.jargon.map((j) => (
-                  <div key={j.term} className="jargon-list__item">
-                    <dt>{j.term}</dt>
-                    <dd>{j.meaning}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-            {pe.bridge && <p className="big-idea__bridge">{pe.bridge}</p>}
-          </section>
+          <BigIdeaPanel
+            content={pe}
+            id="plain-english"
+            ariaLabel="In plain English"
+          />
         )}
 
         {lesson.sections.map((s, i) => {

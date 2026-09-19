@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { getCourse } from '../data/courses'
 import { ProgressRing } from '../components/ProgressRing'
 import { CourseArt } from '../components/CourseArt'
+import { BigIdeaPanel } from '../components/BigIdeaPanel'
 import { isModuleUnlocked, lessonPassed } from '../lib/mastery'
 import type { ProgressState } from '../types'
 import type { CSSProperties } from 'react'
@@ -63,6 +64,13 @@ export function CourseOutline({ progress }: Props) {
         </div>
         <ProgressRing value={mastery} size={88} stroke={7} color={course.color} label="Course mastery" />
       </header>
+
+      <BigIdeaPanel
+        content={course.bigIdea}
+        title={`Why ${course.shortTitle} matters`}
+        id="course-big-idea"
+        ariaLabel={`${course.shortTitle} big idea`}
+      />
 
       <div className="modules" style={{ '--course-color': course.color } as CSSProperties}>
         {course.modules.map((mod, mi) => {
