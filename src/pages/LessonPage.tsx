@@ -37,6 +37,7 @@ export function LessonPage({ progress, onComplete }: Props) {
   const lessonIndex = module.lessons.findIndex((l) => l.id === lesson.id)
   const moduleIndex = course.modules.findIndex((m) => m.id === module.id)
   const clinics = clinicsForLesson(lesson.id)
+  const pe = lesson.plainEnglish
 
   if (!unlocked) {
     return (
@@ -101,6 +102,11 @@ export function LessonPage({ progress, onComplete }: Props) {
           <li>
             <a href="#learning-objectives">Learning objectives</a>
           </li>
+          {pe && (
+            <li>
+              <a href="#plain-english">In plain English</a>
+            </li>
+          )}
           {lesson.sections.map((s) => (
             <li key={s.heading}>
               <a href={`#sec-${slug(s.heading)}`}>{s.heading}</a>
@@ -121,6 +127,32 @@ export function LessonPage({ progress, onComplete }: Props) {
       </div>
 
       <div className="lesson-body">
+        {pe && (
+          <section id="plain-english" className="big-idea" aria-label="In plain English">
+            <div className="big-idea__eyebrow">
+              <span className="big-idea__badge">Big idea</span>
+              <span className="big-idea__label">In plain English</span>
+            </div>
+            <h2>Start here — no formulas yet</h2>
+            <div className="big-idea__solves">
+              <span className="big-idea__solves-label">What problem does this solve?</span>
+              <p>{pe.solves}</p>
+            </div>
+            <p className="big-idea__idea">{pe.idea}</p>
+            {pe.jargon && pe.jargon.length > 0 && (
+              <dl className="jargon-list">
+                {pe.jargon.map((j) => (
+                  <div key={j.term} className="jargon-list__item">
+                    <dt>{j.term}</dt>
+                    <dd>{j.meaning}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+            {pe.bridge && <p className="big-idea__bridge">{pe.bridge}</p>}
+          </section>
+        )}
+
         {lesson.sections.map((s, i) => {
           const reality = s.reality ?? realityFor(lesson.id, s.heading)
           return (
@@ -147,20 +179,40 @@ export function LessonPage({ progress, onComplete }: Props) {
           )
         })}
 
-        <h2 id="worked-examples" className="section-title">
-          Worked examples
-        </h2>
+        <div className="practice-bridge" id="worked-examples">
+          <p className="practice-bridge__label">Ready when you are</p>
+          <h2 className="section-title">Worked examples</h2>
+          <p className="practice-bridge__copy">
+            You’ve seen the big idea and the formal pieces. Now watch a full solution, then
+            try faded steps, then an independent “Your turn.” Skip ahead only if the story
+            already feels solid.
+          </p>
+        </div>
         {lesson.workedExamples.map((ex) => (
           <WorkedExample key={ex.id} example={ex} />
         ))}
 
         {clinics.length > 0 && (
           <div id="mistake-clinic">
+            <div className="practice-bridge practice-bridge--clinic">
+              <p className="practice-bridge__label">Sharpen judgment</p>
+              <p className="practice-bridge__copy">
+                Contrast cases after the examples — spot the wrong path and name why. This is
+                practice for judgment, not a surprise quiz.
+              </p>
+            </div>
             <ContrastClinic cases={clinics} />
           </div>
         )}
 
         <div id="quiz">
+          <div className="practice-bridge practice-bridge--quiz">
+            <p className="practice-bridge__label">Check understanding</p>
+            <p className="practice-bridge__copy">
+              A short check after teaching — not a cold start. Use it to confirm the ideas
+              stuck; you can retry if you miss the mastery gate.
+            </p>
+          </div>
           <Quiz
             questions={lesson.quiz}
             onComplete={(score, passed) => onComplete(lesson.id, score, course.id, passed)}

@@ -101,10 +101,29 @@ export interface LearningObjective {
   video?: ObjectiveVideo
 }
 
+export interface JargonTerm {
+  term: string
+  meaning: string
+}
+
+/** Opening stretch: everyday language before formulas and practice */
+export interface PlainEnglish {
+  /** What real-world problem this idea helps solve */
+  solves: string
+  /** Everyday analogy + engineering intuition — no equations */
+  idea: string
+  /** Define jargon the first time it appears */
+  jargon?: JargonTerm[]
+  /** Soft bridge into the formal sections that follow */
+  bridge?: string
+}
+
 export interface Lesson {
   id: string
   title: string
   summary: string
+  /** Opening “In plain English / Big idea” stretch (merged if omitted in raw data) */
+  plainEnglish?: PlainEnglish
   objectives: LearningObjective[]
   sections: LessonSection[]
   workedExamples: WorkedExample[]
@@ -215,6 +234,8 @@ export interface Formula {
   expression: string
   courseId: CourseId
   description: string
+  /** Extra plain-language teaching (shown under the short description) */
+  plainLanguage?: string
   tags: string[]
 }
 

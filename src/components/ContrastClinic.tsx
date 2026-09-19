@@ -15,7 +15,10 @@ export function ContrastClinic({ cases }: Props) {
     <section className="contrast-clinic" aria-label="Common-mistake clinic">
       <header className="contrast-clinic__head">
         <h3>Mistake clinic</h3>
-        <p>Contrast cases — which option is wrong, and why?</p>
+        <p>
+          After the worked path: which option is wrong, and why? Train judgment before the
+          quiz — not a trap at the door.
+        </p>
       </header>
       {cases.map((c) => {
         const choice = picked[c.id]

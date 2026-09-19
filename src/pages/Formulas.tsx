@@ -28,7 +28,8 @@ export function Formulas() {
         <p className="eyebrow">Formulas</p>
         <h1>Formula reference</h1>
         <p className="lede">
-          Searchable sheet of ~{formulas.length} core identities across the six courses.
+          Searchable sheet of ~{formulas.length} core identities across the six courses —
+          each with a short description and plain-language intuition before you memorize symbols.
         </p>
       </header>
 
@@ -81,6 +82,9 @@ export function Formulas() {
               </div>
               <p className="formula-card__expr">{f.expression}</p>
               <p className="formula-card__desc">{f.description}</p>
+              {f.plainLanguage && (
+                <p className="formula-card__plain">{f.plainLanguage}</p>
+              )}
               <div className="tag-row">
                 {f.tags.map((t) => (
                   <span key={t} className="tag">

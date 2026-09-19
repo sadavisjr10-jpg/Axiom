@@ -1,4 +1,5 @@
-import type { Course } from '../types'
+import type { Course, Lesson } from '../types'
+import { plainEnglishFor } from './plainEnglish'
 
 export const courses: Course[] = [
   {
@@ -67,13 +68,13 @@ export const courses: Course[] = [
               {
                 heading: 'What a limit means',
                 body:
-                  'We write limₓ→ₐ f(x) = L when the values of f get arbitrarily close to L as x approaches a. The function need not equal L at a — or even be defined there. Think of zooming in on the graph near x = a: if the y-values settle on a single height L, the limit is L.',
+                  'Start with a picture, not a symbol. Walk toward a doorway: you can get arbitrarily close without standing on the threshold. A limit is that idea for graphs — as x nudges toward a, the y-values settle on one height L even if the function has a hole or is undefined at a. Only after that intuition do we write limₓ→ₐ f(x) = L: the outputs approach L as the input approaches a. Zoom in near x = a; if y crowds around one height, that height is the limit.',
                 visual: 'limit-zoom',
               },
               {
                 heading: 'One-sided limits',
                 body:
-                  'limₓ→ₐ⁻ f(x) uses only x < a; limₓ→ₐ⁺ uses only x > a. The two-sided limit exists only when both one-sided limits exist and agree. A classic failure is a jump discontinuity: left and right settle on different heights.',
+                  'Sometimes the story from the left differs from the story from the right — think of a curb or a one-way clutch. Approaching only through smaller x (left) or only through larger x (right) gives one-sided limits. We write limₓ→ₐ⁻ and limₓ→ₐ⁺ for those. The two-sided limit exists only when both sides exist and agree. A jump discontinuity is the classic failure: left and right settle on different heights.',
                 visual: 'one-sided-graph',
               },
               {
@@ -307,13 +308,13 @@ export const courses: Course[] = [
               {
                 heading: 'Average rate first',
                 body:
-                  'On an interval [a, a+h], the average rate of change of f is [f(a+h) − f(a)] / h — rise over run for the secant line. That quotient is exact for the interval; it is not yet “instantaneous.”',
+                  'Before “instantaneous,” own the everyday idea of average. On a road trip, miles ÷ hours is exact for the whole stretch — and hides the spike at minute 47. On a graph, that average is rise over run for the secant that cuts the curve at two points. On an interval [a, a+h], write [f(a+h) − f(a)] / h. That quotient describes the whole window; it is not yet a rate at one instant.',
                 visual: 'avg-rate',
               },
               {
                 heading: 'Difference quotient → derivative',
                 body:
-                  'The derivative is the limit of that average rate as the window shrinks: f′(a) = limₕ→₀ [f(a+h) − f(a)] / h, when the limit exists. Geometrically, secants approach the tangent; physically, average rates approach an instantaneous rate.',
+                  'Shrink the averaging window. As h gets tiny, those secants tip toward a single tangent line, and the average rates settle on one number — the instantaneous rate at a. When that shrinking-window limit exists, we call it the derivative and write f′(a) = limₕ→₀ [f(a+h) − f(a)] / h. Geometry: secants → tangent. Physics: average → instantaneous.',
                 visual: 'difference-quotient',
               },
               {
@@ -450,12 +451,12 @@ export const courses: Course[] = [
               {
                 heading: 'Why shortcut rules exist',
                 body:
-                  'The limit definition always works but is slow. Once you trust the definition for xⁿ and for sums/products, the power and product rules are compressed theorems — not magic. Use them freely after you have seen where they come from.',
+                  'You already know how to build a derivative from a shrinking window. Doing that by hand for every power of x would be like measuring every board with a micrometer when you own a tape measure. Once you trust the definition for xⁿ and for sums/products, the power and product rules are compressed theorems — not magic. Use them freely after you have seen where they come from.',
               },
               {
                 heading: 'Power rule',
                 body:
-                  'For any real n where xⁿ is differentiable, d/dx [xⁿ] = n xⁿ⁻¹. Constants factor out: (c f)′ = c f′. Sums differentiate termwise: (f + g)′ = f′ + g′.',
+                  'Pattern first: differentiating x³ should feel like “bring the 3 down and drop the power by one.” That is the power rule. For any real n where xⁿ is differentiable, d/dx [xⁿ] = n xⁿ⁻¹. Constants factor out: (c f)′ = c f′. Sums differentiate termwise: (f + g)′ = f′ + g′. Sanity-check a simple case when something looks weird.',
                 visual: 'power-slope',
               },
               {
@@ -578,13 +579,13 @@ export const courses: Course[] = [
               {
                 heading: 'Antiderivative idea',
                 body:
-                  'F is an antiderivative of f when F′ = f. Differentiation asks “how fast does F change?”; antidifferentiation asks “which F has this rate?” Many answers differ by a constant: if F′ = f then (F+C)′ = f too.',
+                  'Differentiation asks “how fast is this changing?” The reverse question is just as practical: “which quantity has this rate?” If water pours into a tank at a known rate, you want the water level (up to a starting amount). F is an antiderivative of f when F′ = f. Many answers differ by a constant: if F′ = f then (F+C)′ = f too — same rate, different starting level.',
                 visual: 'antiderivative',
               },
               {
                 heading: 'Indefinite integral',
                 body:
-                  'We write ∫ f(x) dx = F(x) + C for the family of antiderivatives. The +C is not decoration — definite integrals cancel it, but indefinite integrals must keep it.',
+                  'The family of all antiderivatives is the indefinite integral. We write ∫ f(x) dx = F(x) + C. The +C is not decoration: it remembers that rates do not fix an absolute level. Definite integrals (net change from a to b) cancel the constant; indefinite ones must keep it.',
               },
               {
                 heading: 'Fundamental theorem (evaluation form)',
@@ -725,7 +726,7 @@ export const courses: Course[] = [
               {
                 heading: 'Why kinematics before forces',
                 body:
-                  'Kinematics answers “how does position and velocity change with time?” without asking “what caused the acceleration?” That separation is deliberate: once you can describe motion, Newton’s laws later explain why a has the value it does. Free fall, braking, and runway takeoff are everyday cases where a is nearly constant, so the algebra is exact enough for first-pass design.',
+                  'Before asking why a car brakes, describe the stop: how speed and position change with time. Kinematics is that description — motion without yet naming the causes. The separation is deliberate: once you can narrate the trip, Newton’s laws later explain why acceleration has the value it does. Free fall, braking, and runway takeoff are everyday cases where a is nearly constant, so the algebra is exact enough for first-pass design.',
               },
               {
                 heading: 'When these equations apply',
@@ -935,7 +936,7 @@ export const courses: Course[] = [
               {
                 heading: 'Net force, not “the” force',
                 body:
-                  'Newton’s second law is about the vector sum of forces: ΣF = m a. Individual agents (push, weight, normal, tension, friction) each contribute an arrow on the FBD; acceleration responds only to the total. Mass m measures inertia — how stubborn the velocity is against change — and is not itself a force.',
+                  'Picture a tug-of-war: many ropes, one net effect. Newton’s second law is about that total, not a single celebrity force. Individual agents (push, weight, normal, tension, friction) each contribute an arrow on the FBD; acceleration responds only to the sum. We write ΣF = m a for that idea. Mass m measures inertia — how stubborn velocity is against change — and is not itself a force.',
                 visual: 'net-force',
               },
               {
@@ -1140,12 +1141,12 @@ export const courses: Course[] = [
               {
                 heading: 'Why components',
                 body:
-                  'Vector addition by parallelogram is fine for two forces; for three or more, sketching parallelograms stacks poorly. Components scale cleanly: project every force onto x and y, add the scalars, then rebuild one vector. That is the everyday language of statics software and hand calculations alike.',
+                  'Tip-to-tail arrows work for two forces; with three or more the sketch turns into spaghetti. A cleaner habit: break every force into east–west and north–south pieces, add those ordinary numbers, then rebuild one arrow that tells the same story. That rebuilt arrow is the resultant. Components are the everyday language of statics software and hand calculations alike.',
               },
               {
                 heading: 'Angle reference first',
                 body:
-                  'Formulas Fₓ = F cos θ and Fᵧ = F sin θ assume θ measured from +x, counterclockwise positive. If a problem says “30° above the −x axis,” sketch before plugging in — the reference is not the default. Wrong reference is the #1 source of sign errors.',
+                  'Cos and sin only mean what you think if the angle is measured from the axis you claimed. The usual formulas Fₓ = F cos θ and Fᵧ = F sin θ assume θ from +x, counterclockwise positive. If a problem says “30° above the −x axis,” sketch before plugging in — the reference is not the default. Wrong reference is the #1 source of sign errors.',
                 visual: 'vector-resolve',
               },
               {
@@ -1329,12 +1330,12 @@ export const courses: Course[] = [
               {
                 heading: 'Particle vs rigid body',
                 body:
-                  'A particle (or a knot treated as a particle) has no size for moment purposes: only force balance matters. A rigid body in 2D also needs ΣM = 0 — three equations total. This lesson stays with particles so you master the force equations before moments enter.',
+                  'A small ring or cable knot often does not need its physical size for the first analysis — only which forces pull on it. We call that idealization a particle: force balance matters; moments wait. A rigid body in 2D also needs ΣM = 0 — three equations total. This lesson stays with particles so you master force equations before moments enter.',
               },
               {
                 heading: 'Why equilibrium means zero net force',
                 body:
-                  'If a particle’s acceleration is zero, Newton’s second law says ΣF = 0. Statics problems are the a = 0 special case of dynamics. Two independent planar components give two scalar equations — enough for two unknown force magnitudes when directions are known (cables, links along known lines).',
+                  'If something sits still, the pushes and pulls on it cancel — otherwise it would start moving. That is equilibrium: net force zero. From Newton’s second law with a = 0 we write ΣF = 0. Statics is dynamics in that special case. Two planar components give two scalar equations — enough for two unknown magnitudes when directions are known (cables along known lines).',
                 visual: 'particle-knot',
               },
               {
@@ -1708,13 +1709,13 @@ export const courses: Course[] = [
               {
                 heading: 'KCL — charge conservation',
                 body:
-                  'At a node, current in equals current out (equivalently: the algebraic sum of currents leaving the node is zero). Charge does not pile up at an ideal connection point. Pick “leaving positive” or “entering positive” and stay consistent for every term.',
+                  'Think plumbing: at a pipe junction, what flows in must flow out — ideal wires do not store charge. That is Kirchhoff’s Current Law (KCL). At a node, current in equals current out (equivalently: the algebraic sum of currents leaving the node is zero). Pick “leaving positive” or “entering positive” and stay consistent for every term.',
                 visual: 'kcl-node',
               },
               {
                 heading: 'KVL — energy conservation',
                 body:
-                  'Around any closed loop, the signed sum of voltage rises and drops is zero. Intuition: walking a closed path in an electrostatic field returns you to the same potential. Traverse the loop once; add rises and drops with one rule (e.g. + when going from − to + through a source, − when going with the current through a resistor).',
+                  'Think hiking: walk a closed trail and your net altitude change is zero — you end where you began. Kirchhoff’s Voltage Law (KVL) is that idea for electric potential. Around any closed loop, the signed sum of voltage rises and drops is zero. Traverse once; add rises and drops with one rule (e.g. + when going from − to + through a source, − when going with the current through a resistor).',
                 visual: 'kvl-loop-viz',
               },
               {
@@ -1886,12 +1887,12 @@ export const courses: Course[] = [
               {
                 heading: 'Model idea',
                 body:
-                  'An ideal gas ignores intermolecular forces and molecule volume — a strong approximation for many dilute gases away from liquefaction. The equation of state ties four quantities (P, V, n, T) so any three determine the fourth for a fixed chemical amount. It is a constitutive model, not a universal law of all matter.',
+                  'Pretend gas molecules are tiny billiard balls that ignore each other’s attractions and take up no volume. That fiction — the ideal gas — is surprisingly accurate for many dilute gases far from liquefaction. An equation of state then ties four bookkeeping quantities (P, V, n, T) so any three determine the fourth. It is a constitutive model for design estimates, not a claim that all matter behaves this way.',
               },
               {
                 heading: 'Equation of state',
                 body:
-                  'PV = nRT with T absolute (Kelvin). Common R ≈ 8.314 J/(mol·K) when P·V is in joules (Pa·m³). Other unit systems need a matching R (e.g. 0.0821 L·atm/(mol·K)). Intensive forms: Pv = RT per mole, or a mass-based gas constant — do not mix molar and mass bases in one equation.',
+                  'Once the model is acceptable, the bookkeeping relation is PV = nRT with T on an absolute scale (Kelvin). Common R ≈ 8.314 J/(mol·K) when P·V is in joules (Pa·m³). Other unit systems need a matching R (e.g. 0.0821 L·atm/(mol·K)). Intensive forms use per-mole or per-mass constants — do not mix those bases in one equation.',
                 visual: 'pvt-state',
               },
               {
@@ -2068,7 +2069,7 @@ export const courses: Course[] = [
               {
                 heading: 'Energy balance',
                 body:
-                  'For a closed system (no mass crossing the boundary), this course uses ΔU = Q − W: Q positive when heat enters the system, W positive when the system does work on the surroundings. Other textbooks write ΔU = Q + W with W in positive — always check the local convention before copying a formula from another source.',
+                  'Treat energy like a bank account for a closed system (no mass in or out). Heat in is a deposit; work out is a withdrawal; the balance is internal energy U. This course writes ΔU = Q − W with that story: Q positive when heat enters, W positive when the system does work on the surroundings. Other books flip the work sign — always check the local convention before copying a formula.',
                 visual: 'energy-balance',
               },
               {
@@ -2256,12 +2257,12 @@ export const courses: Course[] = [
               {
                 heading: 'Why normalize force and stretch',
                 body:
-                  'Raw force depends on specimen cross section; raw elongation depends on gauge length. Stress and strain strip out geometry so you can compare steel to aluminum and feed constitutive laws that are (approximately) size-independent. Design then multiplies stress by area to recover force.',
+                  'A thick bar and a thin wire can carry very different forces while “feeling” the same intensity inside the material. Raw force depends on cross section; raw elongation depends on gauge length. Stress and strain strip out geometry so you can compare steel to aluminum and feed constitutive laws that are (approximately) size-independent. Design later multiplies stress by area to recover force for a real part.',
               },
               {
                 heading: 'Definitions',
                 body:
-                  'Engineering stress σ = F/A₀ uses the original cross section. Engineering strain ε = ΔL/L₀ uses the original length. True stress/strain use instantaneous geometry — important in plasticity, but most intro elastic calculations stay with engineering measures.',
+                  'Stress is force per unit area — intensity of loading. Strain is stretch per unit length — fractional change in size. Engineering stress σ = F/A₀ uses the original cross section; engineering strain ε = ΔL/L₀ uses the original length. True stress/strain use instantaneous geometry — important in plasticity; most intro elastic work stays with engineering measures.',
                 visual: 'stress-def',
               },
               {
@@ -2445,7 +2446,7 @@ export const courses: Course[] = [
               {
                 heading: 'Hall–Petch relation',
                 body:
-                  'σ_y = σ₀ + k / √d, where d is mean grain diameter, σ₀ is a lattice friction stress, and k is a strengthening coefficient. Halving d multiplies the k/√d term by √2 ≈ 1.41. The boost is real but not infinite: at nanocrystalline sizes other mechanisms can dominate and the classic form may fail.',
+                  'Smaller grains → more boundary area → higher yield strength, within a valid range. The classic bookkeeping is σ_y = σ₀ + k / √d, where d is mean grain diameter, σ₀ a lattice friction stress, and k a strengthening coefficient. Halving d multiplies the k/√d term by √2 ≈ 1.41. The boost is real but not infinite: at nanocrystalline sizes other mechanisms can dominate and the classic form may fail.',
               },
               {
                 heading: 'Arrhenius rates',
@@ -2581,6 +2582,12 @@ export const courses: Course[] = [
   },
 ]
 
+function withPlainEnglish(lesson: Lesson): Lesson {
+  if (lesson.plainEnglish) return lesson
+  const pe = plainEnglishFor(lesson.id)
+  return pe ? { ...lesson, plainEnglish: pe } : lesson
+}
+
 export function getCourse(id: string): Course | undefined {
   return courses.find((c) => c.id === id)
 }
@@ -2590,7 +2597,7 @@ export function getLesson(courseId: string, lessonId: string) {
   if (!course) return undefined
   for (const mod of course.modules) {
     const lesson = mod.lessons.find((l) => l.id === lessonId)
-    if (lesson) return { course, module: mod, lesson }
+    if (lesson) return { course, module: mod, lesson: withPlainEnglish(lesson) }
   }
   return undefined
 }
@@ -2598,7 +2605,7 @@ export function getLesson(courseId: string, lessonId: string) {
 export function allLessons() {
   return courses.flatMap((c) =>
     c.modules.flatMap((m) =>
-      m.lessons.map((l) => ({ course: c, module: m, lesson: l })),
+      m.lessons.map((l) => ({ course: c, module: m, lesson: withPlainEnglish(l) })),
     ),
   )
 }

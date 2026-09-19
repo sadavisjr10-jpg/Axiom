@@ -40,6 +40,7 @@ export function Quiz({ questions, onComplete, masteryGate = true }: Props) {
       <header className="quiz__header">
         <h3>Check understanding</h3>
         <p>
+          You’ve already worked examples — this is a short confirmation, not a cold start.
           Select an answer for each question, then submit.
           {masteryGate && (
             <>

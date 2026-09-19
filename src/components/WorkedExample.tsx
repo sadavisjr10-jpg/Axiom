@@ -114,9 +114,15 @@ export function WorkedExample({ example }: Props) {
               </button>
             )}
             {revealed >= total && (
-              <button type="button" className="btn btn--primary" onClick={() => goPhase('fade')}>
-                Continue to faded steps →
-              </button>
+              <>
+                <p className="fade-coach muted">
+                  Nice — you’ve seen the full path. Next, early steps stay visible and later
+                  ones go blank so you can rehearse the moves.
+                </p>
+                <button type="button" className="btn btn--primary" onClick={() => goPhase('fade')}>
+                  Continue to faded steps →
+                </button>
+              </>
             )}
           </div>
         </>
@@ -165,13 +171,19 @@ export function WorkedExample({ example }: Props) {
               <strong>Answer:</strong> {example.answer}
             </p>
             {practice && (
-              <button
-                type="button"
-                className="btn btn--primary"
-                onClick={() => goPhase('practice')}
-              >
-                Your turn →
-              </button>
+              <>
+                <p className="fade-coach muted">
+                  When the faded steps feel familiar, try a fresh problem — same idea, new
+                  numbers. Hints are there if you need them.
+                </p>
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  onClick={() => goPhase('practice')}
+                >
+                  When you’re ready: Your turn →
+                </button>
+              </>
             )}
           </div>
         </>
@@ -179,6 +191,9 @@ export function WorkedExample({ example }: Props) {
 
       {phase === 'practice' && practice && (
         <div className="your-turn">
+          <p className="your-turn__lead muted">
+            Independent practice — earned after the worked path, not a cold jump.
+          </p>
           <p className="worked-example__problem">
             <strong>Your turn.</strong> {practice.problem}
           </p>
