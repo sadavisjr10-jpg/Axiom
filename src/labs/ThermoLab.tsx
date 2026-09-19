@@ -38,6 +38,21 @@ export function ThermoLab() {
             : `${round(result.value.T, 2)} K`
       : result.error
 
+  const vol = result.ok ? result.value.V : V
+  const temp = result.ok ? result.value.T : T
+  const press = result.ok ? result.value.P : P
+  // Map volume to piston height (larger V → taller chamber)
+  const chamberH = Math.min(110, Math.max(36, 36 + vol * 1800))
+  const pistonY = 200 - chamberH
+  const glow = Math.min(0.55, 0.15 + (temp - 200) / 1200)
+  const molecules = [
+    [148, pistonY + chamberH * 0.35],
+    [162, pistonY + chamberH * 0.55],
+    [138, pistonY + chamberH * 0.7],
+    [170, pistonY + chamberH * 0.4],
+    [155, pistonY + chamberH * 0.85],
+  ]
+
   const results = (
     <>
       <dl className="lab__results">
@@ -67,24 +82,42 @@ export function ThermoLab() {
           </div>
         )}
       </dl>
-      <div className="lab__canvas lab__canvas--panel">
-        <p className="thermo-viz-title">State snapshot</p>
-        <div className="thermo-viz">
-          <div
-            className="thermo-viz__box"
-            style={{
-              transform: `scale(${result.ok ? Math.min(1.4, 0.6 + result.value.V * 8) : 1})`,
-            }}
-          >
-            <span>gas</span>
-          </div>
-          <ul>
-            <li>Higher T → higher P at fixed V</li>
-            <li>Higher V → lower P at fixed T</li>
-            <li>Absolute temperature in kelvin</li>
-          </ul>
-        </div>
-      </div>
+      <svg className="lab__canvas" viewBox="0 0 280 260" role="img" aria-label="Ideal-gas piston schematic">
+        <text x="24" y="22" className="fig-label fig-label--ink">
+          Closed system · PV = nRT
+        </text>
+        {/* Cylinder walls */}
+        <line x1="110" y1="40" x2="110" y2="200" className="fig-wire" strokeWidth={1.75} />
+        <line x1="200" y1="40" x2="200" y2="200" className="fig-wire" strokeWidth={1.75} />
+        <line x1="110" y1="200" x2="200" y2="200" className="fig-wire" strokeWidth={1.75} />
+        {/* Gas fill */}
+        <rect
+          x="112"
+          y={pistonY + 10}
+          width="86"
+          height={Math.max(chamberH - 10, 8)}
+          fill={`rgba(251, 113, 133, ${glow})`}
+          stroke="none"
+        />
+        {/* Piston */}
+        <rect x="108" y={pistonY} width="94" height="10" rx="2" className="fig-body" stroke="#fb7185" />
+        <line x1="155" y1={pistonY} x2="155" y2={pistonY - 28} className="fig-wire" />
+        <text x="162" y={pistonY - 16} className="fig-label">
+          piston
+        </text>
+        {molecules.map(([mx, my], i) => (
+          <circle key={i} cx={mx} cy={my} r={2.5} fill="#fda4af" opacity={0.9} />
+        ))}
+        <text x="24" y={pistonY + chamberH * 0.5} className="fig-eq" style={{ fontSize: 11 }}>
+          {`P ≈ ${(press / 1000).toFixed(1)} kPa`}
+        </text>
+        <text x="24" y="230" className="fig-label">
+          {`V = ${round(vol, 4)} m³ · T = ${round(temp, 1)} K`}
+        </text>
+        <text x="24" y="250" className="fig-label">
+          Higher T or lower V → higher P (ideal gas)
+        </text>
+      </svg>
     </>
   )
 

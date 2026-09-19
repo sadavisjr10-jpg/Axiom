@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import type { ExampleVisualKind, ExampleVisualSpec } from '../../types'
+import { GraphFrame, TrackAxis, SharedMarkers } from './diagramPrimitives'
 
 /** Shared reduced-motion hook (mirrors objective demos). */
 function usePrefersReducedMotion(): boolean {
@@ -108,7 +109,7 @@ function PolyLimit({ params, reduced }: { params?: P; reduced: boolean }) {
         const n = v + 0.04
         return n >= a - 0.05 ? a - 1.4 : n
       })
-    }, 40)
+    }, 55)
     return () => clearInterval(id)
   }, [playing, reduced, a])
   // f(x) = 2x² − 5x + 1 → f(3)=4
@@ -130,8 +131,7 @@ function PolyLimit({ params, reduced }: { params?: P; reduced: boolean }) {
       caption={`f(x)=2x²−5x+1. As x→${a}, f(x)→${L}. Continuous → plug in.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="40" y1="20" x2="40" y2="120" className="demo-axis" />
+        <GraphFrame />
         <path d={path} className="demo-curve" fill="none" />
         <line x1={mapX(a)} y1="20" x2={mapX(a)} y2="110" className="demo-guide" strokeDasharray="4 3" />
         <circle cx={mapX(a)} cy={mapY(L)} r="5" className="demo-target" />
@@ -164,7 +164,7 @@ function RemovableHole({ params, reduced }: { params?: P; reduced: boolean }) {
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setSide((s) => (s <= 0.08 ? 0.9 : s - 0.02)), 40)
+    const id = window.setInterval(() => setSide((s) => (s <= 0.08 ? 0.9 : s - 0.02)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   // after cancel: y = x+2, hole at x=2, L=4
@@ -179,7 +179,7 @@ function RemovableHole({ params, reduced }: { params?: P; reduced: boolean }) {
       caption={`(x²−4)/(x−2) = x+2 for x≠${a}. Hole at x=${a}; limit is ${a + 2}.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d={`M${mapX(0)},${mapY(2)} L${mapX(4)},${mapY(6)}`} className="demo-curve" fill="none" />
         <circle cx={mapX(a)} cy={mapY(a + 2)} r="6" className="demo-target" fill="none" strokeWidth="2" />
         <circle cx={mapX(xL)} cy={mapY(xL + 2)} r="4" className="demo-dot" />
@@ -211,7 +211,7 @@ function ScaledSinc({ params, reduced }: { params?: P; reduced: boolean }) {
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setX((v) => (v < 0.06 ? 1.1 : v - 0.02)), 40)
+    const id = window.setInterval(() => setX((v) => (v < 0.06 ? 1.1 : v - 0.02)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   const ratio = Math.abs(x) < 1e-8 ? k : Math.sin(k * x) / x
@@ -224,8 +224,7 @@ function ScaledSinc({ params, reduced }: { params?: P; reduced: boolean }) {
       caption={`Rewrite as ${k}·sin(${k}x)/(${k}x). As x→0, ratio ≈ ${ratio.toFixed(2)} → ${k}.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="140" y1="20" x2="140" y2="120" className="demo-axis" />
+        <GraphFrame ox={140} />
         <line x1="40" y1={110 - (k / (k + 0.5)) * 85} x2="240" y2={110 - (k / (k + 0.5)) * 85} className="demo-guide" strokeDasharray="3 3" />
         <path d="M40 95 C70 40 110 25 140 30 C170 25 210 40 240 95" className="demo-curve" fill="none" />
         <circle cx={px} cy={py} r="5" className="demo-dot" />
@@ -267,8 +266,8 @@ function SignumJump({ reduced }: { reduced: boolean }) {
       caption="Left → −1, right → +1. Sides disagree → two-sided limit DNE."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="140" y1="20" x2="140" y2="120" className="demo-guide" strokeDasharray="4 3" />
+        <GraphFrame showY={false} />
+        <line x1="140" y1="20" x2="140" y2="110" className="fig-guide" />
         <path d="M40 85 L138 85" className="demo-curve" fill="none" />
         <path d="M142 40 L250 40" className="demo-curve demo-curve--alt" fill="none" />
         <circle cx="138" cy="85" r="4" className="demo-target" fill="none" strokeWidth="2" />
@@ -313,7 +312,7 @@ function SecantAtPoint({ params, reduced }: { params?: P; reduced: boolean }) {
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setH((v) => (v < 0.08 ? 1.4 : v - 0.025)), 40)
+    const id = window.setInterval(() => setH((v) => (v < 0.08 ? 1.4 : v - 0.025)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   // f(x)=x², f'(3)=6
@@ -336,7 +335,7 @@ function SecantAtPoint({ params, reduced }: { params?: P; reduced: boolean }) {
       caption={`h=${h.toFixed(2)} · secant slope ${(slope).toFixed(2)} → 2·${a}=${2 * a} as h→0.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d="M50 105 Q120 100 200 30" className="demo-curve" fill="none" />
         <line
           x1={x0 - extend}
@@ -378,10 +377,8 @@ function LineSlope({ params }: { params?: P }) {
       caption={`Difference quotient collapses to ${m} for every h ≠ 0 — constant slope.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="40" y1="20" x2="40" y2="120" className="demo-axis" />
-        <line x1="50" y1="100" x2="240" y2="30" className="demo-curve" />
-        <polygon points="240,30 228,28 232,40" className="demo-arrowhead" />
+        <GraphFrame />
+        <line x1="50" y1="100" x2="245" y2="28" className="demo-curve" markerEnd={`url(#${SharedMarkers.arrowGood})`} />
         <text x="150" y="55" className="demo-eq">
           m = {m}
         </text>
@@ -427,7 +424,7 @@ function PowerRecip({ reduced }: { params?: P; reduced: boolean }) {
       caption={`At x=${x.toFixed(2)}, y=${y.toFixed(2)}, y′=${yp.toFixed(2)} (= −2x⁻³).`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d="M55 30 C70 50 90 85 130 100 C170 110 210 112 250 112" className="demo-curve" fill="none" />
         <line
           x1={px - 30}
@@ -458,7 +455,7 @@ function AreaIntegral({ params, reduced }: { params?: P; reduced: boolean }) {
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setB((v) => (v >= bMax - 0.02 ? a + 0.3 : v + 0.03)), 40)
+    const id = window.setInterval(() => setB((v) => (v >= bMax - 0.02 ? a + 0.3 : v + 0.03)), 55)
     return () => clearInterval(id)
   }, [playing, reduced, a, bMax])
 
@@ -485,7 +482,7 @@ function AreaIntegral({ params, reduced }: { params?: P; reduced: boolean }) {
       caption={`Right endpoint b=${b.toFixed(2)} · shaded area ≈ ${area.toFixed(2)} → F(${bMax})−F(${a})=${(F(bMax) - F(a)).toFixed(0)}.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         {fillPath && <path d={fillPath} className="demo-fill" />}
         <path
           d={(() => {
@@ -533,7 +530,7 @@ function KinematicsMotion({ params, reduced }: { params?: P; reduced: boolean })
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setT((x) => (x >= tMax ? 0 : x + 0.05)), 40)
+    const id = window.setInterval(() => setT((x) => (x >= tMax ? 0 : x + 0.05)), 55)
     return () => clearInterval(id)
   }, [playing, reduced, tMax])
   const v = v0 + a * t
@@ -554,16 +551,16 @@ function KinematicsMotion({ params, reduced }: { params?: P; reduced: boolean })
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
         {mode === 'freefall' ? (
           <>
-            <line x1="40" y1="20" x2="40" y2="120" className="demo-axis" />
+            <line x1="40" y1="20" x2="40" y2="120" className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
             <rect x="100" y={py} width="28" height="28" rx="14" className="demo-box" />
-            <line x1="80" y1="120" x2="200" y2="120" className="demo-axis" />
+            <line x1="80" y1="120" x2="210" y2="120" className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
             <text x="160" y="40" className="demo-label">
               ↓ +g
             </text>
           </>
         ) : (
           <>
-            <line x1="30" y1="100" x2="250" y2="100" className="demo-axis" />
+            <TrackAxis />
             <rect x={px} y={py} width="40" height="28" rx="4" className="demo-box" />
             <text x="40" y="40" className="demo-label">
               v = {v.toFixed(1)} · x = {Math.max(x, 0).toFixed(1)}
@@ -603,18 +600,15 @@ function FbdPush({ params }: { params?: P }) {
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
         <rect x="110" y="50" width="60" height="40" rx="4" className="demo-box" />
-        <line x1="140" y1="50" x2="140" y2="22" className="demo-force" />
-        <polygon points="140,18 134,28 146,28" className="demo-arrowhead" />
+        <line x1="140" y1="50" x2="140" y2="18" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="148" y="28" className="demo-label">
           N
         </text>
-        <line x1="140" y1="90" x2="140" y2="118" className="demo-force" />
-        <polygon points="140,122 134,112 146,112" className="demo-arrowhead" />
+        <line x1="140" y1="90" x2="140" y2="122" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="148" y="118" className="demo-label">
           mg
         </text>
-        <line x1="170" y1="70" x2={170 + fLen} y2="70" className="demo-force demo-force--pull" />
-        <polygon points={`${174 + fLen},70 ${164 + fLen},64 ${164 + fLen},76`} className="demo-arrowhead" />
+        <line x1="170" y1="70" x2={170 + fLen} y2="70" className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
         <text x={180 + fLen * 0.25} y="62" className="demo-label">
           F={F} N
         </text>
@@ -636,14 +630,12 @@ function FbdElevator({ params }: { params?: P }) {
       caption={`ΣF = T − mg = ma → T = m(g+a) = ${m}(${g}${accel >= 0 ? '+' : ''}${accel}) = ${T} N.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="140" y1="15" x2="140" y2="45" className="demo-force" />
-        <polygon points="140,12 134,22 146,22" className="demo-arrowhead" />
+        <line x1="140" y1="45" x2="140" y2="12" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="150" y="28" className="demo-label">
           T={T} N
         </text>
         <rect x="115" y="45" width="50" height="40" rx="4" className="demo-box" />
-        <line x1="140" y1="85" x2="140" y2="118" className="demo-force" />
-        <polygon points="140,122 134,112 146,112" className="demo-arrowhead" />
+        <line x1="140" y1="85" x2="140" y2="122" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="150" y="112" className="demo-label">
           mg={m * g}
         </text>
@@ -663,7 +655,7 @@ function VectorSum({ params, reduced }: { params?: P; reduced: boolean }) {
   const [playing, setPlaying] = useState(!reduced && mode !== 'resolve')
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setT((x) => (x >= 1 ? 0.15 : x + 0.02)), 40)
+    const id = window.setInterval(() => setT((x) => (x >= 1 ? 0.15 : x + 0.02)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
 
@@ -682,8 +674,7 @@ function VectorSum({ params, reduced }: { params?: P; reduced: boolean }) {
         caption={`Fₓ = ${F} cos ${deg}° ≈ ${fx.toFixed(1)} N · Fᵧ = ${F} sin ${deg}° ≈ ${fy.toFixed(1)} N`}
       >
         <svg viewBox="0 0 280 140" className="obj-demo__svg">
-          <line x1="40" y1="110" x2="240" y2="110" className="demo-axis" />
-          <line x1="60" y1="120" x2="60" y2="20" className="demo-axis" />
+          <GraphFrame ox={60} oy={110} labelX="x" labelY="y" />
           <line x1={ox} y1={oy} x2={ox + fx * scale} y2={oy - fy * scale} className="demo-force demo-force--pull" />
           <line x1={ox} y1={oy} x2={ox + fx * scale} y2={oy} className="demo-guide" />
           <line x1={ox + fx * scale} y1={oy} x2={ox + fx * scale} y2={oy - fy * scale} className="demo-guide" />
@@ -708,13 +699,12 @@ function VectorSum({ params, reduced }: { params?: P; reduced: boolean }) {
         caption={`Rₓ=30−50=−20 · Rᵧ=40 · |R|=√(400+1600)≈44.7 N`}
       >
         <svg viewBox="0 0 280 140" className="obj-demo__svg">
-          <line x1="140" y1="70" x2="140" y2="70" className="demo-axis" />
-          <line x1="40" y1="70" x2="240" y2="70" className="demo-guide" />
-          <line x1="140" y1="20" x2="140" y2="120" className="demo-guide" />
-          <line x1="140" y1="70" x2={140 + 30} y2="70" className="demo-force" />
-          <line x1="140" y1="70" x2="140" y2={70 - 40} className="demo-force" />
-          <line x1="140" y1="70" x2={140 - 50} y2="70" className="demo-force demo-curve--alt" />
-          <line x1="140" y1="70" x2={140 + rx} y2={70 - ry} className="demo-force demo-force--pull" strokeWidth="3" />
+          <line x1="40" y1="70" x2="250" y2="70" className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
+          <line x1="140" y1="120" x2="140" y2="18" className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
+          <line x1="140" y1="70" x2={140 + 30} y2="70" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
+          <line x1="140" y1="70" x2="140" y2={70 - 40} className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
+          <line x1="140" y1="70" x2={140 - 50} y2="70" className="demo-force demo-curve--alt" markerEnd={`url(#${SharedMarkers.arrowWarn})`} />
+          <line x1="140" y1="70" x2={140 + rx} y2={70 - ry} className="demo-force demo-force--pull" strokeWidth="2.5" markerEnd={`url(#${SharedMarkers.arrowGood})`} />
           <text x="40" y="30" className="demo-label">
             R
           </text>
@@ -934,8 +924,7 @@ function PvtState({ params }: { params?: P }) {
         caption={`T fixed · P₁V₁=P₂V₂ → P₂=${P1}·${V1}/${V2}=${P2} kPa.`}
       >
         <svg viewBox="0 0 280 140" className="obj-demo__svg">
-          <line x1="40" y1="110" x2="250" y2="110" className="demo-axis" />
-          <line x1="40" y1="110" x2="40" y2="25" className="demo-axis" />
+          <GraphFrame ox={40} oy={110} labelX="V" labelY="P" />
           <path d="M60 40 C100 45 150 70 220 100" className="demo-curve" fill="none" />
           <circle cx="90" cy="48" r="5" className="demo-dot" />
           <circle cx="180" cy="88" r="5" className="demo-target" />
@@ -1155,10 +1144,8 @@ function StressBar({ params }: { params?: P }) {
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
         <rect x="90" y="50" width="100" height="40" rx="4" className="demo-box" />
-        <path d="M50 70 H85" className="demo-force demo-force--pull" />
-        <path d="M195 70 H240" className="demo-force demo-force--pull" />
-        <polygon points="50,70 60,64 60,76" className="demo-arrowhead" />
-        <polygon points="240,70 230,64 230,76" className="demo-arrowhead" />
+        <line x1="85" y1="70" x2="48" y2="70" className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
+        <line x1="195" y1="70" x2="245" y2="70" className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
         <text x="100" y="40" className="demo-label">
           F={F} kN
         </text>
@@ -1225,8 +1212,7 @@ function ArrheniusViz({ reduced }: { reduced: boolean }) {
       caption={`Rate ∝ e^{−Q/RT}. At higher T, a small ΔT multiplies the rate sharply (here relative ≈ ${rate.toExponential(2)}).`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="40" y1="110" x2="250" y2="110" className="demo-axis" />
-        <line x1="40" y1="110" x2="40" y2="25" className="demo-axis" />
+        <GraphFrame ox={40} oy={110} labelX="T" labelY="rate" />
         <path d="M50 105 C90 100 140 90 180 60 C210 35 230 25 250 22" className="demo-curve" fill="none" />
         <circle cx={50 + ((T - 700) / 500) * 180} cy={110 - rate * 2000} r="5" className="demo-dot" />
         <text x="160" y="50" className="demo-label">

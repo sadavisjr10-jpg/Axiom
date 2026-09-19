@@ -1,6 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom'
 import type { ProgressState } from '../types'
+import { FigSprite } from './demos/diagramPrimitives'
 
 const links = [
   { to: '/learn', label: 'Learn', icon: '◇' },
@@ -34,6 +35,7 @@ export function Layout({ progress }: Props) {
 
   return (
     <div className={`app-shell${menuOpen ? ' is-nav-open' : ''}`}>
+      <FigSprite />
       <div className="grid-motif" aria-hidden />
       <header className="topbar">
         <Link to="/" className="brand">

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { resultant2D, round } from '../lib/labMath'
 import { PredictCommitReveal } from '../components/PredictCommitReveal'
+import { SharedMarkers } from '../components/demos/diagramPrimitives'
 
 export function StaticsLab() {
   const [f1, setF1] = useState(100)
@@ -12,7 +13,7 @@ export function StaticsLab() {
 
   const scale = 0.8
   const cx = 160
-  const cy = 140
+  const cy = 150
 
   function tip(mag: number, ang: number) {
     const rad = (ang * Math.PI) / 180
@@ -43,26 +44,81 @@ export function StaticsLab() {
           <dd>{round(r.angleDeg, 2)}°</dd>
         </div>
       </dl>
-      <svg className="lab__canvas" viewBox="0 0 320 280" role="img" aria-label="Force vector diagram">
-        <defs>
-          <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-            <path d="M0,0 L6,3 L0,6 Z" fill="currentColor" />
-          </marker>
-        </defs>
-        <line x1="20" y1={cy} x2="300" y2={cy} stroke="rgba(148,163,184,0.35)" />
-        <line x1={cx} y1="20" x2={cx} y2="260" stroke="rgba(148,163,184,0.35)" />
-        <line x1={cx} y1={cy} x2={t1.x} y2={t1.y} stroke="#fbbf24" strokeWidth="3" markerEnd="url(#arrow)" />
-        <line x1={cx} y1={cy} x2={t2.x} y2={t2.y} stroke="#38bdf8" strokeWidth="3" markerEnd="url(#arrow)" />
-        <line x1={cx} y1={cy} x2={tr.x} y2={tr.y} stroke="#6ee7b7" strokeWidth="3.5" markerEnd="url(#arrow)" />
-        <circle cx={cx} cy={cy} r="4" fill="#e2e8f0" />
-        <text x="24" y="24" fill="#fbbf24" fontSize="12">
+      <svg className="lab__canvas" viewBox="0 0 320 300" role="img" aria-label="Force vector diagram">
+        {/* Fine grid */}
+        {Array.from({ length: 13 }, (_, i) => (
+          <line
+            key={`vx${i}`}
+            x1={40 + i * 20}
+            y1={40}
+            x2={40 + i * 20}
+            y2={260}
+            stroke="rgba(148,163,184,0.08)"
+            strokeWidth="0.75"
+          />
+        ))}
+        {Array.from({ length: 11 }, (_, i) => (
+          <line
+            key={`hy${i}`}
+            x1={40}
+            y1={40 + i * 20}
+            x2={280}
+            y2={40 + i * 20}
+            stroke="rgba(148,163,184,0.08)"
+            strokeWidth="0.75"
+          />
+        ))}
+        <line x1={40} y1={cy} x2={295} y2={cy} className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
+        <line x1={cx} y1={260} x2={cx} y2={35} className="fig-axis" markerEnd={`url(#${SharedMarkers.arrow})`} />
+        <text x={290} y={cy + 14} className="fig-label fig-label--axis">
+          x
+        </text>
+        <text x={cx + 8} y={42} className="fig-label fig-label--axis">
+          y
+        </text>
+        <line
+          x1={cx}
+          y1={cy}
+          x2={t1.x}
+          y2={t1.y}
+          stroke="#fbbf24"
+          strokeWidth="2.25"
+          markerEnd={`url(#${SharedMarkers.arrowWarm})`}
+        />
+        <line
+          x1={cx}
+          y1={cy}
+          x2={t2.x}
+          y2={t2.y}
+          stroke="#38bdf8"
+          strokeWidth="2.25"
+          markerEnd={`url(#${SharedMarkers.arrowCool})`}
+        />
+        <line
+          x1={cx}
+          y1={cy}
+          x2={tr.x}
+          y2={tr.y}
+          stroke="#6ee7b7"
+          strokeWidth="2.5"
+          markerEnd={`url(#${SharedMarkers.arrowGood})`}
+        />
+        <circle cx={cx} cy={cy} r={3.5} fill="#e2e8f0" />
+        {/* Legend */}
+        <line x1={24} y1={20} x2={40} y2={20} stroke="#fbbf24" strokeWidth="2.25" strokeLinecap="round" />
+        <text x={46} y={24} className="fig-label" fill="#fbbf24">
           F₁
         </text>
-        <text x="56" y="24" fill="#38bdf8" fontSize="12">
+        <line x1={78} y1={20} x2={94} y2={20} stroke="#38bdf8" strokeWidth="2.25" strokeLinecap="round" />
+        <text x={100} y={24} className="fig-label" fill="#38bdf8">
           F₂
         </text>
-        <text x="88" y="24" fill="#6ee7b7" fontSize="12">
+        <line x1={132} y1={20} x2={148} y2={20} stroke="#6ee7b7" strokeWidth="2.25" strokeLinecap="round" />
+        <text x={154} y={24} className="fig-label" fill="#6ee7b7">
           R
+        </text>
+        <text x={24} y={288} className="fig-label">
+          Concurrent forces at origin · θ from +x (CCW+)
         </text>
       </svg>
     </>

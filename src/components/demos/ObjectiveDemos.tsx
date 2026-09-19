@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import type { ObjectiveDemoId } from '../../types'
+import { GraphFrame, TrackAxis, SharedMarkers } from './diagramPrimitives'
 
 interface DemoProps {
   id: ObjectiveDemoId
@@ -145,7 +146,7 @@ function LimitApproach({ className, reduced }: { className?: string; reduced: bo
         const n = x + 0.012
         return n >= 0.98 ? 0.15 : n
       })
-    }, 40)
+    }, 55)
     return () => clearInterval(id)
   }, [playing, reduced])
 
@@ -160,8 +161,7 @@ function LimitApproach({ className, reduced }: { className?: string; reduced: bo
       caption="Scrub (or play): as x → a, the sample point’s height settles on L — even if the hole at a is empty."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="40" y1="20" x2="40" y2="120" className="demo-axis" />
+        <GraphFrame />
         <path d="M50 95 C90 90 110 40 150 55 C190 70 210 30 250 35" className="demo-curve" fill="none" />
         <line x1="150" y1="20" x2="150" y2="110" className="demo-guide" strokeDasharray="4 3" />
         <circle cx="150" cy="55" r="5" className="demo-target" fill="none" strokeWidth="2" />
@@ -202,8 +202,8 @@ function OneSided({ className, reduced }: { className?: string; reduced: boolean
       caption="Left and right can settle on different heights. Two-sided limit exists only when they agree."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="140" y1="20" x2="140" y2="120" className="demo-guide" strokeDasharray="4 3" />
+        <GraphFrame showY={false} />
+        <line x1="140" y1="20" x2="140" y2="110" className="fig-guide" />
         <path d="M40 90 C80 85 110 70 138 50" className="demo-curve" fill="none" />
         <path d="M142 80 C170 75 210 40 250 35" className="demo-curve demo-curve--alt" fill="none" />
         <circle cx="138" cy="50" r="4" className="demo-target" />
@@ -236,7 +236,7 @@ function SinxOverX({ className, reduced }: { className?: string; reduced: boolea
         const n = v - 0.025
         return n < 0.05 ? 1.4 : n
       })
-    }, 40)
+    }, 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   const ratio = Math.abs(x) < 1e-6 ? 1 : Math.sin(x) / x
@@ -250,8 +250,7 @@ function SinxOverX({ className, reduced }: { className?: string; reduced: boolea
       caption={`sin(x)/x ≈ ${ratio.toFixed(3)} (radians). Watch it climb toward 1 as x → 0.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="140" y1="20" x2="140" y2="120" className="demo-axis" />
+        <GraphFrame ox={140} />
         <line x1="40" y1="30" x2="240" y2="30" className="demo-guide" strokeDasharray="3 3" />
         <path d="M40 70 C70 30 110 25 140 30 C170 25 210 30 240 70" className="demo-curve" fill="none" />
         <circle cx={px} cy={py} r="5" className="demo-dot" />
@@ -275,8 +274,8 @@ function LimitFail({ className }: { className?: string }) {
       caption="Left limit ≠ right limit → two-sided limit DNE. Model each side separately (relay snap, shock)."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
-        <line x1="140" y1="20" x2="140" y2="120" className="demo-guide" strokeDasharray="4 3" />
+        <GraphFrame showY={false} />
+        <line x1="140" y1="20" x2="140" y2="110" className="fig-guide" />
         <path d="M40 85 L138 85" className="demo-curve" fill="none" />
         <path d="M142 45 L250 45" className="demo-curve demo-curve--alt" fill="none" />
         <circle cx="138" cy="85" r="4" className="demo-target" />
@@ -299,7 +298,7 @@ function SecantTangent({ className, reduced }: { className?: string; reduced: bo
         const n = v - 0.02
         return n < 0.08 ? 1.4 : n
       })
-    }, 40)
+    }, 55)
     return () => clearInterval(id)
   }, [playing, reduced])
 
@@ -322,7 +321,7 @@ function SecantTangent({ className, reduced }: { className?: string; reduced: bo
       caption={`h = ${h.toFixed(2)}. Average slope ${( -slope).toFixed(2)} → instantaneous slope as h → 0.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d="M40 95 C90 90 120 30 180 40 C220 46 250 70 260 90" className="demo-curve" fill="none" />
         <line x1={xL} y1={yL} x2={xR} y2={yR} className="demo-secant" />
         <circle cx={a} cy={fa} r="4" className="demo-target" />
@@ -355,7 +354,7 @@ function PowerRule({ className, reduced }: { className?: string; reduced: boolea
       caption={`For f(x)=x², f′(x)=2x = ${slope.toFixed(2)} at x=${x.toFixed(2)}. Scrub to feel the slope change.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d="M50 105 Q140 100 200 30" className="demo-curve" fill="none" />
         <line x1={x0 - 30} y1={y0 + slope * 9} x2={x1} y2={y1} className="demo-tangent" />
         <circle cx={x0} cy={y0} r="5" className="demo-dot" />
@@ -417,7 +416,7 @@ function FtcArea({ className, reduced }: { className?: string; reduced: boolean 
       caption="Grow the right endpoint b: accumulated area is F(b)−F(a) when F′=f."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="24" y1="110" x2="260" y2="110" className="demo-axis" />
+        <GraphFrame showY={false} />
         <path d={`M50 90 C90 40 140 30 ${bx} ${60 - b * 10} L${bx} 110 L50 110 Z`} className="demo-fill" />
         <path d="M50 90 C90 40 140 30 200 55" className="demo-curve" fill="none" />
         <line x1="50" y1="20" x2="50" y2="110" className="demo-guide" />
@@ -448,7 +447,7 @@ function ConstAccel({ className, reduced }: { className?: string; reduced: boole
   const a = 4
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setT((x) => (x >= 3 ? 0 : x + 0.05)), 40)
+    const id = window.setInterval(() => setT((x) => (x >= 3 ? 0 : x + 0.05)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   const x = v0 * t + 0.5 * a * t * t
@@ -462,7 +461,7 @@ function ConstAccel({ className, reduced }: { className?: string; reduced: boole
       caption={`t=${t.toFixed(2)}s · v=${v.toFixed(1)} · Δx≈${x.toFixed(1)} (v₀=${v0}, a=${a})`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="30" y1="100" x2="250" y2="100" className="demo-axis" />
+        <TrackAxis />
         <rect x={px} y="72" width="36" height="28" rx="4" className="demo-box" />
         <text x="40" y="40" className="demo-label">
           a = const → v = v₀ + a t
@@ -490,18 +489,15 @@ function FreeBody({ className, reduced }: { className?: string; reduced: boolean
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
         <rect x="110" y="50" width="60" height="40" rx="4" className="demo-box" />
-        <line x1="140" y1="50" x2="140" y2="22" className="demo-force" />
-        <polygon points="140,18 134,28 146,28" className="demo-arrowhead" />
+        <line x1="140" y1="50" x2="140" y2="20" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="148" y="28" className="demo-label">
           N
         </text>
-        <line x1="140" y1="90" x2="140" y2="118" className="demo-force" />
-        <polygon points="140,122 134,112 146,112" className="demo-arrowhead" />
+        <line x1="140" y1="90" x2="140" y2="122" className="demo-force" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x="148" y="118" className="demo-label">
           mg
         </text>
-        <line x1="170" y1="70" x2={170 + fLen} y2="70" className="demo-force demo-force--pull" />
-        <polygon points={`${174 + fLen},70 ${164 + fLen},64 ${164 + fLen},76`} className="demo-arrowhead" />
+        <line x1="170" y1="70" x2={170 + fLen} y2="70" className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
         <text x={180 + fLen * 0.3} y="62" className="demo-label">
           F
         </text>
@@ -523,7 +519,7 @@ function ForceComponents({ className, reduced }: { className?: string; reduced: 
   const [playing, setPlaying] = useState(!reduced)
   useEffect(() => {
     if (!playing || reduced) return
-    const id = window.setInterval(() => setDeg((d) => (d >= 80 ? 10 : d + 0.8)), 40)
+    const id = window.setInterval(() => setDeg((d) => (d >= 80 ? 10 : d + 0.8)), 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   const rad = (deg * Math.PI) / 180
@@ -540,11 +536,10 @@ function ForceComponents({ className, reduced }: { className?: string; reduced: 
       caption={`θ=${deg.toFixed(0)}° · Fₓ=${(Math.cos(rad)).toFixed(2)}|F| · Fᵧ=${(Math.sin(rad)).toFixed(2)}|F|`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="40" y1="110" x2="240" y2="110" className="demo-axis" />
-        <line x1="60" y1="120" x2="60" y2="20" className="demo-axis" />
-        <line x1={ox} y1={oy} x2={ox + fx} y2={oy - fy} className="demo-force demo-force--pull" />
-        <line x1={ox} y1={oy} x2={ox + fx} y2={oy} className="demo-guide" />
-        <line x1={ox + fx} y1={oy} x2={ox + fx} y2={oy - fy} className="demo-guide" />
+        <GraphFrame ox={60} oy={110} labelX="x" labelY="y" />
+        <line x1={ox} y1={oy} x2={ox + fx} y2={oy - fy} className="demo-force demo-force--pull" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
+        <line x1={ox} y1={oy} x2={ox + fx} y2={oy} className="fig-guide" markerEnd={`url(#${SharedMarkers.arrow})`} />
+        <line x1={ox + fx} y1={oy} x2={ox + fx} y2={oy - fy} className="fig-guide" markerEnd={`url(#${SharedMarkers.arrow})`} />
         <text x={ox + fx / 2} y={oy + 14} className="demo-label">
           Fₓ
         </text>
@@ -568,10 +563,10 @@ function ParticleEq({ className }: { className?: string }) {
       caption="Two cables + weight at a knot: ΣFₓ=0 and ΣFᵧ=0 close the system for the two unknown tensions."
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="40" y1="30" x2="140" y2="70" className="demo-force" />
-        <line x1="240" y1="30" x2="140" y2="70" className="demo-force" />
-        <line x1="140" y1="70" x2="140" y2="115" className="demo-force" />
-        <circle cx="140" cy="70" r="7" className="demo-target" />
+        <line x1="140" y1="70" x2="40" y2="30" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
+        <line x1="140" y1="70" x2="240" y2="30" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
+        <line x1="140" y1="70" x2="140" y2="115" className="demo-force" markerEnd={`url(#${SharedMarkers.arrowWarm})`} />
+        <circle cx="140" cy="70" r="6" className="fig-point" />
         <rect x="125" y="115" width="30" height="18" rx="2" className="demo-box" />
         <text x="48" y="50" className="demo-label">
           T₁
@@ -648,7 +643,7 @@ function KvlLoop({ className, reduced }: { className?: string; reduced: boolean 
   const [t, setT] = useState(0)
   useEffect(() => {
     if (reduced) return
-    const id = window.setInterval(() => setT((x) => (x + 0.02) % 1), 40)
+    const id = window.setInterval(() => setT((x) => (x + 0.02) % 1), 55)
     return () => clearInterval(id)
   }, [reduced])
   // animate a dot around the rectangle
@@ -706,7 +701,7 @@ function IdealGas({ className, reduced }: { className?: string; reduced: boolean
         const n = v + 0.015
         return n > 2.2 ? 0.7 : n
       })
-    }, 40)
+    }, 55)
     return () => clearInterval(id)
   }, [playing, reduced])
   const pistonY = 30 + (V - 0.7) * 28
@@ -753,11 +748,11 @@ function FirstLaw({ className }: { className?: string }) {
         <text x="118" y="75" className="demo-label">
           ΔU={dU.toFixed(0)}
         </text>
-        <path d="M40 70 H95" className="demo-force demo-qin" />
+        <line x1="40" y1="70" x2="95" y2="70" className="demo-force demo-qin" markerEnd={`url(#${SharedMarkers.arrowWarn})`} />
         <text x="45" y="60" className="demo-label">
           Q={Q}
         </text>
-        <path d="M185 70 H240" className="demo-force demo-wout" />
+        <line x1="185" y1="70" x2="245" y2="70" className="demo-force demo-wout" markerEnd={`url(#${SharedMarkers.arrowCool})`} />
         <text x="200" y="60" className="demo-label">
           W={W}
         </text>
@@ -805,16 +800,9 @@ function StressStrain({ className, reduced }: { className?: string; reduced: boo
       caption={`ε=${eps.toFixed(3)} → σ≈${stress.toFixed(0)} (arb.). Elastic slope is E; beyond yield the curve bends.`}
     >
       <svg viewBox="0 0 280 140" className="obj-demo__svg">
-        <line x1="40" y1="110" x2="250" y2="110" className="demo-axis" />
-        <line x1="50" y1="20" x2="50" y2="115" className="demo-axis" />
+        <GraphFrame ox={50} oy={110} labelX="ε" labelY="σ" />
         <path d={d} className="demo-curve" fill="none" />
         <circle cx={Math.min(px, 245)} cy={Math.max(py, 25)} r="5" className="demo-dot" />
-        <text x="55" y="30" className="demo-label">
-          σ
-        </text>
-        <text x="240" y="128" className="demo-label">
-          ε
-        </text>
       </svg>
       <div className="obj-demo__controls">
         <PlayToggle playing={playing} onToggle={() => setPlaying((p) => !p)} disabled={reduced} />

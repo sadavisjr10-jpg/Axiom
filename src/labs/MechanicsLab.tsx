@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { constantAcceleration, round } from '../lib/labMath'
 import { PredictCommitReveal } from '../components/PredictCommitReveal'
+import { SharedMarkers } from '../components/demos/diagramPrimitives'
 
 export function MechanicsLab() {
   const [x0, setX0] = useState(0)
@@ -14,13 +15,16 @@ export function MechanicsLab() {
   const xs = times.map((ti) => constantAcceleration(x0, v0, a, ti).x)
   const minX = Math.min(...xs, 0)
   const maxX = Math.max(...xs, 1)
-  const w = 300
-  const h = 160
-  const pad = 20
+  const w = 320
+  const h = 200
+  const padL = 44
+  const padR = 24
+  const padT = 28
+  const padB = 36
   const points = times
     .map((_, i) => {
-      const px = pad + (i / 20) * (w - 2 * pad)
-      const py = h - pad - ((xs[i] - minX) / (maxX - minX || 1)) * (h - 2 * pad)
+      const px = padL + (i / 20) * (w - padL - padR)
+      const py = h - padB - ((xs[i] - minX) / (maxX - minX || 1)) * (h - padT - padB)
       return `${px},${py}`
     })
     .join(' ')
@@ -37,12 +41,60 @@ export function MechanicsLab() {
           <dd>{round(v, 3)} m/s</dd>
         </div>
       </dl>
-      <svg className="lab__canvas" viewBox={`0 0 ${w} ${h + 40}`} role="img" aria-label="Position vs time">
-        <text x={pad} y="16" fill="#94a3b8" fontSize="11">
-          x vs t
+      <svg className="lab__canvas" viewBox={`0 0 ${w} ${h}`} role="img" aria-label="Position vs time">
+        {/* Grid */}
+        {Array.from({ length: 6 }, (_, i) => {
+          const gy = padT + (i / 5) * (h - padT - padB)
+          return (
+            <line
+              key={`g${i}`}
+              x1={padL}
+              y1={gy}
+              x2={w - padR}
+              y2={gy}
+              stroke="rgba(148,163,184,0.1)"
+              strokeWidth="0.75"
+            />
+          )
+        })}
+        <line
+          x1={padL}
+          y1={h - padB}
+          x2={w - padR}
+          y2={h - padB}
+          className="fig-axis"
+          markerEnd={`url(#${SharedMarkers.arrow})`}
+        />
+        <line
+          x1={padL}
+          y1={h - padB}
+          x2={padL}
+          y2={padT - 4}
+          className="fig-axis"
+          markerEnd={`url(#${SharedMarkers.arrow})`}
+        />
+        <text x={w - padR - 4} y={h - padB + 16} className="fig-label fig-label--axis" textAnchor="end">
+          t (s)
         </text>
-        <polyline fill="none" stroke="#38bdf8" strokeWidth="2.5" points={points} />
-        <line x1={pad} y1={h - pad} x2={w - pad} y2={h - pad} stroke="rgba(148,163,184,0.4)" />
+        <text x={padL + 8} y={padT + 4} className="fig-label fig-label--axis">
+          x (m)
+        </text>
+        <text x={padL} y={16} className="fig-label fig-label--ink">
+          Position vs time
+        </text>
+        <polyline fill="none" stroke="#38bdf8" strokeWidth="2.15" strokeLinejoin="round" strokeLinecap="round" points={points} />
+        <circle
+          cx={padL + (w - padL - padR)}
+          cy={h - padB - ((x - minX) / (maxX - minX || 1)) * (h - padT - padB)}
+          r="4"
+          fill="#fbbf24"
+        />
+        <text x={12} y={h - padB + 4} className="fig-label" textAnchor="middle">
+          {round(minX, 1)}
+        </text>
+        <text x={12} y={padT + 4} className="fig-label" textAnchor="middle">
+          {round(maxX, 1)}
+        </text>
       </svg>
     </>
   )

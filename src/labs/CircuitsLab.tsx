@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { round, voltageDivider } from '../lib/labMath'
 import { PredictCommitReveal } from '../components/PredictCommitReveal'
+import { SharedMarkers } from '../components/demos/diagramPrimitives'
 
 export function CircuitsLab() {
   const [vin, setVin] = useState(12)
@@ -10,6 +11,24 @@ export function CircuitsLab() {
   const vout = useMemo(() => voltageDivider(vin, r1, r2), [vin, r1, r2])
   const i = r1 + r2 === 0 ? NaN : vin / (r1 + r2)
   const frac = r1 + r2 === 0 ? 0 : r2 / (r1 + r2)
+
+  // Zigzag resistor paths
+  function zigzag(x: number, y0: number, y1: number) {
+    const n = 6
+    const dy = (y1 - y0) / n
+    const pts = [`${x},${y0}`]
+    for (let k = 0; k < n; k++) {
+      const sign = k % 2 === 0 ? 1 : -1
+      pts.push(`${x + sign * 10},${y0 + dy * (k + 0.5)}`)
+    }
+    pts.push(`${x},${y1}`)
+    return 'M' + pts.join(' L')
+  }
+
+  const mid = 130
+  const r1End = mid - 8
+  const r2Start = mid + 8
+  const gnd = 230
 
   const results = (
     <>
@@ -23,29 +42,47 @@ export function CircuitsLab() {
           <dd>{round(i * 1000, 3)} mA</dd>
         </div>
       </dl>
-      <svg className="lab__canvas" viewBox="0 0 280 260" role="img" aria-label="Voltage divider schematic">
-        <rect x="110" y="30" width="60" height="28" rx="4" fill="none" stroke="#a78bfa" strokeWidth="2" />
-        <text x="140" y="48" textAnchor="middle" fill="#e2e8f0" fontSize="11">
-          Vin {vin}V
+      <svg className="lab__canvas" viewBox="0 0 280 270" role="img" aria-label="Voltage divider schematic">
+        {/* Vin source */}
+        <rect x="108" y="22" width="64" height="26" rx="4" className="fig-body" fill="none" stroke="#a78bfa" />
+        <text x="140" y="40" textAnchor="middle" className="fig-label fig-label--ink">
+          V_in {vin} V
         </text>
-        <line x1="140" y1="58" x2="140" y2="80" stroke="#94a3b8" />
-        <rect x="120" y="80" width="40" height="50" rx="3" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" />
-        <text x="140" y="110" textAnchor="middle" fill="#c4b5fd" fontSize="11">
-          R1
+        <line x1="140" y1="48" x2="140" y2="62" className="fig-wire" />
+        {/* R1 zigzag */}
+        <path d={zigzag(140, 62, r1End)} className="fig-resistor" />
+        <text x="162" y={(62 + r1End) / 2 + 4} className="fig-label">
+          R₁ {r1} Ω
         </text>
-        <line x1="140" y1="130" x2="140" y2="150" stroke="#94a3b8" />
-        <circle cx="140" cy="150" r="4" fill="#6ee7b7" />
-        <text x="160" y="154" fill="#6ee7b7" fontSize="11">
-          Vout
+        {/* Tap node */}
+        <circle cx="140" cy={mid} r="4.5" fill="#6ee7b7" />
+        <line
+          x1="140"
+          y1={mid}
+          x2="220"
+          y2={mid}
+          className="fig-wire"
+          stroke="#6ee7b7"
+          markerEnd={`url(#${SharedMarkers.arrowGood})`}
+        />
+        <text x="226" y={mid + 4} className="fig-label fig-label--ink" fill="#6ee7b7">
+          V_out
         </text>
-        <rect x="120" y="160" width="40" height={30 + frac * 40} rx="3" fill="rgba(110,231,183,0.2)" stroke="#6ee7b7" />
-        <text x="140" y="185" textAnchor="middle" fill="#6ee7b7" fontSize="11">
-          R2
+        {/* R2 — height encodes share */}
+        <path d={zigzag(140, r2Start, gnd - 16)} className="fig-resistor" stroke="#6ee7b7" />
+        <text x="162" y={(r2Start + gnd - 16) / 2 + 4} className="fig-label" fill="#6ee7b7">
+          R₂ {r2} Ω
         </text>
-        <line x1="140" y1={190 + frac * 40} x2="140" y2="240" stroke="#94a3b8" />
-        <line x1="120" y1="240" x2="160" y2="240" stroke="#94a3b8" strokeWidth="2" />
-        <text x="140" y="255" textAnchor="middle" fill="#94a3b8" fontSize="10">
+        <line x1="140" y1={gnd - 16} x2="140" y2={gnd} className="fig-wire" />
+        {/* Ground */}
+        <line x1="128" y1={gnd} x2="152" y2={gnd} className="fig-wire" strokeWidth={1.75} />
+        <line x1="132" y1={gnd + 5} x2="148" y2={gnd + 5} className="fig-wire" />
+        <line x1="136" y1={gnd + 10} x2="144" y2={gnd + 10} className="fig-wire" />
+        <text x="140" y={gnd + 26} textAnchor="middle" className="fig-label">
           GND
+        </text>
+        <text x="24" y={mid - 20} className="fig-eq" style={{ fontSize: 11 }}>
+          {`V_out / V_in = ${(frac * 100).toFixed(1)}%`}
         </text>
       </svg>
     </>
